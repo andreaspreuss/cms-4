@@ -1,0 +1,8 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+        
+	RewriteCond %{HTTP_HOST} ^([^.]*)\.([^.]*)$
+	RewriteRule ^(.*)$ http://%{HTTP_HOST}/$1 [R=301,QSA,L]
+        
+	RewriteRule ^(.*)$ /public/$1 [QSA,L]
+</IfModule>

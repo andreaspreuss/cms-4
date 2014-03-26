@@ -1,0 +1,40 @@
+### System defaults
+.DS_Store
+.DS_Store?
+._*
+*~
+*.MD5
+*.mwb.bak
+
+### Ignore log and tmp/temp
+log/*
+tmp/*
+temp/*
+build
+
+### Composer
+vendor/*
+!vendor/others
+/composer.lock
+
+### IDE settings
+/.idea
+/nbproject
+
+### NPM modules
+/node_modules
+/npm-debug.log
+
+### Grunt file
+/.grunt
+/Gruntfile.js
+
+### not ignore
+!.gitignore
+!.htaccess
+!web.config
+
+
+### Ignore html files
+public/js/*.js
+public/css/*.css
