@@ -1,14 +1,14 @@
 {
 	"name": "om/vestibulum",
 	"type": "library",
-	"description": "Super Simple static CMS with Twig templates",
+	"description": "Vestibulum is deadly simple, ultra fast, flat file (Markdown, HTML) CMS. Fully customizable with Twig templates",
 	"keywords": ["cms", "markdown", "twig", "html"],
 	"homepage": "http://vestibulum.omdesign.cz",
 	"license": ["BSD-3-Clause"],
 	"authors": [
 		{
 			"name": "Roman Ožana",
-			"homepage": "http://www.omdesign.cz/"
+			"homepage": "http://www.omdesign.cz/",
 			"email": "ozana@omdesign.cz"
 		}
 	],
