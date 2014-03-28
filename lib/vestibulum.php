@@ -159,7 +159,7 @@ class Vestibulum extends \stdClass {
 			'template' => 'index.twig'
 		];
 
-		$headers = array_merge($headers, static::parseMeta($content));
+		$headers = array_merge($headers, (array)static::parseMeta($content));
 
 		$headers['file'] = realpath($file);
 		$headers['slug'] = str_replace(realpath($this->config->src), '', realpath(dirname($file))) . '/' . $basename;
