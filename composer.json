@@ -2,19 +2,27 @@
 	"name": "om/vestibulum",
 	"type": "library",
 	"description": "Super Simple static CMS with Twig templates",
-	"keywords": ["cms", "markdown", ""],
-	"homepage": "http://www.omdesign.cz",
+	"keywords": ["cms", "markdown", "twig", "html"],
+	"homepage": "http://vestibulum.omdesign.cz",
 	"license": ["BSD-3-Clause"],
 	"authors": [
 		{
 			"name": "Roman Ožana",
+			"homepage": "http://www.omdesign.cz/"
 			"email": "ozana@omdesign.cz"
 		}
 	],
+	"support": {
+		"issues": "https://github.com/OzzyCzech/vestibulum/issues"
+	},
 	"require": {
 		"php": ">=5.5",
 		"twig/twig": "1.15.*",
 		"michelf/php-markdown": "1.4.0"
+	},
+
+	"require-dev": {
+		"nette/tester": "*"
 	},
 	"autoload": {
 		"classmap": ["lib/"]
