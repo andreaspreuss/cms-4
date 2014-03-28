@@ -10,7 +10,5 @@ return [
 		'autoescape' => false,
 		'debug' => true,
 	],
-	"markdown" => [
-		'cachex' => __DIR__ . '/../tmp/',
-	]
+
 ];

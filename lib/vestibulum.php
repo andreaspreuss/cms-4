@@ -260,7 +260,7 @@ class Vestibulum extends \stdClass {
 
 		// FIXME and find better way how to save to cache
 		if (pathinfo($this->file, PATHINFO_EXTENSION) === 'md') {
-			$cache = isset($this->config->markdown['cache']) ? realpath($this->config->markdown['cache']) : null;
+			$cache = isset($this->config->markdown['cache']) &&	$this->config->markdown['cache'] ? realpath($this->config->markdown['cache']) : false;
 			if ($cache && is_dir($cache) && is_writable($cache)) {
 				$cacheFile = $cache . '/' . md5($this->file);
 				if (!is_file($cacheFile) || filemtime($this->file) > filemtime($cacheFile)) {
