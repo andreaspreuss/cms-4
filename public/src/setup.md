@@ -3,8 +3,6 @@ title: Install
 order : 2
 -->
 
-[![Latest Stable Version]()](https://packagist.org/packages/om/vestibulum) [![Total Downloads](https://poser.pugx.org/om/vestibulum/downloads.png)](https://packagist.org/packages/om/vestibulum) [![Latest Unstable Version](https://poser.pugx.org/om/vestibulum/v/unstable.png)](https://packagist.org/packages/om/vestibulum) [![License](https://poser.pugx.org/om/vestibulum/license.png)](https://packagist.org/packages/om/vestibulum)
-
 # How to Install Vestibulum
 
 ## Installing with Composer

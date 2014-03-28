@@ -1,5 +1,8 @@
 <?php
 namespace om;
+
+use Michelf\MarkdownExtra;
+
 /**
  * @author Roman Ožana <ozana@omdesign.cz>
  */
@@ -22,15 +25,23 @@ class Vestibulum extends \stdClass {
 
 	public function __construct() {
 		$this->config = $this->getConfig();
-
-		foreach ($this->config['include'] as $file) @include_once $file; // intentionally @
-
 		$this->request = $this->getRequest();
-		$this->file = $this->getFile($this->request);
+		$this->file = $this->getFile($this->request, $this->config->src);
 		$this->content = $this->getFileContent($this->file);
 		$this->meta = $this->getMeta($this->content, $this->file);
 		$this->pages = $this->getPages(dirname($this->file));
 		$this->home = $this->url();
+		$this->functions();
+	}
+
+
+	/**
+	 * Auto include functions.php from
+	 */
+	public function functions() {
+		global $cms;
+		$cms = $this; // create link to $this
+		@include_once getcwd() . '/functions.php'; // intentionally @
 	}
 
 	/**
@@ -39,7 +50,7 @@ class Vestibulum extends \stdClass {
 	 * @return array
 	 */
 	protected function getConfig() {
-		return array_replace_recursive(
+		return (object)array_replace_recursive(
 			[
 				'title' => 'Vestibulum',
 				'twig' => [
@@ -47,13 +58,13 @@ class Vestibulum extends \stdClass {
 					'autoescape' => false,
 					'debug' => false,
 				],
+				'markdown' => [
+					'cache' => false,
+				],
 				'src' => getcwd() . '/src/',
 				'templates' => getcwd(),
 				'author' => null,
 				'skip' => ['404', 'index'],
-				'include' => [
-					getcwd() . '/functions.php'
-				]
 			],
 			@include(getcwd() . '/config.php') // intentionally @
 		);
@@ -63,18 +74,18 @@ class Vestibulum extends \stdClass {
 	 * Return filename from request
 	 *
 	 * @param $request
+	 * @param $root
 	 * @return string
 	 */
-	public function getFile($request) {
-		$src = $this->config['src'];
+	public static function getFile($request, $root = null) {
 		if (
-			is_file($file = $src . $request . '.html') ||
-			is_file($file = $src . $request . '.md') ||
-			is_dir($src . $request) && is_file($file = $src . $request . '/index.html') ||
-			is_dir($src . $request) && is_file($file = $src . $request . '/index.md')
+			is_file($file = $root . $request . '.html') ||
+			is_file($file = $root . $request . '.md') ||
+			is_dir($root . $request) && is_file($file = $root . $request . '/index.html') ||
+			is_dir($root . $request) && is_file($file = $root . $request . '/index.md')
 		) {
 			return realpath($file);
-		} elseif (is_file($file = $src . '/404.html') || is_file($file = $src . '/404.md')) {
+		} elseif (is_file($file = $root . '/404.html') || is_file($file = $root . '/404.md')) {
 			header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
 			return realpath($file);
 		}
@@ -86,7 +97,7 @@ class Vestibulum extends \stdClass {
 	 * @param $file
 	 * @return string
 	 */
-	public function getFileContent($file) {
+	public static function getFileContent($file) {
 		return ($file ? @file_get_contents($file) : '# 404' . PHP_EOL . 'Page not found'); // intentionally @
 	}
 
@@ -95,7 +106,7 @@ class Vestibulum extends \stdClass {
 	 *
 	 * @return mixed
 	 */
-	public function getRequest() {
+	public static function getRequest() {
 		$request = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;
 		return preg_replace(['#\?.*#', '#/?index.php#'], ['', ''], urldecode($request));
 	}
@@ -108,7 +119,7 @@ class Vestibulum extends \stdClass {
 	 * @param $ext
 	 * @return null|string
 	 */
-	protected function getTitle($content, $ext) {
+	public static function getTitle($content, $ext) {
 		$patterns = [
 			'html' => '/<h1[^>]*>([^<>]+)<\/h1>/isU',
 			'md' => '/ *# *([^\n]+?) *#* *(?:\n+|$)/isU',
@@ -131,7 +142,7 @@ class Vestibulum extends \stdClass {
 	 * @param null $order
 	 * @return object
 	 */
-	protected function getMeta($content, $file, $order = null) {
+	public function getMeta($content, $file, $order = null) {
 		$ext = pathinfo($file, PATHINFO_EXTENSION);
 		$basename = basename($file, '.' . $ext);
 		$title = $this->getTitle($content, $ext) ? : $basename;
@@ -142,33 +153,40 @@ class Vestibulum extends \stdClass {
 			'title' => $title,
 			'order' => $order ? : $title,
 			'description' => $this->getShort($content),
-			'author' => $this->config['author'],
+			'author' => $this->config->author,
 			'date' => is_file($file) ? filemtime($file) : time(),
 			'type' => $ext,
 			'template' => 'index.twig'
 		];
 
-		preg_match('/<!--(.*)-->/sU', $content, $matches);
-
-		if ($matches && $ini = end($matches)) {
-			$ini = parse_ini_string(str_replace(':', '=', $ini), false, INI_SCANNER_RAW);
-			if ($ini === false) die('Invalid File metadata');
-			$headers = array_merge($headers, $ini);
-		}
+		$headers = array_merge($headers, static::parseMeta($content));
 
 		$headers['file'] = realpath($file);
-		$headers['slug'] = str_replace(realpath($this->config['src']), '', realpath(dirname($file))) . '/' . $basename;
+		$headers['slug'] = str_replace(realpath($this->config->src), '', realpath(dirname($file))) . '/' . $basename;
 
 		return (object)$headers;
 	}
 
-	protected function getPages($path) {
+	/**
+	 * Parse content and getting metadata
+	 *
+	 * @param $content
+	 * @return array
+	 */
+	public static function parseMeta($content) {
+		preg_match('/<!--(.*)-->/sU', $content, $matches);
+		if ($matches && $ini = end($matches)) {
+			return parse_ini_string(str_replace(':', '=', $ini), false, INI_SCANNER_RAW);
+		}
+	}
+
+	public function getPages($path) {
 		$files = (array)glob($path . '/*.{html,md}', GLOB_BRACE);
 
 		$pages = [];
 		foreach ($files as $id => $file) {
 			$ext = pathinfo($file, PATHINFO_EXTENSION);
-			if (in_array(basename($file, '.' . $ext), $this->config['skip'])) continue;
+			if (in_array(basename($file, '.' . $ext), $this->config->skip)) continue;
 			$meta = $this->getMeta(file_get_contents($file), $file);
 			$pages[realpath($file)] = $meta;
 		}
@@ -191,7 +209,7 @@ class Vestibulum extends \stdClass {
 	 * @param int $length
 	 * @return mixed
 	 */
-	protected function getShort($string, $length = 128) {
+	public static function getShort($string, $length = 128) {
 		$rules = array(
 			'/(#+)(.*)/' => '\2', // headers
 			'/\[([^\[]+)\]\(([^\)]+)\)/' => '\1', // links
@@ -212,8 +230,8 @@ class Vestibulum extends \stdClass {
 	}
 
 	protected function render() {
-		$loader = new \Twig_Loader_Filesystem($this->config['templates']);
-		$twig = new \Twig_Environment($loader, $this->config['twig']);
+		$loader = new \Twig_Loader_Filesystem($this->config->templates);
+		$twig = new \Twig_Environment($loader, $this->config->twig);
 		$twig->addExtension(new \Twig_Extension_Debug());
 
 		// undefined filters callback
@@ -226,7 +244,7 @@ class Vestibulum extends \stdClass {
 			}
 		);
 
-		$twig->addFunction('url', new \Twig_SimpleFunction('url', [$this, 'url']));
+		$twig->addFunction('url', new \Twig_SimpleFunction('url', [__CLASS__, 'url']));
 
 		// undefined functions callback
 		$twig->registerUndefinedFunctionCallback(
@@ -238,10 +256,23 @@ class Vestibulum extends \stdClass {
 			}
 		);
 
-		// FIXME find better way
 		$this->content = str_replace('%url%', $this->url(), $this->content);
+
+		// FIXME and find better way how to save to cache
 		if (pathinfo($this->file, PATHINFO_EXTENSION) === 'md') {
-			$this->content = \Michelf\MarkdownExtra::defaultTransform($this->content);
+			$cache = isset($this->config->markdown['cache']) ? realpath($this->config->markdown['cache']) : null;
+			if ($cache && is_dir($cache) && is_writable($cache)) {
+				$cacheFile = $cache . '/' . md5($this->file);
+				if (!is_file($cacheFile) || filemtime($this->file) > filemtime($cacheFile)) {
+					$this->content = MarkdownExtra::defaultTransform($this->content);
+					file_put_contents($cacheFile, $this->content);
+				} else {
+					$this->content = file_get_contents($cacheFile);
+				}
+			} else {
+				$this->content = MarkdownExtra::defaultTransform($this->content);
+			}
+
 		}
 
 		return $twig->render($this->meta->template, (array)$this);
