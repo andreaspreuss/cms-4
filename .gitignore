@@ -6,6 +6,9 @@
 *.MD5
 *.mwb.bak
 
+### Tests
+tests/output
+
 ### Ignore log and tmp/temp
 log/*
 tmp/*

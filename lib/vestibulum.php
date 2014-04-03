@@ -4,14 +4,15 @@ namespace om;
 use Michelf\MarkdownExtra;
 
 /**
+ *
  * @author Roman Ožana <ozana@omdesign.cz>
  */
 class Vestibulum extends \stdClass {
 
-	/** @var array */
-	public $config;
-	/** @var string */
-	public $request;
+	use Config;
+	use Request;
+	use Metadata;
+
 	/** @var string */
 	public $file;
 	/** @var string */
@@ -23,20 +24,19 @@ class Vestibulum extends \stdClass {
 	/** @var string */
 	public $home;
 
+
 	public function __construct() {
-		$this->config = $this->getConfig();
-		$this->request = $this->getRequest();
-		$this->file = $this->getFile($this->request, $this->config->src);
+		$this->file = $this->getFilename($this->request(), $this->src());
+		$this->home = $this->url();
 		$this->content = $this->getFileContent($this->file);
 		$this->meta = $this->getMeta($this->content, $this->file);
 		$this->pages = $this->getPages(dirname($this->file));
-		$this->home = $this->url();
+
 		$this->functions();
 	}
 
-
 	/**
-	 * Auto include functions.php from
+	 * Auto include functions.php
 	 */
 	public function functions() {
 		global $cms;
@@ -44,31 +44,6 @@ class Vestibulum extends \stdClass {
 		@include_once getcwd() . '/functions.php'; // intentionally @
 	}
 
-	/**
-	 * Return configuration
-	 *
-	 * @return array
-	 */
-	protected function getConfig() {
-		return (object)array_replace_recursive(
-			[
-				'title' => 'Vestibulum',
-				'twig' => [
-					'cache' => false,
-					'autoescape' => false,
-					'debug' => false,
-				],
-				'markdown' => [
-					'cache' => false,
-				],
-				'src' => getcwd() . '/src/',
-				'templates' => getcwd(),
-				'author' => null,
-				'skip' => ['404', 'index'],
-			],
-			@include(getcwd() . '/config.php') // intentionally @
-		);
-	}
 
 	/**
 	 * Return filename from request
@@ -77,7 +52,7 @@ class Vestibulum extends \stdClass {
 	 * @param $root
 	 * @return string
 	 */
-	public static function getFile($request, $root = null) {
+	public static function getFilename($request, $root = null) {
 		if (
 			is_file($file = $root . $request . '.html') ||
 			is_file($file = $root . $request . '.md') ||
@@ -102,91 +77,28 @@ class Vestibulum extends \stdClass {
 	}
 
 	/**
-	 * Return requested URL
+	 * Skip selected files
 	 *
-	 * @return mixed
-	 */
-	public static function getRequest() {
-		$request = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;
-		return preg_replace(['#\?.*#', '#/?index.php#'], ['', ''], urldecode($request));
-	}
-
-
-	/**
-	 * Extract title from md|html content
-	 *
-	 * @param $content
-	 * @param $ext
-	 * @return null|string
-	 */
-	public static function getTitle($content, $ext) {
-		$patterns = [
-			'html' => '/<h1[^>]*>([^<>]+)<\/h1>/isU',
-			'md' => '/ *# *([^\n]+?) *#* *(?:\n+|$)/isU',
-		];
-
-		if (
-			isset($patterns[$ext]) &&
-			preg_match_all($patterns[$ext], $content, $matches, PREG_SET_ORDER)
-		) {
-			$first = reset($matches);
-			return trim(end($first));
-		}
-	}
-
-	/**
-	 * Read metadata from file
-	 *
-	 * @param $content
 	 * @param $file
-	 * @param null $order
-	 * @return object
+	 * @return bool
 	 */
-	public function getMeta($content, $file, $order = null) {
-		$ext = pathinfo($file, PATHINFO_EXTENSION);
-		$basename = basename($file, '.' . $ext);
-		$title = $this->getTitle($content, $ext) ? : $basename;
-
-		$headers = [
-			'id' => md5($content . $file),
-			'class' => $basename,
-			'title' => $title,
-			'order' => $order ? : $title,
-			'description' => $this->getShort($content),
-			'author' => $this->config->author,
-			'date' => is_file($file) ? filemtime($file) : time(),
-			'type' => $ext,
-			'template' => 'index.twig'
-		];
-
-		$headers = array_merge($headers, (array)static::parseMeta($content));
-
-		$headers['file'] = realpath($file);
-		$headers['slug'] = str_replace(realpath($this->config->src), '', realpath(dirname($file))) . '/' . $basename;
-
-		return (object)$headers;
+	public function skip($file) {
+		return in_array(basename($file, '.' . pathinfo($file, PATHINFO_EXTENSION)), $this->config->skip);
 	}
 
+
 	/**
-	 * Parse content and getting metadata
+	 * Return pages meta from selected path
 	 *
-	 * @param $content
+	 * @param $path
 	 * @return array
 	 */
-	public static function parseMeta($content) {
-		preg_match('/<!--(.*)-->/sU', $content, $matches);
-		if ($matches && $ini = end($matches)) {
-			return parse_ini_string(str_replace(':', '=', $ini), false, INI_SCANNER_RAW);
-		}
-	}
-
 	public function getPages($path) {
 		$files = (array)glob($path . '/*.{html,md}', GLOB_BRACE);
 
 		$pages = [];
 		foreach ($files as $id => $file) {
-			$ext = pathinfo($file, PATHINFO_EXTENSION);
-			if (in_array(basename($file, '.' . $ext), $this->config->skip)) continue;
+			if ($this->skip($file)) continue;
 			$meta = $this->getMeta(file_get_contents($file), $file);
 			$pages[realpath($file)] = $meta;
 		}
@@ -204,30 +116,36 @@ class Vestibulum extends \stdClass {
 	}
 
 	/**
-	 * @see https://gist.github.com/jbroadway/2836900
-	 * @param $string
-	 * @param int $length
-	 * @return mixed
+	 * Read metadata from file
+	 *
+	 * @param $content
+	 * @param $file
+	 * @param null $order
+	 * @return object
 	 */
-	public static function getShort($string, $length = 128) {
-		$rules = array(
-			'/(#+)(.*)/' => '\2', // headers
-			'/\[([^\[]+)\]\(([^\)]+)\)/' => '\1', // links
-			'/(\*\*|__)(.*?)\1/' => '\2', // bold
-			'/(\*|_)(.*?)\1/' => '\2', // emphasis
-			'/\~\~(.*?)\~\~/' => '\1', // del
-			'/\:\"(.*?)\"\:/' => '\1', // quote
-			'/`(.*?)`/' => '\1', // inline code
-			'/<(.|\n)*?>/' => '', // strip tags
-			'/\s+/' => ' ' // strip spaces
-		);
+	public function getMeta($content, $file, $order = null) {
+		$basename = basename($file, '.' . pathinfo($file, PATHINFO_EXTENSION));
+		$title = $this->title($content) ? : ucfirst($basename);
 
-		$description = preg_replace(array_keys($rules), array_values($rules), $string);
-		if (preg_match('#^.{1,' . $length . '}(?=[\s\x00-/:-@\[-`{-~])#us', trim($description), $match)) {
-			return reset($match);
-		}
-		return $description;
+		$headers = [
+			'id' => md5($content . $file),
+			'class' => $basename,
+			'title' => $title,
+			'order' => $order ? : $title,
+			'description' => $this->shorten($content),
+			'author' => $this->config()->author,
+			'date' => is_file($file) ? filemtime($file) : time(),
+			'template' => 'index.twig'
+		];
+
+		$headers = array_merge($headers, (array)$this->parseMeta($content));
+
+		$headers['file'] = realpath($file);
+		$headers['slug'] = str_replace($this->src(), '', realpath(dirname($file))) . '/' . $basename;
+
+		return (object)$headers;
 	}
+
 
 	protected function render() {
 		$loader = new \Twig_Loader_Filesystem($this->config->templates);
@@ -244,7 +162,7 @@ class Vestibulum extends \stdClass {
 			}
 		);
 
-		$twig->addFunction('url', new \Twig_SimpleFunction('url', [__CLASS__, 'url']));
+		$twig->addFunction('url', new \Twig_SimpleFunction('url', [$this, 'url']));
 
 		// undefined functions callback
 		$twig->registerUndefinedFunctionCallback(
@@ -260,7 +178,9 @@ class Vestibulum extends \stdClass {
 
 		// FIXME and find better way how to save to cache
 		if (pathinfo($this->file, PATHINFO_EXTENSION) === 'md') {
-			$cache = isset($this->config->markdown['cache']) &&	$this->config->markdown['cache'] ? realpath($this->config->markdown['cache']) : false;
+			$cache = isset($this->config->markdown['cache']) && $this->config->markdown['cache'] ? realpath(
+				$this->config->markdown['cache']
+			) : false;
 			if ($cache && is_dir($cache) && is_writable($cache)) {
 				$cacheFile = $cache . '/' . md5($this->file);
 				if (!is_file($cacheFile) || filemtime($this->file) > filemtime($cacheFile)) {
@@ -275,7 +195,130 @@ class Vestibulum extends \stdClass {
 
 		}
 
-		return $twig->render($this->meta->template, (array)$this);
+		return $twig->render($this->meta->template, $this->toArray());
+	}
+
+	/**
+	 * Return array of object Variables
+	 *
+	 * @return array
+	 */
+	public function toArray() {
+		return get_object_vars($this);
+	}
+
+	/**
+	 * Render string content
+	 *
+	 * @return string
+	 */
+	public function __toString() {
+		try {
+			return $this->render();
+		} catch (\Exception $e) {
+			return $e->getMessage();
+		}
+	}
+
+}
+
+/**
+ * Extract metadata from file
+ *
+ * @author Roman Ožana <ozana@omdesign.cz>
+ */
+trait Metadata {
+
+	/**
+	 * Extract main title from markdown
+	 *
+	 * @param string $content
+	 * @return null|string
+	 */
+	public static function title($content) {
+		$pattern = '/<h1[^>]*>([^<>]+)<\/h1>| *# *([^\n]+?) *#* *(?:\n+|$)/isU';
+		if (preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
+			$first = reset($matches);
+			return trim(end($first));
+		}
+	}
+
+	/**
+	 * Shorten plain text content
+	 *
+	 * @see https://github.com/nette/utils/blob/master/src/Utils/Strings.php
+	 *
+	 * @param $content
+	 * @param int $length
+	 * @return mixed
+	 */
+	public static function shorten($content, $length = 128) {
+		$s = static::text($content);
+
+		if (strlen(utf8_decode($s)) > $length) {
+			if (preg_match('#^.{1,' . $length . '}(?=[\s\x00-/:-@\[-`{-~])#us', trim($s), $matches)) {
+				return reset($matches);
+			}
+			return (function_exists('mb_substr') ? mb_substr($s, 0, $length, 'UTF-8') : iconv_substr(
+				$s, 0, $length, 'UTF-8'
+			));
+		}
+
+		return $s;
+	}
+
+	/**
+	 * Return plain text from markdown and HTML mix
+	 *
+	 * @see https://gist.github.com/jbroadway/2836900
+	 *
+	 * @param string $content
+	 * @return mixed
+	 */
+	public static function text($content) {
+		$rules = array(
+			'/(#+) ?(.*)/' => '\2', // headers
+			'/\[([^\[]+)\]\(([^\)]+)\)/' => '\1', // links
+			'/(\*\*|__)(.*?)\1/' => '\2', // bold
+			'/(\*|_)(.*?)\1/' => '\2', // emphasis
+			'/\~\~(.*?)\~\~/' => '\1', // del
+			'/\:\"(.*?)\"\:/' => '\1', // quote
+			'/`(.*?)`/' => '\1', // inline code
+			'/<(.|\n)*?>/' => '', // strip tags
+			'/\s+/' => ' ' // strip spaces
+		);
+
+		return preg_replace(array_keys($rules), array_values($rules), $content);
+	}
+
+	/**
+	 * Parse content and getting metadata
+	 *
+	 * @param $content
+	 * @return array
+	 */
+	public static function parseMeta($content) {
+		preg_match('/<!--(.*)-->/sU', $content, $matches);
+		if ($matches && $ini = end($matches)) {
+			return parse_ini_string(str_replace(':', '=', $ini), false, INI_SCANNER_RAW);
+		}
+	}
+}
+
+trait Request {
+
+	/** @var string */
+	private $request;
+
+	/**
+	 * Return requested URL
+	 *
+	 * @return mixed
+	 */
+	public function request() {
+		if (isset($this->request)) return $this->request;
+		$this->request = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;
+		return $this->request = preg_replace(['#\?.*#', '#/?index.php#'], ['', ''], urldecode($this->request));
 	}
 
 	/**
@@ -293,18 +336,51 @@ class Vestibulum extends \stdClass {
 			parse_url($url, PHP_URL_PATH), '/'
 		);
 	}
+}
+
+
+/**
+ * Simple singleton config object
+ *
+ * @author Roman Ožana <ozana@omdesign.cz>
+ */
+trait Config {
+
+	/** @var \stdClass */
+	private $config;
 
 	/**
-	 * Render string content
+	 * Return src dirname
 	 *
 	 * @return string
 	 */
-	public function __toString() {
-		try {
-			return $this->render();
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
+	public function src() {
+		return (isset($this->config()->src) ? realpath($this->config()->src) : $this->config()->src = getcwd() . '/src/');
 	}
 
+	/**
+	 * Return configuration
+	 *
+	 * @return \stdClass
+	 */
+	public function config() {
+		return $this->config ? $this->config : $this->config = (object)array_replace_recursive(
+			[
+				'title' => 'Vestibulum',
+				'twig' => [
+					'cache' => false,
+					'autoescape' => false,
+					'debug' => false,
+				],
+				'markdown' => [
+					'cache' => false,
+				],
+				'src' => getcwd() . '/src/',
+				'templates' => getcwd(),
+				'author' => null,
+				'skip' => ['404', 'index'],
+			],
+			@include(getcwd() . '/config.php') // intentionally @
+		);
+	}
 }

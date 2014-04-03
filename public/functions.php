@@ -3,13 +3,16 @@
  * @author Roman Ozana <ozana@omdesign.cz>
  */
 
-function menu($file, $meta, $pages) {
-	if (!$pages) return;
+function menu() {
+	global $cms;
+
+	/** @var \om\Vestibulum $cms */
+	if (!$cms->pages) return;
 	echo '<ul>';
-	echo '<li' . ($meta->id === 'home' ? ' class="active"' : null) . '><a href="' . \om\Vestibulum::url(
+	echo '<li' . ($cms->meta->id === 'home' ? ' class="active"' : null) . '><a href="' . \om\Vestibulum::url(
 		) . '">Home</a></li>';
-	foreach ($pages as $current => $page) {
-		echo '<li' . ($file === $current ? ' class="active"' : null) . '>';
+	foreach ($cms->pages as $current => $page) {
+		echo '<li' . ($cms->file === $current ? ' class="active"' : null) . '>';
 		echo '<a href="' . \om\Vestibulum::url($page->slug) . '">' . $page->title . '</a>';
 		echo '</li>';
 	}
@@ -27,4 +30,4 @@ function myurl() {
 // Change whatever you need before render
 
 /** @var \om\Vestibulum $cms */
-$cms->config->title = 'Vestibulum';
+$cms->config()->title = 'Vestibulum';
