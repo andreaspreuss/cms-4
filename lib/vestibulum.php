@@ -1,9 +1,10 @@
 <?php
-namespace om;
+namespace vestibulum;
 
 use Michelf\MarkdownExtra;
 
 /**
+ * Vestibulum: Really deadly simple CMS
  *
  * @author Roman Ožana <ozana@omdesign.cz>
  */
@@ -11,27 +12,24 @@ class Vestibulum extends \stdClass {
 
 	use Config;
 	use Request;
-	use Metadata;
 
-	/** @var string */
+	/** @var File */
 	public $file;
 	/** @var string */
 	public $content;
-	/** @var meta */
+	/** @var array */
 	public $meta;
 	/** @var array */
 	public $pages;
 	/** @var string */
 	public $home;
 
-
 	public function __construct() {
-		$this->file = $this->getFilename($this->request(), $this->src());
 		$this->home = $this->url();
-		$this->content = $this->getFileContent($this->file);
-		$this->meta = $this->getMeta($this->content, $this->file);
-		$this->pages = $this->getPages(dirname($this->file));
-
+		$this->file = $this->getFile();
+		$this->content = $this->file->getContent();
+		$this->meta = $this->getMeta($this->file);
+		$this->pages = $this->getPages($this->file->getDir());
 		$this->functions();
 	}
 
@@ -44,36 +42,18 @@ class Vestibulum extends \stdClass {
 		@include_once getcwd() . '/functions.php'; // intentionally @
 	}
 
-
 	/**
-	 * Return filename from request
+	 * Return current file
 	 *
-	 * @param $request
-	 * @param $root
-	 * @return string
+	 * @return File
 	 */
-	public static function getFilename($request, $root = null) {
-		if (
-			is_file($file = $root . $request . '.html') ||
-			is_file($file = $root . $request . '.md') ||
-			is_dir($root . $request) && is_file($file = $root . $request . '/index.html') ||
-			is_dir($root . $request) && is_file($file = $root . $request . '/index.md')
-		) {
-			return realpath($file);
-		} elseif (is_file($file = $root . '/404.html') || is_file($file = $root . '/404.md')) {
+	public function getFile() {
+		$file = File::fromRequest($this->src() . $this->getRequest());
+		if ($file === null) {
 			header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-			return realpath($file);
+			$file = File::fromRequest($this->src() . '/404', ['class' => 'page-not-found']);
 		}
-	}
-
-	/**
-	 * Return file content
-	 *
-	 * @param $file
-	 * @return string
-	 */
-	public static function getFileContent($file) {
-		return ($file ? @file_get_contents($file) : '# 404' . PHP_EOL . 'Page not found'); // intentionally @
+		return $file ? : new File($this->src(), ['class' => 'page-not-found'], '<h1>404 Page not found</h1>');
 	}
 
 	/**
@@ -99,8 +79,10 @@ class Vestibulum extends \stdClass {
 		$pages = [];
 		foreach ($files as $id => $file) {
 			if ($this->skip($file)) continue;
-			$meta = $this->getMeta(file_get_contents($file), $file);
-			$pages[realpath($file)] = $meta;
+			$file = new File($file);
+			$pages[realpath($file)] = (object)$file->getMeta(
+				['slug' => str_replace($this->src(), '', $file->getDir() . '/' . $file->getName())]
+			);
 		}
 
 		uasort(
@@ -115,35 +97,13 @@ class Vestibulum extends \stdClass {
 		return $pages;
 	}
 
+
 	/**
-	 * Read metadata from file
-	 *
-	 * @param $content
-	 * @param $file
-	 * @param null $order
+	 * @param File $file
 	 * @return object
 	 */
-	public function getMeta($content, $file, $order = null) {
-		$basename = basename($file, '.' . pathinfo($file, PATHINFO_EXTENSION));
-		$title = $this->title($content) ? : ucfirst($basename);
-
-		$headers = [
-			'id' => md5($content . $file),
-			'class' => $basename,
-			'title' => $title,
-			'order' => $order ? : $title,
-			'description' => $this->shorten($content),
-			'author' => $this->config()->author,
-			'date' => is_file($file) ? filemtime($file) : time(),
-			'template' => 'index.twig'
-		];
-
-		$headers = array_merge($headers, (array)$this->parseMeta($content));
-
-		$headers['file'] = realpath($file);
-		$headers['slug'] = str_replace($this->src(), '', realpath(dirname($file))) . '/' . $basename;
-
-		return (object)$headers;
+	public function getMeta(File $file) {
+		return (object)$file->getMeta((array)$this->config()->meta);
 	}
 
 
@@ -235,7 +195,7 @@ trait Metadata {
 	 * @param string $content
 	 * @return null|string
 	 */
-	public static function title($content) {
+	public static function parseTitle($content) {
 		$pattern = '/<h1[^>]*>([^<>]+)<\/h1>| *# *([^\n]+?) *#* *(?:\n+|$)/isU';
 		if (preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
 			$first = reset($matches);
@@ -288,7 +248,7 @@ trait Metadata {
 			'/\s+/' => ' ' // strip spaces
 		);
 
-		return preg_replace(array_keys($rules), array_values($rules), $content);
+		return trim(preg_replace(array_keys($rules), array_values($rules), $content));
 	}
 
 	/**
@@ -315,7 +275,7 @@ trait Request {
 	 *
 	 * @return mixed
 	 */
-	public function request() {
+	public function getRequest() {
 		if (isset($this->request)) return $this->request;
 		$this->request = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;
 		return $this->request = preg_replace(['#\?.*#', '#/?index.php#'], ['', ''], urldecode($this->request));
@@ -377,10 +337,161 @@ trait Config {
 				],
 				'src' => getcwd() . '/src/',
 				'templates' => getcwd(),
-				'author' => null,
+				'meta' => [
+					'template' => 'index.twig',
+					'author' => null,
+				],
 				'skip' => ['404', 'index'],
 			],
 			@include(getcwd() . '/config.php') // intentionally @
 		);
 	}
+}
+
+/**
+ * Vestibulum file with metadata
+ *
+ * @author Roman Ožana <ozana@omdesign.cz>
+ */
+class File extends \SplFileInfo {
+
+	use Metadata;
+
+	/** @var array */
+	protected $meta;
+
+	/** @var string|null */
+	protected $content;
+
+	/** @var array */
+	public $children;
+
+	public function __construct($file = null, array $meta = [], $content = null) {
+		parent::__construct($file);
+		$this->meta = $this->getMeta($meta);
+		$this->content = $content;
+	}
+
+	/**
+	 * Return current file metadata
+	 *
+	 * @param array $meta
+	 * @return array
+	 */
+	public function getMeta(array $meta = []) {
+		if ($this->meta) return array_merge($meta, $this->meta);
+
+		$title = $this->parseTitle($this->getContent()) ? : ucfirst($this->getName());
+
+		$default = [
+			'id' => md5($this->getContent() . $this->getRealPath()),
+			'class' => preg_replace('/[.]/', '', strtolower($this->getName())),
+			'title' => $title,
+			'order' => $title,
+			'date' => $this->getCTime(),
+			'created' => $this->getCTime(),
+			'access' => $this->getATime(),
+			'description' => $this->shorten($this->getContent()),
+			'name' => $this->getName(),
+			'basename' => $this->getFilename(),
+			'dir' => $this->getDir(),
+			'file' => $this->isFile() ? $this->getRealPath() : null,
+		];
+
+		$meta = array_merge($default, $meta, (array)$this->parseMeta($this->getContent()));
+		return $meta;
+	}
+
+	/**
+	 * Return file metadata value
+	 *
+	 * @param string $name
+	 * @return null
+	 */
+	public function __get($name) {
+		return array_key_exists($name, $this->meta) ? $this->meta[$name] : null;
+	}
+
+	/**
+	 * Set meta value
+	 *
+	 * @param string $name
+	 * @param mixed $value
+	 */
+	public function __set($name, $value) {
+		$this->meta[$name] = $value;
+	}
+
+	/**
+	 * Return name of file without extension
+	 *
+	 * @return string
+	 */
+	public function getName() {
+		return $this->getBasename('.' . $this->getExtension());
+	}
+
+	/**
+	 * Return current directory
+	 *
+	 * @return string
+	 */
+	public function getDir() {
+		return $this->isDir() ? $this->getRealPath() : dirname($this->getRealPath());
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isValid() {
+		return $this->isFile() ||
+		$this->isDir() && (
+			is_file($this->getRealPath() . '/index.html') || is_file($this->getRealPath() . '/index.md')
+		);
+	}
+
+	/**
+	 * Return file contentx
+	 *
+	 * @return string
+	 */
+	public function getContent() {
+		if (isset($this->content)) return $this->content;
+
+		if ($this->isDir()) {
+			is_file($file = $this->getRealPath() . '/index.html') || is_file($file = $this->getRealPath() . '/index.md');
+		} else {
+			$file = $this->getRealPath();
+		}
+
+		return ($this->content) ? $this->content : $this->content = @file_get_contents($file);
+	}
+
+	/**
+	 * Set file content
+	 *
+	 * @param string $content
+	 */
+	public function setContent($content) {
+		$this->content = $content;
+	}
+
+	/**
+	 * Create new File instance from path
+	 *
+	 * @param $request
+	 * @param array $meta
+	 * @return static
+	 */
+	public static function fromRequest($request, array $meta = []) {
+		if (
+			is_file($file = $request . '.html') ||
+			is_file($file = $request . '.md') ||
+			is_dir($request) && is_file($file = $request . '/index.html') ||
+			is_dir($request) && is_file($file = $request . '/index.md')
+		) {
+			return new static($file, $meta);
+		}
+	}
+
 }
