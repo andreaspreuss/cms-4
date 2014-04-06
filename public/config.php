@@ -8,9 +8,10 @@ return [
 	'twig' => [
 		'cache' => __DIR__ . '/../tmp/',
 	],
-
+	'markdown' => [
+		'cache' => __DIR__ . '/../tmp/'
+	],
 	'meta' => [
 		'author' => 'All: Roman Ozana; e-mail: ozana@omdesign.cz'
 	]
-
 ];

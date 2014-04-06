@@ -27,9 +27,8 @@ class Vestibulum extends \stdClass {
 	public function __construct() {
 		$this->home = $this->url();
 		$this->file = $this->getFile();
-		$this->content = $this->file->getContent();
 		$this->meta = $this->getMeta($this->file);
-		$this->pages = $this->getPages($this->file->getDir());
+		$this->content = $this->file->getContent(); // FIXME
 		$this->functions();
 	}
 
@@ -247,6 +246,8 @@ trait Metadata {
 			'/<(.|\n)*?>/' => '', // strip tags
 			'/\s+/' => ' ' // strip spaces
 		);
+
+		// FIXME this function is so slow :-(
 
 		return trim(preg_replace(array_keys($rules), array_values($rules), $content));
 	}

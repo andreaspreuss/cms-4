@@ -22,7 +22,8 @@
 	},
 
 	"require-dev": {
-		"nette/tester": "*"
+		"nette/tester": "*",
+		"tracy/tracy": "*"
 	},
 	"autoload": {
 		"classmap": ["lib/"]
