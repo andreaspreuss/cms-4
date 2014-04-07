@@ -46,7 +46,7 @@ In Twig template will be accessible `{{config.example}}`
 
     		$classes = array_filter(
     			[
-    				$current->getRealPath() === $cms->file ? 'active' : null,
+    				$current->getRealPath() === $cms->file->getRealPath() ? 'active' : null,
     				$current->isDir() && $current->getRealPath() === dirname($cms->file) ? 'has-active-child' : null,
     				$current->isDir() ? 'root' : null,
     			]
