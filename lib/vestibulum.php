@@ -26,10 +26,11 @@ class Vestibulum extends \stdClass {
 	public $home;
 
 	public function __construct() {
+		is_file($php = $this->src() . $this->getRequest() . '.php')  ? require $php : null;
+
 		$this->home = $this->url();
 		$this->file = $this->getFile();
 		$this->meta = $this->getMeta($this->file);
-		$this->content = $this->file->getContent(); // FIXME
 		$this->functions();
 	}
 
@@ -39,6 +40,7 @@ class Vestibulum extends \stdClass {
 	public function functions() {
 		global $cms;
 		$cms = $this; // create link to $this
+
 		@include_once getcwd() . '/functions.php'; // intentionally @
 	}
 
@@ -64,40 +66,16 @@ class Vestibulum extends \stdClass {
 		return (object)$file->getMeta((array)$this->config()->meta);
 	}
 
-
 	protected function render() {
-		$loader = new \Twig_Loader_Filesystem($this->config->templates);
-		$twig = new \Twig_Environment($loader, $this->config->twig);
-		$twig->addExtension(new \Twig_Extension_Debug());
 
-		// undefined filters callback
-		$twig->registerUndefinedFilterCallback(
-			function ($name) {
-				return function_exists($name) ?
-					new \Twig_SimpleFilter($name, function () use ($name) {
-						return call_user_func_array($name, func_get_args());
-					}, ['is_safe' => ['html']]) : false;
-			}
-		);
+		// Content
 
-		$twig->addFunction('url', new \Twig_SimpleFunction('url', [$this, 'url']));
-
-		// undefined functions callback
-		$twig->registerUndefinedFunctionCallback(
-			function ($name) {
-				return function_exists($name) ?
-					new \Twig_SimpleFunction($name, function () use ($name) {
-						return call_user_func_array($name, func_get_args());
-					}) : false;
-			}
-		);
-
-		$this->content = str_replace('%url%', $this->url(), $this->content);
+		$this->content = str_replace('%url%', $this->url(), $this->file->getContent());
 
 		// FIXME and find better way how to save to cache
-		if (pathinfo($this->file, PATHINFO_EXTENSION) === 'md') {
-			$cache = isset($this->config->markdown['cache']) && $this->config->markdown['cache'] ? realpath(
-				$this->config->markdown['cache']
+		if ($this->file->getExtension() === 'md') {
+			$cache = isset($this->config()->markdown['cache']) && $this->config()->markdown['cache'] ? realpath(
+				$this->config()->markdown['cache']
 			) : false;
 			if ($cache && is_dir($cache) && is_writable($cache)) {
 				$cacheFile = $cache . '/' . md5($this->file);
@@ -110,10 +88,52 @@ class Vestibulum extends \stdClass {
 			} else {
 				$this->content = MarkdownExtra::defaultTransform($this->content);
 			}
-
 		}
 
-		return $twig->render($this->meta->template, $this->toArray());
+		$ext = pathinfo($this->meta->template, PATHINFO_EXTENSION);
+
+		// Phtml - for those who have an performance obsession :-)
+
+		if ($ext === 'phtml' || $ext === 'php') {
+			ob_start();
+			extract(get_object_vars($this));
+			require(getcwd() . '/' . $this->meta->template);
+			$output = ob_get_contents();
+			ob_end_clean();
+			return $output;
+		}
+
+		// Twig
+
+		if ($ext === 'twig') {
+			$loader = new \Twig_Loader_Filesystem($this->config->templates);
+			$twig = new \Twig_Environment($loader, $this->config->twig);
+			$twig->addExtension(new \Twig_Extension_Debug());
+
+			// undefined filters callback
+			$twig->registerUndefinedFilterCallback(
+				function ($name) {
+					return function_exists($name) ?
+						new \Twig_SimpleFilter($name, function () use ($name) {
+							return call_user_func_array($name, func_get_args());
+						}, ['is_safe' => ['html']]) : false;
+				}
+			);
+
+			$twig->addFunction('url', new \Twig_SimpleFunction('url', [$this, 'url']));
+
+			// undefined functions callback
+			$twig->registerUndefinedFunctionCallback(
+				function ($name) {
+					return function_exists($name) ?
+						new \Twig_SimpleFunction($name, function () use ($name) {
+							return call_user_func_array($name, func_get_args());
+						}) : false;
+				}
+			);
+
+			return $twig->render($this->meta->template, $this->toArray());
+		}
 	}
 
 	/**
@@ -202,13 +222,10 @@ trait Metadata {
 			'/\~\~(.*?)\~\~/' => '\1', // del
 			'/\:\"(.*?)\"\:/' => '\1', // quote
 			'/`(.*?)`/' => '\1', // inline code
-			'/<(.|\n)*?>/' => '', // strip tags
 			'/\s+/' => ' ' // strip spaces
 		);
 
-		// FIXME this function is so slow :-(
-
-		return trim(preg_replace(array_keys($rules), array_values($rules), $content));
+		return trim(preg_replace(array_keys($rules), array_values($rules), strip_tags($content)));
 	}
 
 	/**
@@ -299,9 +316,7 @@ trait Config {
 				'templates' => getcwd(),
 				'meta' => [
 					'template' => 'index.twig',
-					'author' => null,
-				],
-				'skip' => ['404', 'index'],
+				]
 			],
 			@include(getcwd() . '/config.php') // intentionally @
 		);
@@ -472,7 +487,7 @@ class File extends \SplFileInfo {
  *
  * @author Roman Ožana <ozana@omdesign.cz>
  */
-class Menu {
+class Pages {
 
 	/** @var \RecursiveIterator */
 	public $iterator;
@@ -485,11 +500,11 @@ class Menu {
 	}
 
 	/**
-	 * Create Menu object instance from path
+	 * Create Files object instance from path
 	 *
 	 * @param $path
 	 * @param array $skip
-	 * @return \vestibulum\Menu
+	 * @return \vestibulum\Pages
 	 */
 	public static function from($path, array $skip = ['index', '404']) {
 		$iterator = new \RecursiveDirectoryIterator(realpath($path), \RecursiveDirectoryIterator::SKIP_DOTS);
@@ -508,7 +523,7 @@ class Menu {
 	}
 
 	/**
-	 * Return menu items as sorted array
+	 * Return File items as sorted array
 	 *
 	 * @param string $column
 	 * @param int $sort
@@ -531,7 +546,7 @@ class Menu {
 	}
 
 	/**
-	 * Return menu items as array
+	 * Return File items as array
 	 *
 	 * @return array
 	 */

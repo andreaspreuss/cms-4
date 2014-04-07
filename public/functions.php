@@ -1,6 +1,7 @@
 <?php
 use vestibulum\Vestibulum;
-use vestibulum\Menu;
+use vestibulum\Pages;
+
 /**
  * @author Roman Ozana <ozana@omdesign.cz>
  */
@@ -15,12 +16,11 @@ function menu() {
 	global $cms;
 	/** @var Vestibulum $cms */
 
-	$pages = Menu::from($cms->file->getDir(), ['index', '404'])->toArraySorted();
+	$pages = Pages::from($cms->file->getDir(), ['index', '404'])->toArraySorted();
 
 	if (!$pages) return;
 	echo '<ul>';
-	echo '<li' . ($cms->meta->id === 'home' ? ' class="active"' : null) . '><a href="' . \vestibulum\Vestibulum::url(
-		) . '">Home</a></li>';
+	echo '<li' . ($cms->meta->id === 'home' ? ' class="active"' : null) . '><a href="/">Home</a></li>';
 	foreach ($pages as $current => $file) {
 		echo '<li' . ($cms->file->getRealPath() === $file->getRealPath() ? ' class="active"' : null) . '>';
 		echo '<a href="' . slug($file) . '">' . $file->title . '</a>';

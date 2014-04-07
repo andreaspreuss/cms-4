@@ -1,3 +1,2 @@
-do(portal, $ = jQuery) ->
+do($ = jQuery) ->
   $(document).ready ->
-    # something
