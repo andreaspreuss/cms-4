@@ -311,6 +311,18 @@ trait Config {
 /**
  * Vestibulum file with metadata
  *
+ * @property string id
+ * @property string class
+ * @property string title
+ * @property string order
+ * @property string date
+ * @property string access
+ * @property string description
+ * @property string name
+ * @property string basename
+ * @property string dir
+ * @property string file
+ *
  * @author Roman Ožana <ozana@omdesign.cz>
  */
 class File extends \SplFileInfo {
