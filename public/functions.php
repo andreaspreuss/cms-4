@@ -15,7 +15,7 @@ function menu() {
 	global $cms;
 	/** @var Vestibulum $cms */
 
-	$pages = Menu::from($cms->file->getDir(), ['index', '404', 'how-to'])->toArraySorted();
+	$pages = Menu::from($cms->file->getDir(), ['index', '404'])->toArraySorted();
 
 	if (!$pages) return;
 	echo '<ul>';
