@@ -1,9 +1,9 @@
 <!--
-title: How to
+title: Customize
 order: 4
 -->
 
-# How to add custom functions
+# Customize Vestibulum
 
 ## Start with an example
 
