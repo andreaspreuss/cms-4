@@ -2,6 +2,7 @@
 namespace vestibulum;
 
 use Michelf\MarkdownExtra;
+use SplFileInfo;
 
 /**
  * Vestibulum: Really deadly simple CMS
@@ -54,48 +55,6 @@ class Vestibulum extends \stdClass {
 		}
 		return $file ? : new File($this->src(), ['class' => 'page-not-found'], '<h1>404 Page not found</h1>');
 	}
-
-	/**
-	 * Skip selected files
-	 *
-	 * @param $file
-	 * @return bool
-	 */
-	public function skip($file) {
-		return in_array(basename($file, '.' . pathinfo($file, PATHINFO_EXTENSION)), $this->config->skip);
-	}
-
-
-	/**
-	 * Return pages meta from selected path
-	 *
-	 * @param $path
-	 * @return array
-	 */
-	public function getPages($path) {
-		$files = (array)glob($path . '/*.{html,md}', GLOB_BRACE);
-
-		$pages = [];
-		foreach ($files as $id => $file) {
-			if ($this->skip($file)) continue;
-			$file = new File($file);
-			$pages[realpath($file)] = (object)$file->getMeta(
-				['slug' => str_replace($this->src(), '', $file->getDir() . '/' . $file->getName())]
-			);
-		}
-
-		uasort(
-			$pages, function ($a, $b) {
-				if (is_numeric($a->order) && is_numeric($b->order)) {
-					return $a->order > $b->order;
-				}
-				return strcmp($a->order, $b->order);
-			}
-		);
-
-		return $pages;
-	}
-
 
 	/**
 	 * @param File $file
@@ -452,7 +411,7 @@ class File extends \SplFileInfo {
 	}
 
 	/**
-	 * Return file contentx
+	 * Return file content
 	 *
 	 * @return string
 	 */
@@ -494,5 +453,89 @@ class File extends \SplFileInfo {
 			return new static($file, $meta);
 		}
 	}
+}
 
+/**
+ * Menu helper (Be careful, all affected files are loaded into memory!!!)
+ *
+ * @author Roman Ožana <ozana@omdesign.cz>
+ */
+class Menu {
+
+	/** @var \RecursiveIterator */
+	public $iterator;
+
+	/**
+	 * @param \RecursiveIterator $iterator
+	 */
+	public function __construct(\RecursiveIterator $iterator) {
+		$this->iterator = $iterator;
+	}
+
+	/**
+	 * Create Menu object instance from path
+	 *
+	 * @param $path
+	 * @param array $skip
+	 * @return \vestibulum\Menu
+	 */
+	public static function from($path, array $skip = ['index', '404']) {
+		$iterator = new \RecursiveDirectoryIterator(realpath($path), \RecursiveDirectoryIterator::SKIP_DOTS);
+		$iterator->setInfoClass('\\Vestibulum\\File');
+
+		$iterator = new \RecursiveCallbackFilterIterator(
+			$iterator,
+			function (File $item, $file) use ($skip) {
+				$valid =
+					$item->isDir() && !in_array($item->getName(), $skip) ||
+					$item->isFile() && preg_match('/\.(?:md|html?)$/i', $file) && !in_array($item->getName(), $skip);
+				return $valid ? $item : null;
+			}
+		);
+		return new self($iterator);
+	}
+
+	/**
+	 * Return menu items as sorted array
+	 *
+	 * @param string $column
+	 * @param int $sort
+	 * @return array
+	 */
+	public function toArraySorted($column = 'order', $sort = SORT_NATURAL) {
+		$array = $this->toArray();
+
+		$sorting = function (&$array) use (&$sorting, $column, $sort) {
+			$arr = [];
+			foreach ($array as $key => $row) {
+				$arr[$key] = $row->$column;
+				if (isset($row->children)) $sorting($row->children, $column, $sort);
+			}
+			array_multisort($arr, $sort, $array);
+		};
+
+		$sorting($array);
+		return $array;
+	}
+
+	/**
+	 * Return menu items as array
+	 *
+	 * @return array
+	 */
+	public function toArray() {
+		$toArray = function (\RecursiveIterator $iterator) use (&$toArray) {
+			foreach ($iterator as $file) {
+				/** @var File $file */
+				$current = $file;
+				if ($iterator->hasChildren()) {
+					$current->children = $toArray($iterator->getChildren());
+				}
+				$array[] = $current; // append current element
+			}
+			return $array;
+		};
+
+		return $toArray($this->iterator);
+	}
 }
