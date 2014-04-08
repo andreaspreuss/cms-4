@@ -379,13 +379,13 @@ class File extends \SplFileInfo {
 			'class' => preg_replace('/[.]/', '', strtolower($this->getName())),
 			'title' => $title,
 			'order' => $title,
-			'date' => $this->getCTime(),
-			'created' => $this->getCTime(),
-			'access' => $this->getATime(),
+			'date' => $this->isFile() || $this->isDir() ? $this->getCTime() : null,
+			'created' => $this->isFile() || $this->isDir() ? $this->getCTime() : null,
+			'access' => $this->isFile() || $this->isDir() ? $this->getATime() : null,
 			'description' => $this->shorten($this->getContent()),
 			'name' => $this->getName(),
 			'basename' => $this->getFilename(),
-			'dir' => $this->getDir(),
+			'dir' => $this->isDir() ? $this->getDir() : null,
 			'file' => $this->isFile() ? $this->getRealPath() : null,
 		];
 
@@ -448,8 +448,9 @@ class File extends \SplFileInfo {
 	public function getContent() {
 		if (isset($this->content)) return $this->content;
 
-		if ($this->isDir() && is_file($file = $this . '/index.html') || is_file($file = $this . '/index.md')) {
-			return $this->content = file_get_contents($file);
+		if ($this->isDir()) {
+			return $this->content =
+				is_file($file = $this . '/index.html') || is_file($file = $this . '/index.md') ? file_get_contents($file) : '';
 		}
 
 		return $this->content = $this->isFile() ? file_get_contents($this->getRealPath()) : '';
