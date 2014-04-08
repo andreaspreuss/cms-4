@@ -1,7 +1,7 @@
 {
 	"name": "om/vestibulum",
 	"type": "library",
-	"description": "Vestibulum is deadly simple, ultra fast, flat file (Markdown, HTML) CMS. Fully customizable with Twig templates",
+	"description": "Vestibulum is deathly simple, ultra fast, flat file (Markdown, HTML) CMS. Fully customizable with Twig templates",
 	"keywords": ["cms", "markdown", "twig", "html"],
 	"homepage": "http://vestibulum.omdesign.cz",
 	"license": ["BSD-3-Clause"],

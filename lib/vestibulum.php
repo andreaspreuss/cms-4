@@ -5,7 +5,7 @@ use Michelf\MarkdownExtra;
 use SplFileInfo;
 
 /**
- * Vestibulum: Really deadly simple CMS
+ * Vestibulum: Really deathly simple CMS
  *
  * @author Roman Ožana <ozana@omdesign.cz>
  */
