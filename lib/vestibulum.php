@@ -20,18 +20,23 @@ class Vestibulum extends \stdClass {
 	public $content;
 	/** @var array */
 	public $meta;
-	/** @var array */
-	public $pages;
 	/** @var string */
 	public $home;
 
 	public function __construct() {
-		is_file($php = $this->src() . $this->getRequest() . '.php')  ? require $php : null;
-
+		$this->requires();
 		$this->home = $this->url();
 		$this->file = $this->getFile();
 		$this->meta = $this->getMeta($this->file);
 		$this->functions();
+	}
+
+	/**
+	 * Requires PHP first
+	 */
+	public function requires() {
+		is_file($php = getcwd() . $this->getRequest() . '.php') ? include_once $php : null;
+		is_file($php = $this->src() . $this->getRequest() . '.php') ? include_once $php : null;
 	}
 
 	/**
@@ -40,8 +45,7 @@ class Vestibulum extends \stdClass {
 	public function functions() {
 		global $cms;
 		$cms = $this; // create link to $this
-
-		@include_once getcwd() . '/functions.php'; // intentionally @
+		is_file($functions = getcwd() . '/functions.php') ? include_once $functions : null;
 	}
 
 	/**
@@ -97,7 +101,7 @@ class Vestibulum extends \stdClass {
 		if ($ext === 'phtml' || $ext === 'php') {
 			ob_start();
 			extract(get_object_vars($this));
-			require(getcwd() . '/' . $this->meta->template);
+			require($this->meta->template);
 			$output = ob_get_contents();
 			ob_end_clean();
 			return $output;
@@ -428,13 +432,12 @@ class File extends \SplFileInfo {
 	}
 
 	/**
+	 * @param array $skip
 	 * @return bool
 	 */
-	public function isValid() {
-		return $this->isFile() ||
-		$this->isDir() && (
-			is_file($this->getRealPath() . '/index.html') || is_file($this->getRealPath() . '/index.md')
-		);
+	public function isValid(array $skip = []) {
+		if ($this->isDir()) return !in_array($this->getRealPath(), $skip);
+		return ($this->getExtension() === 'md' || $this->getExtension() === 'html') && !in_array($this->getName(), $skip);
 	}
 
 	/**
@@ -445,13 +448,11 @@ class File extends \SplFileInfo {
 	public function getContent() {
 		if (isset($this->content)) return $this->content;
 
-		if ($this->isDir()) {
-			is_file($file = $this->getRealPath() . '/index.html') || is_file($file = $this->getRealPath() . '/index.md');
-		} else {
-			$file = $this->getRealPath();
+		if ($this->isDir() && is_file($file = $this . '/index.html') || is_file($file = $this . '/index.md')) {
+			return $this->content = file_get_contents($file);
 		}
 
-		return ($this->content) ? $this->content : $this->content = @file_get_contents($file);
+		return $this->content = $this->isFile() ? file_get_contents($this->getRealPath()) : '';
 	}
 
 	/**
@@ -512,13 +513,11 @@ class Pages {
 
 		$iterator = new \RecursiveCallbackFilterIterator(
 			$iterator,
-			function (File $item, $file) use ($skip) {
-				$valid =
-					$item->isDir() && !in_array($item->getName(), $skip) ||
-					$item->isFile() && preg_match('/\.(?:md|html?)$/i', $file) && !in_array($item->getName(), $skip);
-				return $valid ? $item : null;
+			function (File $item) use ($skip) {
+				return $item->isValid($skip) ? $item : null;
 			}
 		);
+
 		return new self($iterator);
 	}
 
@@ -552,6 +551,7 @@ class Pages {
 	 */
 	public function toArray() {
 		$toArray = function (\RecursiveIterator $iterator) use (&$toArray) {
+			$array = [];
 			foreach ($iterator as $file) {
 				/** @var File $file */
 				$current = $file;

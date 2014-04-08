@@ -15,15 +15,15 @@ order: 4
 Open `functions.php` in main folder and add your custom functions:
 
     function myUrl() {
-	    global $cms;
-	    /** @var \vestibulum\Vestibulum $cms */
-	    return $cms->url($_SERVER['REQUEST_URI']);
+      global $cms;
+      /** @var \vestibulum\Vestibulum $cms */
+      return $cms->url($_SERVER['REQUEST_URI']);
     }
 
 In Twig template will be accessible `{{ myUrl() }}`
 
     function myFilter($string) {
-	    return ' ::: ' . $string . '  ::: ';
+      return ' ::: ' . $string . '  ::: ';
     }
 
 In Twig template will be accessible `{{ title|myFilter }}`
@@ -50,8 +50,8 @@ It's easy to overwrite main response. Just add `ajax.php` to your **src director
 
     // first detect AJAX Request
     if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-	    header('Content-Type: application/json');
-	    exit(json_encode(['will' => 'This will be my message']));
+      header('Content-Type: application/json');
+      exit(json_encode(['will' => 'This will be my message']));
     }
 
 You cen see example response here [%url%ajax](%url%ajax).
@@ -84,46 +84,44 @@ Vestibulum contains class `Pages`, it's smart helper for iterate over src files:
 
     function menu() {
       global $cms;
-      /** @var \vestibulum\Vestibulum $cms */
-    	$pages = \vestibulum\Pages::from($cms->src(), ['index', '404'])->toArraySorted();
-    	echo generateMenu($pages); // bellow
+      /** @var Vestibulum $cms */
+
+      $pages = Pages::from($cms->src())->toArraySorted();
+
+      array_unshift($pages, new \vestibulum\File($cms->src()));
+
+      $generate = function (array $array, $level = 0) use (&$generate, $cms) {
+        $output = '';
+        foreach ($array as $current) {
+          /** @var \vestibulum\File $current */
+
+          $classes = array_filter(
+            [
+              $current->id === $cms->meta->id ? 'active' : null,
+              $current->isDir() && $current->getRealPath() === dirname($cms->file) ? 'has-active-child' : null,
+              $current->isDir() ? 'root' : null,
+            ]
+          );
+
+          $output .= '<li' . ($classes ? ' class="' . implode(' ', $classes) . '"' : null) . '>';
+
+          $path = $current->isDir() ? $current->getRealPath() : dirname($current->file) . '/' . $current->name;
+          $path = str_replace(realpath($cms->src()), '', $path);
+
+          if (isset($current->children)) {
+            $output .= '<a href="' . $cms->url($path) . '">' . $current->title . '</a>';
+            $output .= $generate($current->children, $level + 1);
+          } else {
+            $output .= '<a href="' . $cms->url($path) . '">' . $current->title . '</a>';
+          }
+          $output .= '</li>' . PHP_EOL;
+        }
+
+        return '<ul>' . $output . '</ul>' . PHP_EOL;
+      };
+
+      return $generate($pages);
     }
-
-Now you can recursively iterate over `Files array and create HTML structure:
-
-    function generateMenu(array $array, $level = 0) {
-    	global $cms;
-    	/** @var \vestibulum\Vestibulum $cms */
-
-    	$output = '';
-    	foreach ($array as $current) {
-    		/** @var \vestibulum\File $current */
-
-    		$classes = array_filter(
-    			[
-    				$current->getRealPath() === $cms->file->getRealPath() ? 'active' : null,
-    				$current->isDir() && $current->getRealPath() === dirname($cms->file) ? 'has-active-child' : null,
-    				$current->isDir() ? 'root' : null,
-    			]
-    		);
-
-    		$output .= '<li' . ($classes ? ' class="' . implode(' ', $classes) . '"' : null). '>';
-
-    		$path = $current->isDir() ? $current->getRealPath() : dirname($current->file) . '/' . $current->name;
-    		$path = str_replace(realpath($cms->src()), '', $path);
-
-    		if (isset($current->children)) {
-    			$output .= '<a href="' . $cms->url($path) . '">' . $current->title . '</a>';
-    			$output .= generateMenu($current->children, $level + 1);
-    		} else {
-    			$output .= '<a href="' . $cms->url($path) . '">' . $current->title . '</a>';
-    		}
-    		$output .= '</li>' . PHP_EOL;
-    	}
-
-    	return '<ul>' . $output . '</ul>' . PHP_EOL;
-    }
-
 
 
 
@@ -134,18 +132,18 @@ Follow example is for those who have an performance obsession :-). First add `in
     <!DOCTYPE html>
     <html lang="en" ng-app="help">
     <head>
-    	<meta charset="utf-8">
-    	<title><?= $file->title ?> | <?= $config->title ?></title>
-    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    	<meta name="description" content="<?= $meta->description ?>">
-    	<meta name="robots" content="all"/>
-    	<meta name="author" content="<?= $meta->author ?>"/>
-    	<link rel="shortcut icon" href="<?= $this->url('favicon.ico') ?>" type="image/x-icon"/>
+      <meta charset="utf-8">
+      <title><?= $file->title ?> | <?= $config->title ?></title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="description" content="<?= $meta->description ?>">
+      <meta name="robots" content="all"/>
+      <meta name="author" content="<?= $meta->author ?>"/>
+      <link rel="shortcut icon" href="<?= $this->url('favicon.ico') ?>" type="image/x-icon"/>
     </head>
 
     <div class="container">
       <? menu(); /* call your functions */?>
-    	<?= $content ?>
+      <?= $content ?>
     </div>
 
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>

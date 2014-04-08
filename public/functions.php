@@ -16,15 +16,37 @@ function menu() {
 	global $cms;
 	/** @var Vestibulum $cms */
 
-	$pages = Pages::from($cms->file->getDir(), ['index', '404'])->toArraySorted();
+	$pages = Pages::from($cms->src(), ['404'])->toArraySorted();
 
-	if (!$pages) return;
-	echo '<ul>';
-	echo '<li' . ($cms->meta->id === 'home' ? ' class="active"' : null) . '><a href="/">Home</a></li>';
-	foreach ($pages as $current => $file) {
-		echo '<li' . ($cms->file->getRealPath() === $file->getRealPath() ? ' class="active"' : null) . '>';
-		echo '<a href="' . slug($file) . '">' . $file->title . '</a>';
-		echo '</li>';
-	}
-	echo '</ul>';
+	$generate = function (array $array, $level = 0) use (&$generate, $cms) {
+		$output = '';
+		foreach ($array as $current) {
+			/** @var \vestibulum\File $current */
+
+			$classes = array_filter(
+				[
+					$current->id === $cms->meta->id ? 'active' : null,
+					$current->isDir() && $current->getRealPath() === dirname($cms->file) ? 'has-active-child' : null,
+					$current->isDir() ? 'root' : null,
+				]
+			);
+
+			$output .= '<li' . ($classes ? ' class="' . implode(' ', $classes) . '"' : null) . '>';
+
+			$path = $current->isDir() ? $current->getRealPath() : dirname($current->file) . '/' . $current->name;
+			$path = str_replace(realpath($cms->src()), '', $path);
+
+			if (isset($current->children)) {
+				$output .= '<a href="' . $cms->url($path) . '">' . $current->title . '</a>';
+				$output .= $generate($current->children, $level + 1);
+			} else {
+				$output .= '<a href="' . $cms->url($path) . '">' . $current->title . '</a>';
+			}
+			$output .= '</li>' . PHP_EOL;
+		}
+
+		return '<ul>' . $output . '</ul>' . PHP_EOL;
+	};
+
+	return $generate($pages);
 }
