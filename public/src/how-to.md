@@ -78,6 +78,21 @@ and HTML need contains
 
 ## Template hacking
 
+### Absolute image URL
+
+Add follow code to your `functions.php` and all markdown images URL will be replaces with absolute URL:
+
+    $cms->file->setContent(
+    	preg_replace_callback(
+    		'{(!\[.+\]\s?\()(\S*)([ \n]*(?:[\'"].*?[ \n]*[\'"])?\))}xsU', function ($matches) use ($cms) {
+    			$path = $cms->file->isDir() ? $cms->file->getRealPath() : dirname($cms->file);
+    			$path = str_replace(dirname($cms->src()), '', $path . '/');
+    			return $matches[1] . $cms->url($path . $matches[2]) . $matches[3];
+    		}, $cms->file->getContent()
+    	)
+    );
+
+
 ### Generate multilevel HTML menu
 
 Vestibulum contains class `Pages`, it's smart helper for iterate over src files:
