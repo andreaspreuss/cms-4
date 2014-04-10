@@ -7,9 +7,10 @@ order: 4
 
 ## Start with an example
 
-[Vestibulum's homepage](%url%) it's an great example how to use **Vestibulum CMS**: [https://github.com/OzzyCzech/vestibulum/tree/master/public](https://github.com/OzzyCzech/vestibulum/tree/master/public)
+[Vestibulum's homepage](%url%) it's an great example how to use **Vestibulum CMS** just visit source on [GitHub](https://github.com/OzzyCzech/vestibulum/tree/master/public).
 
 ## Basics
+
 ### Add custom Twig functions/filters
 
 Open `functions.php` in main folder and add your custom functions:
@@ -42,7 +43,7 @@ In Twig template will be accessible `{{config.example}}`
 
 ### JSON response
 
-It's easy to overwrite main response. Just add `ajax.php` to your **src directory**:
+It's easy to overwrite main response. Just add `ajax.php` to your **src or current directory**:
 
     <?php
     if (!$this instanceof \vestibulum\Vestibulum) die('Sorry can be executed only from Vestibulum'); // protection
@@ -76,6 +77,12 @@ and HTML need contains
     </form>
 
 ## Template hacking
+
+### Exceuting TWIG on content
+
+It's simple Vestibulum support [template_from_string](http://twig.sensiolabs.org/doc/functions/template_from_string.html) function:
+
+    {{ include(template_from_string(content)) }}
 
 ### Absolute image URL
 

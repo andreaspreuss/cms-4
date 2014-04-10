@@ -3,6 +3,9 @@ header {
   background: #333;
   padding: 70px 0;
 
+  @media only screen and (max-device-width: 480px) {
+    padding: 20px 0;
+  }
   span.logo {
     padding: 0;
     margin: 0;
@@ -23,15 +26,29 @@ header {
 
 article {
   padding: 4em 0;
+  @media only screen and (max-device-width: 480px) {
+    padding: 20px 0;
+  }
 
   h1 {
     text-align: center;
     padding: 0 0 2em 0;
     border-bottom: 1px solid #ddd;
+
+    @media only screen and (max-device-width: 480px) {
+      margin: 0;
+      padding: 0 0 20px 0;
+    }
   }
 }
 
 nav {
+  float: left;
+
+  @media only screen and (max-device-width: 480px) {
+    float: none;
+  }
+
   ul {
     list-style-type: none;
     margin: 0;
@@ -40,6 +57,15 @@ nav {
       float: left;
       border-right: 1px solid #555;
       padding: 0 5px;
+
+      @media only screen and (max-device-width: 480px) {
+        float: none;
+        display: block;
+        text-align: center;
+        border: 0;
+        border-bottom: 1px solid #555;
+      }
+
       &:last-child {
         border: none;
       }
@@ -77,8 +103,11 @@ nav {
       border-radius: 0;
       background: #e9194a;
       color: #fff;
-      &:hover {
 
+      @media only screen and (max-device-width: 480px) {
+        margin: 20px 0;
+        padding: 10px 30px;
+        font-size: 35px;
       }
     }
   }
@@ -92,6 +121,10 @@ nav {
     padding: 2em;
     margin: 2em 0;
     text-align: center;
+
+    @media only screen and (max-device-width: 480px) {
+      margin: 0 0 1em 0;
+    }
   }
   .glyphicon {
     font-size: 30px;
@@ -106,15 +139,20 @@ nav {
 }
 
 .page-not-found {
-	text-align: center;
-	h1 {
-		font-size: 100px;
-		padding: 0;
-	}
+  text-align: center;
+  h1 {
+    font-size: 100px;
+    padding: 0;
+  }
 }
 
 footer {
   padding: 100px 0;
+
+  @media only screen and (max-device-width: 480px) {
+    padding: 40px 0;
+  }
+
   background: #ecf0f1;
   text-align: center;
   a, a:hover {

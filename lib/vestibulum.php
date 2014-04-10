@@ -96,7 +96,7 @@ class Vestibulum extends \stdClass {
 
 		$ext = pathinfo($this->meta->template, PATHINFO_EXTENSION);
 
-		// Phtml - for those who have an performance obsession :-)
+		// phtml - for those who have an performance obsession :-)
 
 		if ($ext === 'phtml' || $ext === 'php') {
 			ob_start();
@@ -107,12 +107,13 @@ class Vestibulum extends \stdClass {
 			return $output;
 		}
 
-		// Twig
+		// twig
 
 		if ($ext === 'twig') {
 			$loader = new \Twig_Loader_Filesystem($this->config->templates);
 			$twig = new \Twig_Environment($loader, $this->config->twig);
 			$twig->addExtension(new \Twig_Extension_Debug());
+			$twig->addExtension(new \Twig_Extension_StringLoader());
 
 			// undefined filters callback
 			$twig->registerUndefinedFilterCallback(
@@ -514,7 +515,7 @@ class Pages {
 
 		$iterator = new \RecursiveCallbackFilterIterator(
 			$iterator,
-			function (File $item) use ($skip) {
+			function (File $item, $key, \RecursiveIterator $iterator) use ($skip) {
 				return $item->isValid($skip) ? $item : null;
 			}
 		);

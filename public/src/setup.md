@@ -85,4 +85,4 @@ Here is **Apache** `.htaccess` configuration example:
 
 ## Example
 
-Check this page source on GitHub [https://github.com/OzzyCzech/vestibulum/tree/master/public](https://github.com/OzzyCzech/vestibulum/tree/master/public)
+Check this page source on [GitHub](https://github.com/OzzyCzech/vestibulum/tree/master/public)
