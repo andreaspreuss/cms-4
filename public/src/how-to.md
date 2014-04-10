@@ -15,8 +15,7 @@ order: 4
 Open `functions.php` in main folder and add your custom functions:
 
     function myUrl() {
-      global $cms;
-      /** @var \vestibulum\Vestibulum $cms */
+      global $cms; /** @var \vestibulum\Vestibulum $cms */
       return $cms->url($_SERVER['REQUEST_URI']);
     }
 
@@ -157,7 +156,7 @@ Follow example is for those who have an performance obsession :-). First add `in
     </head>
 
     <div class="container">
-      <? menu(); /* call your functions */?>
+      <? menu(); /* call your functions */ ?>
       <?= $content ?>
     </div>
 
