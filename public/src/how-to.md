@@ -3,13 +3,13 @@ title: Customize
 order: 4
 -->
 
-# Customize Vestibulum
+<div class="alert alert-info">
+	<a href="%url%">Current site</a> it's an great example
+	how to use <strong>Vestibulum CMS</strong>! Visit source on
+	<a href="https://github.com/OzzyCzech/vestibulum/tree/master/public" target="_blank">GitHub</a>.
+</div>
 
-## Start with an example
-
-[Vestibulum's homepage](%url%) it's an great example how to use **Vestibulum CMS** just visit source on [GitHub](https://github.com/OzzyCzech/vestibulum/tree/master/public).
-
-## Basics
+## Customize functions
 
 ### Add custom Twig functions/filters
 
@@ -39,7 +39,7 @@ You can change your `config.php` or overwrite something directly from `functions
 
 In Twig template will be accessible `{{config.example}}`
 
-## Change response
+## Hacking response
 
 ### JSON response
 
@@ -76,13 +76,15 @@ and HTML need contains
       <button type="submit">Send</button>
     </form>
 
-## Template hacking
+## Hacking template
 
-### Exceuting TWIG on content
+### Executing Twig on content
 
 It's simple Vestibulum support [template_from_string](http://twig.sensiolabs.org/doc/functions/template_from_string.html) function:
 
     {{ include(template_from_string(content)) }}
+
+Now will be whole content processed with Twig parser.
 
 ### Absolute image URL
 
@@ -99,7 +101,7 @@ Add follow code to your `functions.php` and all markdown images URL will be repl
     );
 
 
-### Generate multilevel HTML menu
+### Generate nested HTML menu
 
 Vestibulum contains class `Pages`, it's smart helper for iterate over src files:
 
@@ -144,9 +146,9 @@ Vestibulum contains class `Pages`, it's smart helper for iterate over src files:
       return $generate($pages);
     }
 
+## Hacking speed
 
-
-### Replace Twig with PHTML
+### Replace Twig with plain phtml
 
 Follow example is for those who have an performance obsession :-). First add `index.phtml` or `index.php` to your current working directory:
 
@@ -174,7 +176,6 @@ Follow example is for those who have an performance obsession :-). First add `in
     </body>
     </html>
 
-
 Create markdown file, and change metadata:
 
     <!--
@@ -182,3 +183,14 @@ Create markdown file, and change metadata:
     -->
 
 This is it! Now can have request even **under 6 ms**
+
+### Replace Composer autoloader
+
+And one more things, you can save 20ms when you avoid Composer Autoloader
+
+    require_once __DIR__ .'/../src/Vestibulum.php';
+    require_once __DIR__ .'/../vendor/erusev/parsedown/Parsedown.php';
+    require_once __DIR__ .'/../vendor/twig/twig/lib/Twig/Autoloader.php';
+    Twig_Autoloader::register();
+    echo new \vestibulum\Vestibulum; // deathly simple
+

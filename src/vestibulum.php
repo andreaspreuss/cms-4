@@ -78,19 +78,23 @@ class Vestibulum extends \stdClass {
 
 		// FIXME and find better way how to save to cache
 		if ($this->file->getExtension() === 'md') {
+
+			// @see https://github.com/erusev/parsedown/pull/105
+			$this->content = preg_replace('/<!--(.*)-->/Uis', '', $this->content, 1); // first only
+
 			$cache = isset($this->config()->markdown['cache']) && $this->config()->markdown['cache'] ? realpath(
 				$this->config()->markdown['cache']
 			) : false;
 			if ($cache && is_dir($cache) && is_writable($cache)) {
 				$cacheFile = $cache . '/' . md5($this->file);
-				if (!is_file($cacheFile) || filemtime($this->file) > filemtime($cacheFile)) {
-					$this->content = MarkdownExtra::defaultTransform($this->content);
+				if (!is_file($cacheFile) || @filemtime($this->file) > filemtime($cacheFile)) {
+					$this->content = \Parsedown::instance()->parse($this->content);
 					file_put_contents($cacheFile, $this->content);
 				} else {
 					$this->content = file_get_contents($cacheFile);
 				}
 			} else {
-				$this->content = MarkdownExtra::defaultTransform($this->content);
+				$this->content = \Parsedown::instance()->parse($this->content);
 			}
 		}
 
