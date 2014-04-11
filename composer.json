@@ -26,6 +26,6 @@
 		"tracy/tracy": "*"
 	},
 	"autoload": {
-		"classmap": ["lib/"]
+		"classmap": ["src/"]
 	}
 }
