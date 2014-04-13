@@ -399,6 +399,20 @@ class File extends \SplFileInfo {
 	}
 
 	/**
+	 * Return link to file
+	 *
+	 * @param string|null $src
+	 * @return string
+	 */
+	public function getSlug($src = null) {
+		return str_replace(
+			realpath($src),
+			'',
+			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName() : null)
+		);
+	}
+
+	/**
 	 * Return file metadata value
 	 *
 	 * @param string $name
@@ -417,6 +431,15 @@ class File extends \SplFileInfo {
 	public function __set($name, $value) {
 		$this->meta[$name] = $value;
 	}
+
+	/**
+	 * @param string $name
+	 * @return bool
+	 */
+	function __isset($name) {
+		return array_key_exists($name, $this->meta);
+	}
+
 
 	/**
 	 * Return name of file without extension

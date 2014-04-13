@@ -1,4 +1,5 @@
 <!--
+id: how-to
 title: Customize
 order: 4
 -->
@@ -105,46 +106,23 @@ Add follow code to your `functions.php` and all markdown images URL will be repl
 
 Vestibulum contains class `Pages`, it's smart helper for iterate over src files:
 
-    function menu() {
-      global $cms;
-      /** @var Vestibulum $cms */
+    <nav>
+    	{% macro menu(pages, active, src) %}
+    		<ul>
+    			{% for page in pages %}
+    				<li{% if active == page.id %} class="active"{% endif %} id="{{ page.id }}">
+    					<a href="{{ url(page.slug(src)) }}">{{ page.title }}</a>
+    					{% if page.children %}{{ _self.menu(page.children, active, src) }}{% endif %}
+    				</li>
+    			{% endfor %}
+    		</ul>
+    	{% endmacro %}
+    	{{ _self.menu(pages, meta.id, config.src) }}
+    </nav>
 
-      $pages = Pages::from($cms->src())->toArraySorted();
+And you also will need add follow code to your `functions.php`
 
-      array_unshift($pages, new \vestibulum\File($cms->src()));
-
-      $generate = function (array $array, $level = 0) use (&$generate, $cms) {
-        $output = '';
-        foreach ($array as $current) {
-          /** @var \vestibulum\File $current */
-
-          $classes = array_filter(
-            [
-              $current->id === $cms->meta->id ? 'active' : null,
-              $current->isDir() && $current->getRealPath() === dirname($cms->file) ? 'has-active-child' : null,
-              $current->isDir() ? 'root' : null,
-            ]
-          );
-
-          $output .= '<li' . ($classes ? ' class="' . implode(' ', $classes) . '"' : null) . '>';
-
-          $path = $current->isDir() ? $current->getRealPath() : dirname($current->file) . '/' . $current->name;
-          $path = str_replace(realpath($cms->src()), '', $path);
-
-          if (isset($current->children)) {
-            $output .= '<a href="' . $cms->url($path) . '">' . $current->title . '</a>';
-            $output .= $generate($current->children, $level + 1);
-          } else {
-            $output .= '<a href="' . $cms->url($path) . '">' . $current->title . '</a>';
-          }
-          $output .= '</li>' . PHP_EOL;
-        }
-
-        return '<ul>' . $output . '</ul>' . PHP_EOL;
-      };
-
-      return $generate($pages);
-    }
+    $cms->pages = Pages::from($cms->src())->toArraySorted();
 
 ## Hacking speed
 

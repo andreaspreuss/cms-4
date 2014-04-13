@@ -1,4 +1,5 @@
 <!--
+id: install
 title: Install
 order : 2
 -->
