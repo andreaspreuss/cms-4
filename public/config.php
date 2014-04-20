@@ -7,6 +7,7 @@ return [
 
 	'twig' => [
 		//'cache' => __DIR__ . '/../tmp/',
+		'debug' => true,
 	],
 	'markdown' => [
 		'cache' => __DIR__ . '/../tmp/'

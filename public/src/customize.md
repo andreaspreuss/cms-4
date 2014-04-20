@@ -117,7 +117,7 @@ Vestibulum contains class `Pages`, it's smart helper for iterate over src files:
     			{% endfor %}
     		</ul>
     	{% endmacro %}
-    	{{ _self.menu(pages, meta.id, config.src) }}
+    	{{ _self.menu(pages, file.id, config.src) }}
     </nav>
 
 And you also will need add follow code to your `functions.php`

@@ -1,7 +1,6 @@
 <?php
 namespace vestibulum;
 
-use Michelf\MarkdownExtra;
 use SplFileInfo;
 
 /**
@@ -18,16 +17,10 @@ class Vestibulum extends \stdClass {
 	public $file;
 	/** @var string */
 	public $content;
-	/** @var array */
-	public $meta;
-	/** @var string */
-	public $home;
 
 	public function __construct() {
 		$this->requires();
-		$this->home = $this->url();
-		$this->file = $this->getFile();
-		$this->meta = $this->getMeta($this->file);
+		$this->file = $this->getFile((array)$this->config()->meta);
 		$this->functions();
 	}
 
@@ -51,15 +44,16 @@ class Vestibulum extends \stdClass {
 	/**
 	 * Return current file
 	 *
+	 * @param array $meta
 	 * @return File
 	 */
-	public function getFile() {
-		$file = File::fromRequest($this->src() . $this->getRequest());
+	public function getFile(array $meta = []) {
+		$file = File::fromRequest($this->src() . $this->getRequest(), $meta);
 		if ($file === null) {
 			header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-			$file = File::fromRequest($this->src() . '/404', ['class' => 'page-not-found']);
+			$file = File::fromRequest($this->src() . '/404', $meta);
 		}
-		return $file ? : new File($this->src(), ['class' => 'page-not-found'], '<h1>404 Page not found</h1>');
+		return $file ? : new File($this->src(), $meta, '<h1>404 Page not found</h1>');
 	}
 
 	/**
@@ -71,7 +65,6 @@ class Vestibulum extends \stdClass {
 	}
 
 	protected function render() {
-
 		// Content
 
 		$this->content = str_replace('%url%', $this->url(), $this->file->getContent());
@@ -98,14 +91,14 @@ class Vestibulum extends \stdClass {
 			}
 		}
 
-		$ext = pathinfo($this->meta->template, PATHINFO_EXTENSION);
+		$ext = pathinfo($this->file->template, PATHINFO_EXTENSION);
 
 		// phtml - for those who have an performance obsession :-)
 
 		if ($ext === 'phtml' || $ext === 'php') {
 			ob_start();
 			extract(get_object_vars($this));
-			require($this->meta->template);
+			require($this->file->template);
 			$output = ob_get_contents();
 			ob_end_clean();
 			return $output;
@@ -141,17 +134,8 @@ class Vestibulum extends \stdClass {
 				}
 			);
 
-			return $twig->render($this->meta->template, $this->toArray());
+			return $twig->render($this->file->template, get_object_vars($this));
 		}
-	}
-
-	/**
-	 * Return array of object Variables
-	 *
-	 * @return array
-	 */
-	public function toArray() {
-		return get_object_vars($this);
 	}
 
 	/**
@@ -341,7 +325,6 @@ trait Config {
  * @property string order
  * @property string date
  * @property string access
- * @property string description
  * @property string name
  * @property string basename
  * @property string dir
@@ -387,15 +370,22 @@ class File extends \SplFileInfo {
 			'date' => $this->isFile() || $this->isDir() ? $this->getCTime() : null,
 			'created' => $this->isFile() || $this->isDir() ? $this->getCTime() : null,
 			'access' => $this->isFile() || $this->isDir() ? $this->getATime() : null,
-			'description' => $this->shorten($this->getContent()),
 			'name' => $this->getName(),
 			'basename' => $this->getFilename(),
 			'dir' => $this->isDir() ? $this->getDir() : null,
 			'file' => $this->isFile() ? $this->getRealPath() : null,
 		];
 
-		$meta = array_merge($default, $meta, (array)$this->parseMeta($this->getContent()));
-		return $meta;
+		return array_merge($default, $meta, (array)$this->parseMeta($this->getContent()));
+	}
+
+	/**
+	 * Return automatic description
+	 *
+	 * @return mixed
+	 */
+	public function getDescription() {
+		return isset($this->description) ? $this->description : $this->shorten($this->getContent());
 	}
 
 	/**
@@ -465,7 +455,7 @@ class File extends \SplFileInfo {
 	 */
 	public function isValid(array $skip = []) {
 		if ($this->isDir()) return !in_array($this->getRealPath(), $skip);
-		return ($this->getExtension() === 'md' || $this->getExtension() === 'html') && !in_array($this->getName(), $skip);
+		return preg_match('#md|html#i', $this->getExtension()) && !in_array($this->getName(), $skip);
 	}
 
 	/**
@@ -504,6 +494,7 @@ class File extends \SplFileInfo {
 		if (
 			is_file($file = $request . '.html') ||
 			is_file($file = $request . '.md') ||
+			// is_file($file = $request . '.php') || // TODO add raw PHP support
 			is_dir($request) && is_file($file = $request . '/index.html') ||
 			is_dir($request) && is_file($file = $request . '/index.md')
 		) {

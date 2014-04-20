@@ -2,6 +2,7 @@
 use vestibulum\Pages;
 
 /**
+ * @var \vestibulum\Vestibulum $cms
  * @author Roman Ozana <ozana@omdesign.cz>
  */
 
