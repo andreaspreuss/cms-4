@@ -17,8 +17,8 @@
 	},
 	"require": {
 		"php": ">=5.5",
-		"twig/twig": "1.15.*",
-		"erusev/parsedown": "0.9.4"
+		"twig/twig": "*",
+		"erusev/parsedown": "*"
 	},
 
 	"require-dev": {
