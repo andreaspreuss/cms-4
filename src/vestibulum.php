@@ -398,7 +398,8 @@ class File extends \SplFileInfo {
 		return str_replace(
 			realpath($src),
 			'',
-			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName() : null)
+			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName(
+				) : null)
 		);
 	}
 
@@ -525,20 +526,18 @@ class Pages {
 	 *
 	 * @param $path
 	 * @param array $skip
+	 * @param callable $filter
 	 * @return \vestibulum\Pages
 	 */
-	public static function from($path, array $skip = ['index', '404']) {
+	public static function from($path, array $skip = ['index', '404'], callable $filter = null) {
 		$iterator = new \RecursiveDirectoryIterator(realpath($path), \RecursiveDirectoryIterator::SKIP_DOTS);
 		$iterator->setInfoClass('\\Vestibulum\\File');
 
-		$iterator = new \RecursiveCallbackFilterIterator(
-			$iterator,
-			function (File $item, $key, \RecursiveIterator $iterator) use ($skip) {
-				return $item->isValid($skip) ? $item : null;
-			}
-		);
+		$filter = $filter ? : function (File $item, $key, \RecursiveIterator $iterator) use ($skip) {
+			return $item->isValid($skip) ? $item : null;
+		};
 
-		return new self($iterator);
+		return new self(new \RecursiveCallbackFilterIterator($iterator, $filter));
 	}
 
 	/**
