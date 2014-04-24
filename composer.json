@@ -26,6 +26,9 @@
 		"tracy/tracy": "*"
 	},
 	"autoload": {
-		"classmap": ["src/"]
+		"psr-4": {
+			"vestibulum\\": "src/"
+		}
 	}
+
 }

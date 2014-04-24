@@ -6,7 +6,7 @@ return [
 	'title' => 'Vestibulum',
 
 	'twig' => [
-		//'cache' => __DIR__ . '/../tmp/',
+		'cache' => __DIR__ . '/../tmp/',
 		'debug' => true,
 	],
 	'markdown' => [

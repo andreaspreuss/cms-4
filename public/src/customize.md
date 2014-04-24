@@ -85,7 +85,11 @@ It's simple Vestibulum support [template_from_string](http://twig.sensiolabs.org
 
     {{ include(template_from_string(content)) }}
 
-Now will be whole content processed with Twig parser.
+Now will be whole content processed with Twig parser. You can also parse only selected files:
+
+    <!--
+    twig: true
+    -->
 
 ### Absolute image URL
 
