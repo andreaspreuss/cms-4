@@ -6,15 +6,15 @@ order : 2
 
 # How to Install Vestibulum
 
-1. [Download](https://github.com/OzzyCzech/vestibulum/archive/master.zip) and latest version of Vestibulum CMS.
-2. Update content in `public/src` and setup `public/config.php`.
-3. Upload files to your server.
+1. [Download Composer](http://getcomposer.org/download) `curl -s http://getcomposer.org/installer | php`
+1. Run `php composer.phar create-project om/vestibulum`
+2. Update content in `public/src` and `public/config.php`
+3. Upload files to your server
 
 ### Requirements
 
 - PHP 5.5 +
 - Apache / NGINX
-
 
 ### Setup NGINX
 
@@ -65,26 +65,3 @@ Here is **Apache** `.htaccess` configuration example:
     	RewriteCond %{REQUEST_FILENAME} !-d
     	RewriteRule !\.(pdf|js|ico|gif|jpg|png|css|rar|zip|tar\.gz)$ index.php [L]
     </IfModule>
-
-
-## Installing with Composer
-
-Download the [`composer.phar`](https://getcomposer.org/composer.phar) locally or install [Composer](https://getcomposer.org/) globally:
-
-    curl -s https://getcomposer.org/installer | php
-
-Run the following command for a local installation:
-
-    php composer.phar require om/vestibulum:*
-
-Or for a global installation, run the following command:
-
-    composer require om/vestibulum:*
-
-You can also add follow lines to your `composer.json` and run the `composer update` command:
-
-    "require": {
-      "om/vestibulum": "*"
-    }
-
-See https://getcomposer.org for more information and documentation.
