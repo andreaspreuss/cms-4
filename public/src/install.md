@@ -6,35 +6,17 @@ order : 2
 
 # How to Install Vestibulum
 
-## Installing with Composer
+1. [Download](https://github.com/OzzyCzech/vestibulum/archive/master.zip) and latest version of Vestibulum CMS.
+2. Update content in `public/src` and setup `public/config.php`.
+3. Upload files to your server.
 
-Download the [`composer.phar`](https://getcomposer.org/composer.phar) locally or install [Composer](https://getcomposer.org/) globally:
-
-    curl -s https://getcomposer.org/installer | php
-
-Run the following command for a local installation:
-
-    php composer.phar require om/vestibulum:*
-
-Or for a global installation, run the following command:
-
-    composer require om/vestibulum:*
-
-You can also add follow lines to your `composer.json` and run the `composer update` command:
-
-    "require": {
-      "om/vestibulum": "*"
-    }
-
-See https://getcomposer.org/ for more information and documentation.
-
-## Requirements
+### Requirements
 
 - PHP 5.5 +
 - Apache / NGINX
 
 
-## Setup NGINX
+### Setup NGINX
 
 Here is **nginx** configuration example:
 
@@ -67,7 +49,7 @@ Here is **nginx** configuration example:
     }
 
 
-## Setup Apache
+### Setup Apache
 
 Here is **Apache** `.htaccess` configuration example:
 
@@ -84,6 +66,25 @@ Here is **Apache** `.htaccess` configuration example:
     	RewriteRule !\.(pdf|js|ico|gif|jpg|png|css|rar|zip|tar\.gz)$ index.php [L]
     </IfModule>
 
-## Example
 
-Check this page source on [GitHub](https://github.com/OzzyCzech/vestibulum/tree/master/public)
+## Installing with Composer
+
+Download the [`composer.phar`](https://getcomposer.org/composer.phar) locally or install [Composer](https://getcomposer.org/) globally:
+
+    curl -s https://getcomposer.org/installer | php
+
+Run the following command for a local installation:
+
+    php composer.phar require om/vestibulum:*
+
+Or for a global installation, run the following command:
+
+    composer require om/vestibulum:*
+
+You can also add follow lines to your `composer.json` and run the `composer update` command:
+
+    "require": {
+      "om/vestibulum": "*"
+    }
+
+See https://getcomposer.org for more information and documentation.

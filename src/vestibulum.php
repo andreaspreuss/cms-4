@@ -524,17 +524,16 @@ class Pages {
 	/**
 	 * Create Files object instance from path
 	 *
-	 * @param $path
-	 * @param array $skip
-	 * @param callable $filter
+	 * @param string $path
+	 * @param array|callable $filter
 	 * @return \vestibulum\Pages
 	 */
-	public static function from($path, array $skip = ['index', '404'], callable $filter = null) {
+	public static function from($path, $filter = ['index', '404']) {
 		$iterator = new \RecursiveDirectoryIterator(realpath($path), \RecursiveDirectoryIterator::SKIP_DOTS);
 		$iterator->setInfoClass('\\Vestibulum\\File');
 
-		$filter = $filter ? : function (File $item, $key, \RecursiveIterator $iterator) use ($skip) {
-			return $item->isValid($skip) ? $item : null;
+		$filter = is_callable($filter) ? $filter : function (File $item) use ($filter) {
+			return $item->isValid((array)$filter);
 		};
 
 		return new self(new \RecursiveCallbackFilterIterator($iterator, $filter));
