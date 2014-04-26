@@ -35,8 +35,9 @@ You can add more parameters from `function.php
 
     $cms->get = $_GET;
     $cms->post = $_POST;
+    $cms->xxx = 'some value';
 
-Will be accessible in template like `{{ get.something }}`
+Will be accessible in template like `{{ get.something }}` or `{{ post.something }}` or `{{ xxx }}`.
 
 ### Change something in config
 
