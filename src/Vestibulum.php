@@ -48,17 +48,19 @@ class Vestibulum extends \stdClass {
 	 * @return File
 	 */
 	public function getFile(array $meta = []) {
-		$file = File::fromRequest($this->src() . $this->getRequest(), $meta);
+		$file = File::fromPath($this->src() . $this->getRequest(), $meta);
 		if ($file === null) {
 			header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-			$file = File::fromRequest($this->src() . '/404', $meta);
+			$file = File::fromPath($this->src() . '/404', $meta);
 		}
 		return $file ? : new File($this->src(), $meta, '<h1>404 Page not found</h1>');
 	}
 
 
 	/**
-	 * TODO need to be change to soemt
+	 * TODO spearate twig to class
+	 * TODO caching
+	 *
 	 *
 	 * @return string
 	 */
@@ -133,6 +135,7 @@ class Vestibulum extends \stdClass {
 				}
 			);
 
+			// apply Twig filter to content
 			if ($this->file->twig) {
 				$this->content = twig_template_from_string($twig, $this->content)->render(get_object_vars($this));
 			}

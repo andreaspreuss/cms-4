@@ -2,7 +2,7 @@
 namespace vestibulum;
 
 /**
- * Menu helper (Be careful, all affected files are loaded into memory!!!)
+ * Multiple pages loaders
  *
  * @author Roman Ožana <ozana@omdesign.cz>
  */
@@ -23,11 +23,12 @@ class Pages {
 	 *
 	 * @param string $path
 	 * @param array|callable $filter
+	 * @param string $class
 	 * @return \vestibulum\Pages
 	 */
-	public static function from($path, $filter = ['index', '404']) {
+	public static function from($path, $filter = ['index', '404'], $class = '\\Vestibulum\\File') {
 		$iterator = new \RecursiveDirectoryIterator(realpath($path), \RecursiveDirectoryIterator::SKIP_DOTS);
-		$iterator->setInfoClass('\\Vestibulum\\File');
+		$iterator->setInfoClass($class);
 
 		$filter = is_callable($filter) ? $filter : function (File $item) use ($filter) {
 			return $item->isValid((array)$filter);
@@ -37,7 +38,8 @@ class Pages {
 	}
 
 	/**
-	 * Return File items as sorted array
+	 * Return all items as sorted array
+	 * Notice: Can be memory greedy when load many files.
 	 *
 	 * @param string $column
 	 * @param int $sort
@@ -60,7 +62,8 @@ class Pages {
 	}
 
 	/**
-	 * Return File items as array
+	 * Return items as nested array
+	 * Notice: Can be memory greedy when load many files.
 	 *
 	 * @return array
 	 */

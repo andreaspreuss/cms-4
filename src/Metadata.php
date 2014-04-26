@@ -2,10 +2,7 @@
 namespace vestibulum;
 
 /**
- * @author Roman Ožana <ozana@omdesign.cz>
- */
-/**
- * Extract metadata from file
+ * Extract metadata from single file
  *
  * @author Roman Ožana <ozana@omdesign.cz>
  */

@@ -10,18 +10,17 @@ trait Request {
 	private $request;
 
 	/**
-	 * Return requested URL
+	 * Return requested URL path
 	 *
 	 * @return mixed
 	 */
 	public function getRequest() {
-		if (isset($this->request)) return $this->request;
-		$this->request = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : null;
-		return $this->request = preg_replace(['#\?.*#', '#/?index.php#'], ['', ''], urldecode($this->request));
+		if (isset($this->request) || !isset($_SERVER['REQUEST_URI'])) return $this->request;
+		return $this->request = preg_replace(['#\?.*#', '#/?index.php#'], ['', ''], urldecode($_SERVER['REQUEST_URI']));
 	}
 
 	/**
-	 * Return current URL
+	 * Return server URL
 	 *
 	 * @param null $url
 	 * @return string

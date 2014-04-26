@@ -67,6 +67,7 @@ class File extends \SplFileInfo {
 
 	/**
 	 * Return automatic description
+	 * Notice: getDescription use slow function shorten() in some cases
 	 *
 	 * @return mixed
 	 */
@@ -173,17 +174,17 @@ class File extends \SplFileInfo {
 	/**
 	 * Create new File instance from path
 	 *
-	 * @param $request
+	 * @param string $path
 	 * @param array $meta
 	 * @return static
 	 */
-	public static function fromRequest($request, array $meta = []) {
+	public static function fromPath($path, array $meta = []) {
 		if (
-			is_file($file = $request . '.html') ||
-			is_file($file = $request . '.md') ||
+			is_file($file = $path . '.html') ||
+			is_file($file = $path . '.md') ||
 			// is_file($file = $request . '.php') || // TODO add raw PHP support
-			is_dir($request) && is_file($file = $request . '/index.html') ||
-			is_dir($request) && is_file($file = $request . '/index.md')
+			is_dir($path) && is_file($file = $path . '/index.html') ||
+			is_dir($path) && is_file($file = $path . '/index.md')
 		) {
 			return new static($file, $meta);
 		}
