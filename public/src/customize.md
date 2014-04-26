@@ -29,6 +29,14 @@ In Twig template will be accessible `{{ myUrl() }}`
 
 In Twig template will be accessible `{{ title|myFilter }}`
 
+### Add custom Twig parameters
+
+You can add more parameters from `function.php
+
+    $cms->get = $_GET;
+    $cms->post = $_POST;
+
+Will be accessible in template like `{{ get.something }}`
 
 ### Change something in config
 
