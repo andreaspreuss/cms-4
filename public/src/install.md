@@ -1,6 +1,7 @@
 <!--
 id: install
-title: Install
+title: How to Install Vestibulum CMS
+menu: Install
 order : 2
 -->
 

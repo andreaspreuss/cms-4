@@ -25,7 +25,8 @@
 						<ul>
 							{% for page in pages %}
 								<li{% if active == page.id %} class="active"{% endif %} id="{{ page.id }}">
-									<a href="{{ url(page.slug(src)) }}">{{ page.title }}</a>
+									<a
+										href="{{ url(page.slug(src)) }}">{% if page.menu %}{{ page.menu }}{% else %}{{ page.title }}{% endif %}</a>
 									{% if page.children %}{{ _self.menu(page.children, active, src) }}{% endif %}
 								</li>
 							{% endfor %}

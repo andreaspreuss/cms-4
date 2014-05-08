@@ -12,12 +12,16 @@ trait Config {
 	private $config;
 
 	/**
-	 * Return src dirname
+	 * Return src directory path
 	 *
+	 * @param string|null $path
 	 * @return string
 	 */
-	public function src() {
-		return (isset($this->config()->src) ? realpath($this->config()->src) : $this->config()->src = getcwd() . '/src/');
+	public function src($path = null) {
+		return
+			realpath(
+				(isset($this->config()->src) ? $this->config()->src : $this->config()->src = getcwd() . '/src')
+			) . $path;
 	}
 
 	/**
