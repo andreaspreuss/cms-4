@@ -1,4 +1,8 @@
-## Replace Composer autoloader
+<!--
+title: Replace Composer Autoloader
+-->
+
+## Replace Composer Autoloader
 
 And one more things, you can save 20ms when you avoid Composer Autoloader
 
