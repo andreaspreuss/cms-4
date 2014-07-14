@@ -7,8 +7,7 @@ title: How to create sitemap
 Create file `sitemap.xml.php` in your src directory and add follow code:
 
 	<?php
-	if (!$this instanceof \vestibulum\Vestibulum) die('Sorry can be executed only from Vestibulum');
-
+	(isset($this) && $this instanceof \vestibulum\Vestibulum) or die('Sorry can be executed only from Vestibulum');
 
 	class SiteMap {
 
