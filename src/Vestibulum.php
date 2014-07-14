@@ -1,8 +1,6 @@
 <?php
 namespace vestibulum;
 
-use SplFileInfo;
-
 /**
  * Vestibulum: Really deathly simple CMS
  *
@@ -60,8 +58,6 @@ class Vestibulum extends \stdClass {
 	/**
 	 * TODO spearate twig to class
 	 * TODO caching
-	 *
-	 *
 	 * @return string
 	 */
 	protected function render() {
@@ -71,9 +67,6 @@ class Vestibulum extends \stdClass {
 
 		// FIXME and find better way how to save to cache
 		if ($this->file->getExtension() === 'md') {
-
-			// @see https://github.com/erusev/parsedown/pull/105
-			$this->content = preg_replace('/<!--(.*)-->/Uis', '', $this->content, 1); // first only
 
 			$cache = isset($this->config()->markdown['cache']) && $this->config()->markdown['cache'] ? realpath(
 				$this->config()->markdown['cache']

@@ -5,7 +5,7 @@ menu: Install
 order : 2
 -->
 
-# How to Install Vestibulum
+# How to Install Vestibulum CMS
 
 1. [Download Composer](http://getcomposer.org/download) `curl -s http://getcomposer.org/installer | php`
 1. Run `php composer.phar create-project om/vestibulum`
