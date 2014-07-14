@@ -1,5 +1,5 @@
 <?php
-if (!$this instanceof \vestibulum\Vestibulum) die('Sorry be executed only from Vestibulum');
+(isset($this) && $this instanceof \vestibulum\Vestibulum) or die('Sorry can be executed only from Vestibulum');
 
 header('Content-Type: application/json');
 

@@ -1,5 +1,5 @@
 <?php
-if (!$this instanceof \vestibulum\Vestibulum) die('Sorry be executed only from Vestibulum');
+(isset($this) && $this instanceof \vestibulum\Vestibulum) or die('Sorry can be executed only from Vestibulum');
 
 /**
  * @author Roman Ožana <ozana@omdesign.cz>
@@ -14,7 +14,11 @@ class SiteMap {
 		$out = '';
 		foreach ($pages as $page) {
 			/** @var \vestibulum\File $page */
-			$out .= sprintf('<url><loc>%s</loc></url>' . PHP_EOL, \vestibulum\Request::url($page->getSlug(__DIR__)));
+			$out .= sprintf(
+				'<url><loc>%s</loc><lastmod>%s</lastmod></url>' . PHP_EOL,
+				htmlspecialchars(\vestibulum\Request::url($page->getSlug(__DIR__))),
+				htmlspecialchars(date('c', $page->date))
+			);
 			if ($page->children) $out .= $this->addItem($page->children);
 		}
 		return $out;
