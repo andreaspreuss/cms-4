@@ -144,3 +144,4 @@ And you also will need add follow code to your `functions.php`
 - [Multi Language Content](/customize/multi-language)
 - [Replace Twig with plain phtml](/customize/replace-twig-with-plain-phtml)
 - [Replace Composer Autoloader](/customize/replace-composer-autoloader)
+- [Create sitemap](/customize/create-sitemap)

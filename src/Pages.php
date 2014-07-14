@@ -26,9 +26,9 @@ class Pages {
 	 * @param string $class
 	 * @return \vestibulum\Pages
 	 */
-	public static function from($path, $filter = ['index', '404'], $class = '\\Vestibulum\\File') {
+	public static function from($path, $filter = ['index', '404'], $class = '\\vestibulum\\File') {
 		$iterator = new \RecursiveDirectoryIterator(realpath($path), \RecursiveDirectoryIterator::SKIP_DOTS);
-		$iterator->setInfoClass($class);
+		if (class_exists($class)) $iterator->setInfoClass($class);
 
 		$filter = is_callable($filter) ? $filter : function (File $item) use ($filter) {
 			return $item->isValid((array)$filter);
