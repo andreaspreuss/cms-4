@@ -160,21 +160,25 @@ a.btn-download {
 }
 
 footer {
-	padding: 100px 0;
+	padding: 40px 0;
 
-	@media only screen and (max-device-width: 480px) {
-		padding: 40px 0;
+	@media only screen and (min-device-width: 480px) {
+		padding: 100px 0;
 	}
 
-	background: #ecf0f1;
+	background: #353535;
+	color: #898989;
 	text-align: center;
-	a, a:hover {
-		color: inherit;
+
+	p {
+		text-transform: uppercase;
+		svg {
+			vertical-align: text-top;
+		}
 	}
 
-	.meta {
-		color: #444;
-		font-size: 11px;
+	a, a:hover {
+		color: #bcbcbc;
 	}
 }
 
