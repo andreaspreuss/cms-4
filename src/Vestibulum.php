@@ -68,10 +68,11 @@ class Vestibulum extends \stdClass {
 	 * @return string
 	 */
 	protected function render() {
-		// Content
 
+		// Headers
 		foreach ($this->file->getHeaders() as $header) header($header);
 
+		// Content
 		$this->content = str_replace('%url%', $this->url(), $this->file->getContent());
 
 		// FIXME and find better way how to save to cache
@@ -83,13 +84,13 @@ class Vestibulum extends \stdClass {
 			if ($cache && is_dir($cache) && is_writable($cache)) {
 				$cacheFile = $cache . '/' . md5($this->file);
 				if (!is_file($cacheFile) || @filemtime($this->file) > filemtime($cacheFile)) {
-					$this->content = \Parsedown::instance()->parse($this->content);
+					$this->content = \Parsedown::instance()->text($this->content);
 					file_put_contents($cacheFile, $this->content);
 				} else {
 					$this->content = file_get_contents($cacheFile);
 				}
 			} else {
-				$this->content = \Parsedown::instance()->parse($this->content);
+				$this->content = \Parsedown::instance()->text($this->content);
 			}
 		}
 
@@ -106,7 +107,7 @@ class Vestibulum extends \stdClass {
 			return $output;
 		}
 
-		// twig
+		// Twig
 
 		if ($ext === 'twig') {
 
@@ -158,4 +159,25 @@ class Vestibulum extends \stdClass {
 			return $e->getMessage();
 		}
 	}
+}
+
+// Some small helpers
+
+/**
+ * @return bool
+ */
+function isAjax() {
+	return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+}
+
+/**
+ * @param $value
+ * @param int $options
+ * @param int $depth
+ */
+function json($value, $options = 0, $depth = 512) {
+	header('Cache-Control: no-cache, must-revalidate');
+	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+	header('Content-Type: application/json');
+	die(json_encode($value, $options, $depth));
 }

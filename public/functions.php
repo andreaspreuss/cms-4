@@ -6,4 +6,5 @@ use vestibulum\Pages;
  * @author Roman Ozana <ozana@omdesign.cz>
  */
 
-$cms->pages = Pages::from($cms->src(), ['404', $cms->src('/customize')])->toArraySorted();
+$skip = ['404', $cms->src('/customize'), $cms->src('/email')];
+$cms->pages = Pages::from($cms->src(), $skip)->toArraySorted();

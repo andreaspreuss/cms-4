@@ -1,14 +1,10 @@
 <?php
-(isset($this) && $this instanceof \vestibulum\Vestibulum) or die('Sorry can be executed only from Vestibulum');
+namespace vestibulum;
 
-header('Content-Type: application/json');
+isset($this) && $this instanceof Vestibulum or die('Sorry can be executed only from Vestibulum');
 
-// response to ajax request
+// check AJAX request
+isAjax() or json(['message' => 'Not AJAX request, but nice try :-)']);
 
-if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-	exit(json_encode(['message' => 'Ajax Request well done!!!']));
-}
-
-// not ajax request? response with something else when
-
-exit(json_encode(['message' => 'This will be my JSON message']));
+// response all AJAX requests
+json(['message' => 'Well done! It\'s AJAX request']);
