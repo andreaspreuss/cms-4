@@ -46,22 +46,31 @@ class Vestibulum extends \stdClass {
 	 * @return File
 	 */
 	public function getFile(array $meta = []) {
-		$file = File::fromPath($this->src() . $this->getRequest(), $meta);
-		if ($file === null) {
-			header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-			$file = File::fromPath($this->src() . '/404', $meta);
+
+		$files = [
+			$this->src() . $this->getRequest() => [],
+			$this->src() . dirname($this->getRequest()) . '/404' => [$_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found'],
+			$this->src() . '/404' => [$_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found']
+		];
+
+		foreach ($files as $path => $headers) {
+			if ($file = File::fromPath($path, $meta, $headers)) return $file;
 		}
-		return $file ? : new File($this->src(), $meta, '<h1>404 Page not found</h1>');
+
+		return new File($this->src(), $meta, '<h1>404 Page not found</h1>', [$_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found']);
 	}
 
 
 	/**
 	 * TODO spearate twig to class
 	 * TODO caching
+	 *
 	 * @return string
 	 */
 	protected function render() {
 		// Content
+
+		foreach ($this->file->getHeaders() as $header) header($header);
 
 		$this->content = str_replace('%url%', $this->url(), $this->file->getContent());
 

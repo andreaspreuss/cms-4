@@ -28,12 +28,16 @@ class File extends \SplFileInfo {
 	protected $content;
 
 	/** @var array */
+	protected $headers = [];
+
+	/** @var array */
 	public $children;
 
-	public function __construct($file = null, array $meta = [], $content = null) {
+	public function __construct($file = null, array $meta = [], $content = null, $headers = []) {
 		parent::__construct($file);
 		$this->meta = $this->getMeta($meta);
 		$this->content = $content;
+		$this->headers = $headers;
 	}
 
 	/**
@@ -85,8 +89,7 @@ class File extends \SplFileInfo {
 		return str_replace(
 			realpath($src),
 			'',
-			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName(
-				) : null)
+			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName() : null)
 		);
 	}
 
@@ -172,13 +175,21 @@ class File extends \SplFileInfo {
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getHeaders() {
+		return $this->headers;
+	}
+
+	/**
 	 * Create new File instance from path
 	 *
 	 * @param string $path
 	 * @param array $meta
+	 * @param array $headers
 	 * @return static
 	 */
-	public static function fromPath($path, array $meta = []) {
+	public static function fromPath($path, array $meta = [], $headers = []) {
 		if (
 			is_file($file = $path . '.html') ||
 			is_file($file = $path . '.md') ||
@@ -186,7 +197,7 @@ class File extends \SplFileInfo {
 			is_dir($path) && is_file($file = $path . '/index.html') ||
 			is_dir($path) && is_file($file = $path . '/index.md')
 		) {
-			return new static($file, $meta);
+			return new static($file, $meta, null, $headers);
 		}
 	}
 }
