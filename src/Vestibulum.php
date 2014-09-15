@@ -57,7 +57,8 @@ class Vestibulum extends \stdClass {
 			if ($file = File::fromPath($path, $meta, $headers)) return $file;
 		}
 
-		return new File($this->src(), $meta, '<h1>404 Page not found</h1>', [$_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found']);
+		return new File($this->src(
+		                ), $meta, '<h1>404 Page not found</h1>', [$_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found']);
 	}
 
 
@@ -109,6 +110,7 @@ class Vestibulum extends \stdClass {
 
 		// Twig
 
+		// FIXME if twig is only in
 		if ($ext === 'twig') {
 
 			$loader = new \Twig_Loader_Filesystem($this->config->templates);
@@ -139,7 +141,7 @@ class Vestibulum extends \stdClass {
 			);
 
 			// apply Twig filter to content
-			if ($this->file->twig) {
+			if ($this->file->twig || $this->file->getExtension() === 'twig') {
 				$this->content = twig_template_from_string($twig, $this->content)->render(get_object_vars($this));
 			}
 
@@ -167,7 +169,9 @@ class Vestibulum extends \stdClass {
  * @return bool
  */
 function isAjax() {
-	return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+	return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(
+		$_SERVER['HTTP_X_REQUESTED_WITH']
+	) === 'xmlhttprequest';
 }
 
 /**

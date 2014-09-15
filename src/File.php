@@ -193,6 +193,7 @@ class File extends \SplFileInfo {
 		if (
 			is_file($file = $path . '.html') ||
 			is_file($file = $path . '.md') ||
+			is_file($file = $path . '.twig') ||
 			// is_file($file = $request . '.php') || // TODO add raw PHP support
 			is_dir($path) && is_file($file = $path . '/index.html') ||
 			is_dir($path) && is_file($file = $path . '/index.md')
