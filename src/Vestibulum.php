@@ -26,8 +26,13 @@ class Vestibulum extends \stdClass {
 	 * Requires PHP first
 	 */
 	public function requires() {
-		is_file($php = getcwd() . $this->getRequest() . '.php') ? include_once $php : null;
+		// src index.php of request.php
+		is_file($php = $this->src() . $this->getRequest() . '/index.php') ? include_once $php : null ||
 		is_file($php = $this->src() . $this->getRequest() . '.php') ? include_once $php : null;
+
+		// cwd index.php of request.php
+		is_file($php = getcwd() . $this->getRequest() . '/index.php') ? include_once $php : null ||
+		is_file($php = getcwd() . $this->getRequest() . '.php') ? include_once $php : null;
 	}
 
 	/**
@@ -57,8 +62,10 @@ class Vestibulum extends \stdClass {
 			if ($file = File::fromPath($path, $meta, $headers)) return $file;
 		}
 
-		return new File($this->src(
-		                ), $meta, '<h1>404 Page not found</h1>', [$_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found']);
+		// 404 page not at all
+		return new File(
+			$this->src(), $meta, '<h1>404 Page not found</h1>', [$_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found']
+		);
 	}
 
 
@@ -122,9 +129,11 @@ class Vestibulum extends \stdClass {
 			$twig->registerUndefinedFilterCallback(
 				function ($name) {
 					return function_exists($name) ?
-						new \Twig_SimpleFilter($name, function () use ($name) {
-							return call_user_func_array($name, func_get_args());
-						}, ['is_safe' => ['html']]) : false;
+						new \Twig_SimpleFilter(
+							$name, function () use ($name) {
+								return call_user_func_array($name, func_get_args());
+							}, ['is_safe' => ['html']]
+						) : false;
 				}
 			);
 
@@ -134,9 +143,11 @@ class Vestibulum extends \stdClass {
 			$twig->registerUndefinedFunctionCallback(
 				function ($name) {
 					return function_exists($name) ?
-						new \Twig_SimpleFunction($name, function () use ($name) {
-							return call_user_func_array($name, func_get_args());
-						}) : false;
+						new \Twig_SimpleFunction(
+							$name, function () use ($name) {
+								return call_user_func_array($name, func_get_args());
+							}
+						) : false;
 				}
 			);
 
@@ -161,17 +172,6 @@ class Vestibulum extends \stdClass {
 			return $e->getMessage();
 		}
 	}
-}
-
-// Some small helpers
-
-/**
- * @return bool
- */
-function isAjax() {
-	return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(
-		$_SERVER['HTTP_X_REQUESTED_WITH']
-	) === 'xmlhttprequest';
 }
 
 /**

@@ -49,7 +49,7 @@ class File extends \SplFileInfo {
 	public function getMeta(array $meta = []) {
 		if ($this->meta) return array_merge($meta, $this->meta);
 
-		$title = $this->parseTitle($this->getContent()) ? : ucfirst($this->getName());
+		$title = $this->parseTitle($this->getContent()) ?: ucfirst($this->getName());
 
 		$default = [
 			'id' => md5($this->getContent() . $this->getRealPath()),
@@ -89,7 +89,8 @@ class File extends \SplFileInfo {
 		return str_replace(
 			realpath($src),
 			'',
-			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName() : null)
+			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName(
+				) : null)
 		);
 	}
 
@@ -194,9 +195,10 @@ class File extends \SplFileInfo {
 			is_file($file = $path . '.html') ||
 			is_file($file = $path . '.md') ||
 			is_file($file = $path . '.twig') ||
-			// is_file($file = $request . '.php') || // TODO add raw PHP support
+			is_file($file = $path . '.phtml') ||
 			is_dir($path) && is_file($file = $path . '/index.html') ||
-			is_dir($path) && is_file($file = $path . '/index.md')
+			is_dir($path) && is_file($file = $path . '/index.md') ||
+			is_dir($path) && is_file($file = $path . '/index.phtml')
 		) {
 			return new static($file, $meta, null, $headers);
 		}
