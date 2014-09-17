@@ -183,6 +183,14 @@ class File extends \SplFileInfo {
 	}
 
 	/**
+	 * @param $file
+	 * @return mixed
+	 */
+	public function getMime($file) {
+
+	}
+
+	/**
 	 * Create new File instance from path
 	 *
 	 * @param string $path

@@ -185,3 +185,28 @@ function json($value, $options = 0, $depth = 512) {
 	header('Content-Type: application/json');
 	die(json_encode($value, $options, $depth));
 }
+
+/**
+ * Download file
+ *
+ * @param $file
+ * @param null $filename
+ */
+function download($file, $filename = null) {
+	if (!is_file($file)) {
+		header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+		die('File not found.');
+	}
+
+	$finfo = finfo_open(FILEINFO_MIME_TYPE);
+	$mime = finfo_file($finfo, $file);
+	finfo_close($finfo);
+
+	$filename = $filename ?: basename($file);
+	header(sprintf('Content-Type: %s; name="%s"', $mime, $filename));
+	header(sprintf('Content-Disposition: attachment; filename="%s"', $filename));
+	header('ContentLength: ' . filesize($file));
+	header('Connection: close');
+
+	die(readfile($file));
+}
