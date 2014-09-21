@@ -145,3 +145,5 @@ And you also will need add follow code to your `functions.php`
 - [Replace Twig with plain phtml](/customize/replace-twig-with-plain-phtml)
 - [Replace Composer Autoloader](/customize/replace-composer-autoloader)
 - [Create sitemap](/customize/create-sitemap)
+- [See more examples](/examples)
+
