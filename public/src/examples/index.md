@@ -6,7 +6,7 @@
     namespace vestibulum;
     download(__DIR__ . '/example.txt', 'download.txt');
 
-[See download example](download)
+[See download example](https://github.com/OzzyCzech/vestibulum/tree/master/public/src/examples/download)
 
 ## 2. Send email message
 
@@ -123,4 +123,4 @@ And simple PHP file `send.php`
       json(['message' => 'Something went wront :-(', 'error' => true]);
     }
 
-[See email example](email)
+[See email example](https://github.com/OzzyCzech/vestibulum/tree/master/public/src/examples/email)
