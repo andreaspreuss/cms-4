@@ -33,16 +33,8 @@ trait Config {
 		return $this->config ? $this->config : $this->config = (object)array_replace_recursive(
 			[
 				'title' => 'Vestibulum',
-				'twig' => [
-					'cache' => false,
-					'autoescape' => false,
-					'debug' => false,
-				],
-				'markdown' => [
-					'cache' => false,
-				],
+				'cache' => false,
 				'src' => getcwd() . '/src/',
-				'templates' => getcwd(),
 				'meta' => [
 					'template' => 'index.latte',
 				]

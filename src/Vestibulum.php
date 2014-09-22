@@ -2,7 +2,6 @@
 namespace vestibulum;
 
 use Latte\Engine;
-use Latte\Loaders\StringLoader;
 use Latte\Macros\MacroSet;
 
 /**
@@ -57,19 +56,16 @@ class Vestibulum extends \stdClass {
 	public function getFile(array $meta = []) {
 
 		$files = [
-			$this->src() . $this->getRequest() => [],
-			$this->src() . dirname($this->getRequest()) . '/404' => [$_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found'],
-			$this->src() . '/404' => [$_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found']
+			$this->src() . $this->getRequest(),
+			$this->src() . dirname($this->getRequest()) . '/404',
+			$this->src() . '/404'
 		];
 
-		foreach ($files as $path => $headers) {
-			if ($file = File::fromPath($path, $meta, $headers)) return $file;
+		foreach ($files as $path) {
+			if ($file = File::fromPath($path, $meta)) return $file;
 		}
 
-		// 404 page not at all
-		return new File(
-			$this->src(), $meta, '<h1>404 Page not found</h1>', [$_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found']
-		);
+		return new File($this->src(), array_merge($meta, ['status' => 404]), '<h1>404 Page not found</h1>'); // last chance
 	}
 
 
@@ -81,21 +77,30 @@ class Vestibulum extends \stdClass {
 	 */
 	protected function render() {
 
-		// Headers
-		foreach ($this->file->getHeaders() as $header) header($header);
+		// HTTP response status code
+		if ($code = isset($this->file->status) ? $this->file->status : null) {
+			header((isset($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.1") . " " . $code, true, $code);
+		}
 
-		// Content
+		// FIXME delete? or change at all
+		if ($this->file->getExtension() === 'phtml') {
+			ob_start();
+			extract(get_object_vars($this));
+			require($this->file);
+			$output = ob_get_contents();
+			ob_end_clean();
+			return $output;
+		}
+
+		// Content URL
 		$this->content = str_replace('%url%', $this->url(), $this->file->getContent());
 
 		// FIXME and find better way how to save to cache
 		if ($this->file->getExtension() === 'md') {
-
-			$cache = isset($this->config()->markdown['cache']) && $this->config()->markdown['cache'] ? realpath(
-				$this->config()->markdown['cache']
-			) : false;
+			$cache = isset($this->config()->cache) && $this->config()->cache ? realpath($this->config()->cache) : false;
 			if ($cache && is_dir($cache) && is_writable($cache)) {
-				$cacheFile = $cache . '/' . md5($this->file);
-				if (!is_file($cacheFile) || @filemtime($this->file) > filemtime($cacheFile)) {
+				$cacheFile = $cache . '/' . $this->getRequest() . md5($this->file) . '.html';
+				if (!is_file($cacheFile) || $this->file->getMTime() > filemtime($cacheFile)) {
 					$this->content = \Parsedown::instance()->text($this->content);
 					file_put_contents($cacheFile, $this->content);
 				} else {
@@ -109,7 +114,6 @@ class Vestibulum extends \stdClass {
 		$ext = pathinfo($this->file->template, PATHINFO_EXTENSION);
 
 		// phtml - for those who have an performance obsession :-)
-
 		if ($ext === 'phtml' || $ext === 'php') {
 			ob_start();
 			extract(get_object_vars($this));
@@ -122,7 +126,7 @@ class Vestibulum extends \stdClass {
 		// Latte
 		if ($ext === 'latte') {
 			$latte = new Engine();
-			$latte->setTempDirectory($this->config()->markdown['cache']);
+			$latte->setTempDirectory($this->config()->cache);
 
 			$set = new MacroSet($latte->getCompiler());
 			$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
@@ -151,6 +155,7 @@ class Vestibulum extends \stdClass {
 
 /**
  * FIXME found better way
+ *
  * @param null $url
  * @param null $src
  * @return string
@@ -165,13 +170,15 @@ function url($url = null, $src = null) {
 
 /**
  * @param $value
+ * @param int $code
  * @param int $options
  * @param int $depth
  */
-function json($value, $options = 0, $depth = 512) {
+function json($value, $code = 200, $options = 0, $depth = 512) {
 	header('Cache-Control: no-cache, must-revalidate');
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
 	header('Content-Type: application/json');
+	header((isset($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.1") . " " . $code, true, $code);
 	die(json_encode($value, $options, $depth));
 }
 
@@ -183,7 +190,7 @@ function json($value, $options = 0, $depth = 512) {
  */
 function download($file, $filename = null) {
 	if (!is_file($file)) {
-		header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+		header((isset($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.1") . " " . 404, true, 404);
 		die('File not found.');
 	}
 

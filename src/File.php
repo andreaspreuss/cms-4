@@ -28,16 +28,12 @@ class File extends \SplFileInfo {
 	protected $content;
 
 	/** @var array */
-	protected $headers = [];
-
-	/** @var array */
 	public $children;
 
-	public function __construct($file = null, array $meta = [], $content = null, $headers = []) {
+	public function __construct($file = null, array $meta = [], $content = null) {
 		parent::__construct($file);
 		$this->meta = $this->getMeta($meta);
 		$this->content = $content;
-		$this->headers = $headers;
 	}
 
 	/**
@@ -176,13 +172,6 @@ class File extends \SplFileInfo {
 	}
 
 	/**
-	 * @return array
-	 */
-	public function getHeaders() {
-		return $this->headers;
-	}
-
-	/**
 	 * @param $file
 	 * @return mixed
 	 */
@@ -195,20 +184,19 @@ class File extends \SplFileInfo {
 	 *
 	 * @param string $path
 	 * @param array $meta
-	 * @param array $headers
 	 * @return static
 	 */
-	public static function fromPath($path, array $meta = [], $headers = []) {
+	public static function fromPath($path, array $meta = []) {
 		if (
 			is_file($file = $path . '.html') ||
 			is_file($file = $path . '.md') ||
-			is_file($file = $path . '.twig') ||
+			is_file($file = $path . '.latte') ||
 			is_file($file = $path . '.phtml') ||
 			is_dir($path) && is_file($file = $path . '/index.html') ||
 			is_dir($path) && is_file($file = $path . '/index.md') ||
 			is_dir($path) && is_file($file = $path . '/index.phtml')
 		) {
-			return new static($file, $meta, null, $headers);
+			return new static($file, $meta, null);
 		}
 	}
 }
