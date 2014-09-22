@@ -44,7 +44,7 @@ trait Config {
 				'src' => getcwd() . '/src/',
 				'templates' => getcwd(),
 				'meta' => [
-					'template' => 'index.twig',
+					'template' => 'index.latte',
 				]
 			],
 			@include(getcwd() . '/config.php') // intentionally @

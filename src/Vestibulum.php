@@ -1,6 +1,10 @@
 <?php
 namespace vestibulum;
 
+use Latte\Engine;
+use Latte\Loaders\StringLoader;
+use Latte\Macros\MacroSet;
+
 /**
  * Vestibulum: Really deathly simple CMS
  *
@@ -115,48 +119,19 @@ class Vestibulum extends \stdClass {
 			return $output;
 		}
 
-		// Twig
+		// Latte
+		if ($ext === 'latte') {
+			$latte = new Engine();
+			$latte->setTempDirectory($this->config()->markdown['cache']);
 
-		// FIXME if twig is only in
-		if ($ext === 'twig') {
+			$set = new MacroSet($latte->getCompiler());
+			$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
 
-			$loader = new \Twig_Loader_Filesystem($this->config->templates);
-			$twig = new \Twig_Environment($loader, $this->config->twig);
-			$twig->addExtension(new \Twig_Extension_Debug());
-			$twig->addExtension(new \Twig_Extension_StringLoader());
-
-			// undefined filters callback
-			$twig->registerUndefinedFilterCallback(
-				function ($name) {
-					return function_exists($name) ?
-						new \Twig_SimpleFilter(
-							$name, function () use ($name) {
-								return call_user_func_array($name, func_get_args());
-							}, ['is_safe' => ['html']]
-						) : false;
-				}
-			);
-
-			$twig->addFunction('url', new \Twig_SimpleFunction('url', [$this, 'url']));
-
-			// undefined functions callback
-			$twig->registerUndefinedFunctionCallback(
-				function ($name) {
-					return function_exists($name) ?
-						new \Twig_SimpleFunction(
-							$name, function () use ($name) {
-								return call_user_func_array($name, func_get_args());
-							}
-						) : false;
-				}
-			);
-
-			// apply Twig filter to content
-			if ($this->file->twig || $this->file->getExtension() === 'twig') {
-				$this->content = twig_template_from_string($twig, $this->content)->render(get_object_vars($this));
+			if ($this->file->latte || $this->file->getExtension() === 'latte') {
+				$this->content = $latte->renderToString($this->file, get_object_vars($this));
 			}
 
-			return $twig->render($this->file->template, get_object_vars($this));
+			return $latte->renderToString($this->file->template, get_object_vars($this));
 		}
 	}
 
@@ -171,6 +146,20 @@ class Vestibulum extends \stdClass {
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
+	}
+}
+
+/**
+ * FIXME found better way
+ * @param null $url
+ * @param null $src
+ * @return string
+ */
+function url($url = null, $src = null) {
+	if (is_string($url) || is_null($url)) {
+		return Request::url($url);
+	} elseif ($url instanceof File) {
+		return $url->getSlug($src);
 	}
 }
 
