@@ -44,3 +44,10 @@ function isAjax() {
 		$_SERVER['HTTP_X_REQUESTED_WITH']
 	) === 'xmlhttprequest';
 }
+
+/**
+ * @return bool
+ */
+function isPost() {
+	return strtolower($_SERVER['REQUEST_METHOD']) === 'post';
+}

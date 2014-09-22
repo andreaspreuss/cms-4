@@ -56,14 +56,15 @@ In Twig template will be accessible `{{config.example}}`
 
 It's easy to overwrite main response. Just add `ajax.php` to your **src or current directory**:
 
-    <?php
-    if (!$this instanceof \vestibulum\Vestibulum) die('Sorry can be executed only from Vestibulum'); // protection
+	<?php
+	namespace vestibulum;
+	isset($this) && $this instanceof Vestibulum or die('Sorry can be executed only from Vestibulum');
 
-    // first detect AJAX Request
-    if(!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-      header('Content-Type: application/json');
-      exit(json_encode(['will' => 'This will be my message']));
-    }
+	// check AJAX request
+	isAjax() or json(['message' => 'Not AJAX request, but nice try :-)']);
+
+	// response all AJAX requests
+	json(['message' => 'Well done! It\'s AJAX request']);
 
 You cen see example response here [%url%ajax](%url%ajax).
 
@@ -72,13 +73,14 @@ You cen see example response here [%url%ajax](%url%ajax).
 Lets have `contact.php` and `contact.html` in your **src directory**. Whole requires will be process in chain.
 PHP goes first after that it's prepare HTML content:
 
-    <?php
-    if (!$this instanceof \vestibulum\Vestibulum) die('Sorry can be executed only from Vestibulum'); // protection
+	<?php
+	namespace vestibulum;
+	isset($this) && $this instanceof Vestibulum or die('Sorry can be executed only from Vestibulum');
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      @mail('info@example.com', 'My Subject', $_POST['message']); // send email...
-      $this->flash = 'It's send well'; // can be used in Template file for example
-    }
+	if (isPost()) {
+	  @mail('info@example.com', 'My Subject', $_POST['message']); // send email...
+	  $this->flash = 'It's send well'; // can be used in Template file for example
+	}
 
 and HTML need contains
 
