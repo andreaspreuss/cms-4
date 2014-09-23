@@ -143,9 +143,9 @@ And you also will need add follow code to your `functions.php`
 
 ## Advanced hacks
 
-- [Multi Language Content](/customize/multi-language)
-- [Replace Twig with plain phtml](/customize/replace-twig-with-plain-phtml)
-- [Replace Composer Autoloader](/customize/replace-composer-autoloader)
-- [Create sitemap](/customize/create-sitemap)
-- [See more examples](/examples)
+- [Multi Language Content](/examples/multi-language)
+- [Replace Twig with plain phtml](/examples/replace-twig-with-plain-phtml)
+- [Replace Composer Autoloader](/examples/replace-composer-autoloader)
+- [Create sitemap](/examples/create-sitemap)
+- [Ajax contact form](/examples/email)
 

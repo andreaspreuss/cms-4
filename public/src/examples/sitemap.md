@@ -1,10 +1,11 @@
 <!--
-title: How to create sitemap
+title: How to create sitemap.xml
 -->
 
 # How to create sitemap
 
 Create file `sitemap.xml.php` in your src directory and add follow code:
+
 
 	<?php
 	(isset($this) && $this instanceof \vestibulum\Vestibulum) or die('Sorry can be executed only from Vestibulum');
@@ -38,4 +39,3 @@ Create file `sitemap.xml.php` in your src directory and add follow code:
 	}
 
 	die(new SiteMap());
-

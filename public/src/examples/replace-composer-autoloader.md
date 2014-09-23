@@ -17,4 +17,4 @@ And one more things, you can save 20ms when you avoid Composer Autoloader
 
     echo new \vestibulum\Vestibulum; // deathly simple
 
-<a href="/customize" class="btn btn-primary">Return to Customize</a>
+<a href="/examples" class="btn btn-primary">Return to Examples</a>

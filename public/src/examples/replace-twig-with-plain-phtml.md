@@ -38,4 +38,4 @@ Create markdown file, and change metadata:
 
 This is it! Now can have request even **under 6 ms**
 
-<a href="/customize" class="btn btn-primary">Return to Customize</a>
+<a href="/examples" class="btn btn-primary">Return to Examples</a>

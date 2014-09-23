@@ -194,6 +194,7 @@ class File extends \SplFileInfo {
 			is_file($file = $path . '.phtml') ||
 			is_dir($path) && is_file($file = $path . '/index.html') ||
 			is_dir($path) && is_file($file = $path . '/index.md') ||
+			is_dir($path) && is_file($file = $path . '/index.latte') ||
 			is_dir($path) && is_file($file = $path . '/index.phtml')
 		) {
 			return new static($file, $meta, null);

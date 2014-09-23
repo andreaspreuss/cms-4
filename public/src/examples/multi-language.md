@@ -33,4 +33,4 @@ Add language switch somewhere to your template file:
     <a href="{{ url('en')}}">English</a> | <a href="{{ url('cs')}}">Česky</a>
 
 
-<a href="/customize" class="btn btn-primary">Return to Customize</a>
+<a href="/examples" class="btn btn-primary">Return to Examples</a>

@@ -99,7 +99,7 @@ class Vestibulum extends \stdClass {
 		if ($this->file->getExtension() === 'md') {
 			$cache = isset($this->config()->cache) && $this->config()->cache ? realpath($this->config()->cache) : false;
 			if ($cache && is_dir($cache) && is_writable($cache)) {
-				$cacheFile = $cache . '/' . $this->getRequest() . md5($this->file) . '.html';
+				$cacheFile = $cache . '/' . md5($this->file) . '.html';
 				if (!is_file($cacheFile) || $this->file->getMTime() > filemtime($cacheFile)) {
 					$this->content = \Parsedown::instance()->text($this->content);
 					file_put_contents($cacheFile, $this->content);

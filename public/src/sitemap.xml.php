@@ -1,5 +1,7 @@
 <?php
-(isset($this) && $this instanceof \vestibulum\Vestibulum) or die('Sorry can be executed only from Vestibulum');
+namespace vestibulum;
+
+isset($this) && $this instanceof Vestibulum or die('Sorry can be executed only from Vestibulum');
 
 /**
  * @author Roman Ožana <ozana@omdesign.cz>
