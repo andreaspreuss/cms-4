@@ -16,7 +16,6 @@ Lets have follow source files structure:
 
 Add follow lines to your `functions.php` file:
 
-
     // detect browser language
     $lang = isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2) : null;
     $cms->lang = in_array($lang, ['en', 'cs']) ? $lang : 'en';

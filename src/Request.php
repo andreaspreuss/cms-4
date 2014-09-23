@@ -34,20 +34,22 @@ trait Request {
 			parse_url($url, PHP_URL_PATH), '/'
 		);
 	}
+
+	/**
+	 * @return bool
+	 */
+	public static function isAjax() {
+		return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(
+			$_SERVER['HTTP_X_REQUESTED_WITH']
+		) === 'xmlhttprequest';
+	}
+
+	/**
+	 * @return bool
+	 */
+	public static function isPost() {
+		return strtolower($_SERVER['REQUEST_METHOD']) === 'post';
+	}
+
 }
 
-/**
- * @return bool
- */
-function isAjax() {
-	return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(
-		$_SERVER['HTTP_X_REQUESTED_WITH']
-	) === 'xmlhttprequest';
-}
-
-/**
- * @return bool
- */
-function isPost() {
-	return strtolower($_SERVER['REQUEST_METHOD']) === 'post';
-}
