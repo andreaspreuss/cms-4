@@ -18,7 +18,7 @@ class SiteMap {
 			/** @var \vestibulum\File $page */
 			$out .= sprintf(
 				'<url><loc>%s</loc><lastmod>%s</lastmod></url>' . PHP_EOL,
-				htmlspecialchars(\vestibulum\Request::url($page->getSlug(__DIR__))),
+				htmlspecialchars(url($page->getSlug(__DIR__))),
 				htmlspecialchars(date('c', $page->date))
 			);
 			if ($page->children) $out .= $this->addItem($page->children);

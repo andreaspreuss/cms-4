@@ -1,39 +1,40 @@
 {
-	"name": "om/vestibulum",
-	"type": "library",
-	"description": "Vestibulum is deathly simple, ultra fast, flat file (Markdown, HTML) CMS. Fully customizable with Latte templates",
-	"keywords": [
-		"cms",
-		"markdown",
-		"latte",
-		"html"
-	],
-	"homepage": "http://vestibulum.omdesign.cz",
-	"license": ["BSD-3-Clause"],
-	"authors": [
-		{
-			"name": "Roman Ožana",
-			"homepage": "http://www.omdesign.cz/",
-			"email": "ozana@omdesign.cz"
-		}
-	],
-	"support": {
-		"issues": "https://github.com/OzzyCzech/vestibulum/issues"
-	},
-	"require": {
-		"php": ">=5.5",
-		"latte/latte": "*",
-		"erusev/parsedown": "*"
-	},
+  "name": "om/vestibulum",
+  "type": "library",
+  "description": "Vestibulum is deathly simple, ultra fast, flat file (Markdown, HTML) CMS. Fully customizable with Latte templates",
+  "keywords": [
+    "cms",
+    "markdown",
+    "latte",
+    "html"
+  ],
+  "homepage": "http://vestibulum.omdesign.cz",
+  "license": ["BSD-3-Clause"],
+  "authors": [
+    {
+      "name": "Roman Ožana",
+      "homepage": "http://www.omdesign.cz/",
+      "email": "ozana@omdesign.cz"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/OzzyCzech/vestibulum/issues"
+  },
+  "require": {
+    "php": ">=5.4.0",
+    "latte/latte": "*",
+    "erusev/parsedown": "*"
+  },
 
-	"require-dev": {
-		"nette/tester": "*",
-		"tracy/tracy": "*"
-	},
-	"autoload": {
-		"psr-4": {
-			"vestibulum\\": "src/"
-		}
-	}
+  "require-dev": {
+    "nette/tester": "*",
+    "tracy/tracy": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "vestibulum\\": "src/"
+    },
+    "files": ["src/functions.php"]
+  }
 
 }

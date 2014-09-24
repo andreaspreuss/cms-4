@@ -85,8 +85,7 @@ class File extends \SplFileInfo {
 		return str_replace(
 			realpath($src),
 			'',
-			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName(
-				) : null)
+			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName() : null)
 		);
 	}
 
@@ -154,6 +153,7 @@ class File extends \SplFileInfo {
 	public function getContent() {
 		if (isset($this->content)) return $this->content;
 
+		// FIXME can be problem if index.php or index.latte ???
 		if ($this->isDir()) {
 			return $this->content =
 				is_file($file = $this . '/index.html') || is_file($file = $this . '/index.md') ? file_get_contents($file) : '';
@@ -169,14 +169,6 @@ class File extends \SplFileInfo {
 	 */
 	public function setContent($content) {
 		$this->content = $content;
-	}
-
-	/**
-	 * @param $file
-	 * @return mixed
-	 */
-	public function getMime($file) {
-
 	}
 
 	/**

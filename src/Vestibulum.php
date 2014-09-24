@@ -1,8 +1,6 @@
 <?php
 namespace vestibulum;
 
-require_once __DIR__ . '/functions.php';
-
 use Latte\Engine;
 use Latte\Macros\MacroSet;
 
@@ -13,40 +11,40 @@ use Latte\Macros\MacroSet;
  */
 class Vestibulum extends \stdClass {
 
-	use Config;
-	use Request;
-
+	/** @var \stdClass */
+	public $config;
 	/** @var File */
 	public $file;
 	/** @var string */
 	public $content;
 
 	public function __construct() {
+		$this->config = config();
 		$this->requires();
-		$this->file = $this->getFile((array)$this->config()->meta);
+		$this->file = $this->getFile((array)$this->config->meta);
 		$this->functions();
 	}
 
 	/**
-	 * Requires PHP first
+	 * Requires PHP
 	 */
 	public function requires() {
 		// src index.php of request.php
-		is_file($php = $this->src() . $this->getRequest() . '/index.php') ? include_once $php : null ||
-		is_file($php = $this->src() . $this->getRequest() . '.php') ? include_once $php : null;
+		is_file($php = src(request() . '/index.php')) ? include_once $php : null ||
+		is_file($php = src(request() . '.php')) ? include_once $php : null;
 
 		// cwd index.php of request.php
-		is_file($php = getcwd() . $this->getRequest() . '/index.php') ? include_once $php : null ||
-		is_file($php = getcwd() . $this->getRequest() . '.php') ? include_once $php : null;
+		is_file($php = getcwd() . request() . '/index.php') ? include_once $php : null ||
+		is_file($php = getcwd() . request() . '.php') ? include_once $php : null;
 	}
 
 	/**
-	 * Auto include functions.php
+	 * Requires functions.php
 	 */
 	public function functions() {
 		global $cms;
 		$cms = $this; // create link to $this
-		is_file($functions = getcwd() . '/functions.php') ? include_once $functions : null;
+		@include_once getcwd() . '/functions.php'; //
 	}
 
 	/**
@@ -56,18 +54,17 @@ class Vestibulum extends \stdClass {
 	 * @return File
 	 */
 	public function getFile(array $meta = []) {
-
 		$files = [
-			$this->src() . $this->getRequest(),
-			$this->src() . dirname($this->getRequest()) . '/404',
-			$this->src() . '/404'
+			src(request()),
+			src(dirname(request()) . '/404'),
+			src('/404')
 		];
 
 		foreach ($files as $path) {
 			if ($file = File::fromPath($path, $meta)) return $file;
 		}
 
-		return new File($this->src(), array_merge($meta, ['status' => 404]), '<h1>404 Page not found</h1>'); // last chance
+		return new File(src(), array_merge($meta, ['status' => 404]), '<h1>404 Page not found</h1>'); // last chance
 	}
 
 
@@ -97,11 +94,11 @@ class Vestibulum extends \stdClass {
 		}
 
 		// Content URL
-		$this->content = str_replace('%url%', $this->url(), $this->file->getContent());
+		$this->content = str_replace('%url%', url(), $this->file->getContent());
 
 		// FIXME and find better way how to save to cache
 		if ($this->file->getExtension() === 'md') {
-			$cache = isset($this->config()->cache) && $this->config()->cache ? realpath($this->config()->cache) : false;
+			$cache = isset($this->config->cache) && $this->config->cache ? realpath($this->config->cache) : false;
 			if ($cache && is_dir($cache) && is_writable($cache)) {
 				$cacheFile = $cache . '/' . md5($this->file) . '.html';
 				if (!is_file($cacheFile) || $this->file->getMTime() > filemtime($cacheFile)) {
@@ -130,7 +127,7 @@ class Vestibulum extends \stdClass {
 		// Latte
 		if ($ext === 'latte') {
 			$latte = new Engine();
-			$latte->setTempDirectory($this->config()->cache);
+			$latte->setTempDirectory($this->config->cache);
 
 			$set = new MacroSet($latte->getCompiler());
 			$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
@@ -156,3 +153,4 @@ class Vestibulum extends \stdClass {
 		}
 	}
 }
+
