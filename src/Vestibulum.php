@@ -1,6 +1,8 @@
 <?php
 namespace vestibulum;
 
+require_once __DIR__ . '/functions.php';
+
 use Latte\Engine;
 use Latte\Macros\MacroSet;
 
@@ -79,7 +81,9 @@ class Vestibulum extends \stdClass {
 
 		// HTTP response status code
 		if ($code = isset($this->file->status) ? $this->file->status : null) {
-			header((isset($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.1") . " " . $code, true, $code);
+			header(
+				(isset($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.1") . " " . $code, true, $code
+			);
 		}
 
 		// FIXME delete? or change at all

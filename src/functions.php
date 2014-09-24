@@ -2,9 +2,24 @@
 namespace vestibulum;
 
 /**
+ * @return bool
+ */
+function isAjax() {
+	return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+}
+
+/**
+ * @return bool
+ */
+function isPost() {
+	return $_SERVER['REQUEST_METHOD'] === 'POST';
+}
+
+
+/**
  * HTTP redirect
  *
- * @param $path
+ * @param string $path
  * @param int $code
  * @param bool $condition
  */

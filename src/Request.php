@@ -15,8 +15,16 @@ trait Request {
 	 * @return mixed
 	 */
 	public function getRequest() {
-		if (isset($this->request) || !isset($_SERVER['REQUEST_URI'])) return $this->request;
-		return $this->request = preg_replace(['#\?.*#', '#/?index.php#'], ['', ''], urldecode($_SERVER['REQUEST_URI']));
+		if ($this->request) return $this->request;
+
+		# current requested URI
+		$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+		// base directory detection
+		$base = rtrim(strtr(dirname($_SERVER['SCRIPT_NAME']), '\\', '/'), '/');
+		$path = preg_replace('@^' . preg_quote($base) . '@', '', $path);
+
+		return $this->request = $path;
 	}
 
 	/**
@@ -34,22 +42,5 @@ trait Request {
 			parse_url($url, PHP_URL_PATH), '/'
 		);
 	}
-
-	/**
-	 * @return bool
-	 */
-	public static function isAjax() {
-		return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower(
-			$_SERVER['HTTP_X_REQUESTED_WITH']
-		) === 'xmlhttprequest';
-	}
-
-	/**
-	 * @return bool
-	 */
-	public static function isPost() {
-		return strtolower($_SERVER['REQUEST_METHOD']) === 'post';
-	}
-
 }
 
