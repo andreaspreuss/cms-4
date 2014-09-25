@@ -1,6 +1,8 @@
 <?php
 namespace vestibulum;
 
+require_once __DIR__ . '/functions.php';
+
 use Latte\Engine;
 use Latte\Macros\MacroSet;
 
