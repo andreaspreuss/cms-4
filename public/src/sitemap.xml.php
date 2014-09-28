@@ -34,4 +34,4 @@ class SiteMap {
 	}
 }
 
-die(new SiteMap());
+die(new SiteMap);
