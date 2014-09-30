@@ -1,7 +1,7 @@
 <!--
 id: how-to
-title: How to hack/customize Vestibulum CMS
-menu: Customize
+title: Example how to hack/customize Vestibulum CMS
+menu: Examples
 order: 4
 -->
 
@@ -11,24 +11,19 @@ order: 4
 	<a href="https://github.com/OzzyCzech/vestibulum/tree/master/public" target="_blank">GitHub</a>.
 </div>
 
-## Customize functions
-
-### Add custom Twig functions/filters
+## Add custom function
 
 Open `functions.php` in main folder and add your custom functions:
 
-    function myUrl() {
-      global $cms; /** @var \vestibulum\Vestibulum $cms */
-      return $cms->url($_SERVER['REQUEST_URI']);
-    }
+	namespace {
+		/** @var \vestibulum\Vestibulum $cms */
+		function myUrl() {
+	     global $cms; /** @var \vestibulum\Vestibulum $cms */
+	     return $cms->url($_SERVER['REQUEST_URI']);
+	  }
+	}
 
-In Twig template will be accessible `{{ myUrl() }}`
-
-    function myFilter($string) {
-      return ' ::: ' . $string . '  ::: ';
-    }
-
-In Twig template will be accessible `{{ title|myFilter }}`
+Your function now will be accesible in Latte template `{myUrl()}`.
 
 ### Add custom Twig parameters
 
@@ -38,7 +33,7 @@ You can add more parameters from `function.php
     $cms->post = $_POST;
     $cms->xxx = 'some value';
 
-Will be accessible in template like `{{ get.something }}` or `{{ post.something }}` or `{{ xxx }}`.
+Will be accessible in template like `{$get->something}` or `{$post.something}` or `{$xxx}`.
 
 ### Change something in config
 
@@ -89,20 +84,6 @@ and HTML need contains
       <button type="submit">Send</button>
     </form>
 
-## Hacking template
-
-### Executing Twig on content
-
-It's simple Vestibulum support [template_from_string](http://twig.sensiolabs.org/doc/functions/template_from_string.html) function:
-
-    {{ include(template_from_string(content)) }}
-
-Now will be whole content processed with Twig parser. You can also parse only selected files:
-
-    <!--
-    twig: true
-    -->
-
 ### Absolute image URL
 
 Add follow code to your `functions.php` and all markdown images URL will be replaces with absolute URL:
@@ -122,30 +103,26 @@ Add follow code to your `functions.php` and all markdown images URL will be repl
 
 Vestibulum contains class `Pages`, it's smart helper for iterate over src files:
 
-    <nav>
-    	{% macro menu(pages, active, src) %}
-    		<ul>
-    			{% for page in pages %}
-    			v
-    				<li{% if active == page.id %} class="active"{% endif %} id="{{ page.id }}">
-    					<a href="{{ url(page.slug(src)) }}">{% if page.menu %}{{page.menu}}{% else %}{{ page.title }}{% endif %}</a>
-    					{% if page.children %}{{ _self.menu(page.children, active, src) }}{% endif %}
-    				</li>
-    			{% endfor %}
-    		</ul>
-    	{% endmacro %}
-    	{{ _self.menu(pages, file.id, config.src) }}
-    </nav>
+	<ul n:block="menu">
+		{foreach $pages as $item}
+			<li n:class="$file->id === $item->id ? active" id="{$item->id}">
+				<a href="{url $item}">{$item->menu ? $item->menu : $item->title}</a>
+				{if $item->children}{include menu, pages => $item->children}{/if}
+			</li>
+		{/foreach}
+	</ul>
 
 And you also will need add follow code to your `functions.php`
 
-    $cms->pages = Pages::from($cms->src())->toArraySorted();
+    namespace vestibulum {
+    	$cms->pages = Pages::from(src())->toArraySorted();
+    }
 
 ## Advanced hacks
 
 - [Multi Language Content](/examples/multi-language)
 - [Replace Twig with plain phtml](/examples/replace-twig-with-plain-phtml)
 - [Replace Composer Autoloader](/examples/replace-composer-autoloader)
-- [Create sitemap](/examples/create-sitemap)
+- [Create sitemap](/examples/sitemap)
 - [Ajax contact form](/examples/email)
 

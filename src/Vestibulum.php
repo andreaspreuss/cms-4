@@ -71,7 +71,6 @@ class Vestibulum extends \stdClass {
 
 
 	/**
-	 * TODO spearate twig to class
 	 * TODO caching
 	 *
 	 * @return string
