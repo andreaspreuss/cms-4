@@ -5,6 +5,7 @@ require_once __DIR__ . '/functions.php';
 
 use Latte\Engine;
 use Latte\Macros\MacroSet;
+use Latte\Runtime\Filters;
 
 /**
  * Vestibulum: Really deathly simple CMS
@@ -84,7 +85,6 @@ class Vestibulum extends \stdClass {
 			);
 		}
 
-		// FIXME delete? or change at all
 		if ($this->file->getExtension() === 'phtml') {
 			ob_start();
 			extract(get_object_vars($this));
@@ -94,8 +94,15 @@ class Vestibulum extends \stdClass {
 			return $output;
 		}
 
-		// Content URL
-		$this->content = str_replace('%url%', url(), $this->file->getContent());
+
+		if ($this->file->getExtension() === 'md' || $this->file->getExtension() === 'html') {
+			$this->content = preg_replace_callback(
+				"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
+					return Filters::safeUrl(url(end($m)));
+				},
+				$this->file->getContent()
+			);
+		}
 
 		// FIXME and find better way how to save to cache
 		if ($this->file->getExtension() === 'md') {
@@ -112,6 +119,8 @@ class Vestibulum extends \stdClass {
 				$this->content = \Parsedown::instance()->text($this->content);
 			}
 		}
+
+
 
 		$ext = pathinfo($this->file->template, PATHINFO_EXTENSION);
 

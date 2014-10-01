@@ -52,16 +52,17 @@ In Twig template will be accessible `{{config.example}}`
 It's easy to overwrite main response. Just add `ajax.php` to your **src or current directory**:
 
 	<?php
-	namespace vestibulum;
-	isset($this) && $this instanceof Vestibulum or die('Sorry can be executed only from Vestibulum');
+	namespace vestibulum {
+		isset($this) && $this instanceof Vestibulum or die('Sorry can be executed only from Vestibulum');
+	
+		// check AJAX request
+		isAjax() or json(['message' => 'Not AJAX request, but nice try :-)']);
+	
+		// response all AJAX requests
+		json(['message' => 'Well done! It\'s AJAX request']);
+	}
 
-	// check AJAX request
-	isAjax() or json(['message' => 'Not AJAX request, but nice try :-)']);
-
-	// response all AJAX requests
-	json(['message' => 'Well done! It\'s AJAX request']);
-
-You cen see example response here [%url%ajax](%url%ajax).
+You cen see example response here [{url examples/email}]({url examples/email}).
 
 ### Submitting HTML form
 
@@ -69,12 +70,13 @@ Lets have `contact.php` and `contact.html` in your **src directory**. Whole requ
 PHP goes first after that it's prepare HTML content:
 
 	<?php
-	namespace vestibulum;
-	isset($this) && $this instanceof Vestibulum or die('Sorry can be executed only from Vestibulum');
-
-	if (isPost()) {
-	  @mail('info@example.com', 'My Subject', $_POST['message']); // send email...
-	  $this->flash = 'It's send well'; // can be used in Template file for example
+	namespace vestibulum {
+		isset($this) && $this instanceof Vestibulum or die('Sorry can be executed only from Vestibulum');
+	
+		if (isPost()) {
+		  @mail('info@example.com', 'My Subject', $_POST['message']); // send email...
+		  $this->flash = 'It's send well'; // can be used in Template file for example
+		}
 	}
 
 and HTML need contains
@@ -99,25 +101,6 @@ Add follow code to your `functions.php` and all markdown images URL will be repl
     );
 
 
-### Generate nested HTML menu
-
-Vestibulum contains class `Pages`, it's smart helper for iterate over src files:
-
-	<ul n:block="menu">
-		{foreach $pages as $item}
-			<li n:class="$file->id === $item->id ? active" id="{$item->id}">
-				<a href="{url $item}">{$item->menu ? $item->menu : $item->title}</a>
-				{if $item->children}{include menu, pages => $item->children}{/if}
-			</li>
-		{/foreach}
-	</ul>
-
-And you also will need add follow code to your `functions.php`
-
-    namespace vestibulum {
-    	$cms->pages = Pages::from(src())->toArraySorted();
-    }
-
 ## Advanced hacks
 
 - [Multi Language Content](/examples/multi-language)
@@ -125,4 +108,5 @@ And you also will need add follow code to your `functions.php`
 - [Create sitemap](/examples/sitemap)
 - [Ajax contact form](/examples/email)
 - [Raw PHTML support](/examples/phtml)
+- [Generate nested HTML menu](/examples/menu)
 
