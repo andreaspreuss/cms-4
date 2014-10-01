@@ -1,0 +1,8 @@
+<ul n:block="menu">
+	{foreach $pages as $item}
+		<li n:class="$file->id === $item->id ? active" id="{$item->id}">
+			<a href="{url $item}">{$item->menu ? $item->menu : $item->title}</a>
+			{if $item->children}{include menu, pages => $item->children}{/if}
+		</li>
+	{/foreach}
+</ul>

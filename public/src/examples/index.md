@@ -121,8 +121,8 @@ And you also will need add follow code to your `functions.php`
 ## Advanced hacks
 
 - [Multi Language Content](/examples/multi-language)
-- [Replace Twig with plain phtml](/examples/replace-twig-with-plain-phtml)
 - [Replace Composer Autoloader](/examples/replace-composer-autoloader)
 - [Create sitemap](/examples/sitemap)
 - [Ajax contact form](/examples/email)
+- [Raw PHTML support](/examples/phtml)
 

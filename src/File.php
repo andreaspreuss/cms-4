@@ -142,7 +142,7 @@ class File extends \SplFileInfo {
 	 */
 	public function isValid(array $skip = []) {
 		if ($this->isDir()) return !in_array($this->getRealPath(), $skip);
-		return preg_match('#md|html#i', $this->getExtension()) && !in_array($this->getName(), $skip);
+		return preg_match('#md|html|phtml|latte#i', $this->getExtension()) && !in_array($this->getName(), $skip);
 	}
 
 	/**

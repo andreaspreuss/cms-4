@@ -4,8 +4,8 @@
  */
 namespace vestibulum {
 	/** @var \vestibulum\Vestibulum $cms */
-	$skip = ['404', src('/examples')];
-	$cms->pages = Pages::from(src(), $skip)->toArraySorted();
+
+	$cms->pages = Pages::from(src(), ['404'])->toArraySorted();
 }
 
 namespace {

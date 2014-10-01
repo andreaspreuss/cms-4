@@ -1,0 +1,19 @@
+<h1>Generate Menu</h1>
+
+<pre><code>{file_get_contents(\vestibulum\src('/examples/menu/menu.latte'))}</code></pre>
+<pre><code>{file_get_contents(\vestibulum\src('/examples/menu/functions.php'))}</code></pre>
+
+<h2>Results</h2>
+
+{? $pages = \vestibulum\Pages::from(\vestibulum\src('/'), ['404'])->toArraySorted()}
+
+<ul n:block="examples">
+	{foreach $pages as $item}
+		<li n:class="$file->id === $item->id ? active" id="{$item->id}">
+			<a href="{url $item}">{$item->menu ? $item->menu : $item->title}</a>
+			{if $item->children}{include examples, pages => $item->children}{/if}
+		</li>
+	{/foreach}
+</ul>
+
+{include '../footer.latte', example => 'menu'}
