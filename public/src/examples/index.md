@@ -6,7 +6,7 @@ order: 4
 -->
 
 <div class="alert alert-info">
-	<a href="%url%">Current site</a> it's an great example
+	<a href="{url}">Current site</a> it's an great example
 	how to use <strong>Vestibulum CMS</strong>! Visit source on
 	<a href="https://github.com/OzzyCzech/vestibulum/tree/master/public" target="_blank">GitHub</a>.
 </div>
