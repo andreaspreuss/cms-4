@@ -85,7 +85,8 @@ class File extends \SplFileInfo {
 		return str_replace(
 			realpath($src),
 			'',
-			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName() : null)
+			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName(
+				) : null)
 		);
 	}
 

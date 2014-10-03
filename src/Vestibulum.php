@@ -72,8 +72,6 @@ class Vestibulum extends \stdClass {
 
 
 	/**
-	 * TODO caching
-	 *
 	 * @return string
 	 */
 	protected function render() {
@@ -95,6 +93,7 @@ class Vestibulum extends \stdClass {
 		}
 
 
+		// replace {url} with current URL
 		if ($this->file->getExtension() === 'md' || $this->file->getExtension() === 'html') {
 			$this->content = preg_replace_callback(
 				"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
@@ -104,28 +103,22 @@ class Vestibulum extends \stdClass {
 			);
 		}
 
-		// FIXME and find better way how to save to cache
+		// Read markdown from cache or recompile
 		if ($this->file->getExtension() === 'md') {
-			$cache = isset($this->config->cache) && $this->config->cache ? realpath($this->config->cache) : false;
-			if ($cache && is_dir($cache) && is_writable($cache)) {
-				$cacheFile = $cache . '/' . md5($this->file) . '.html';
-				if (!is_file($cacheFile) || $this->file->getMTime() > filemtime($cacheFile)) {
-					$this->content = \Parsedown::instance()->text($this->content);
-					file_put_contents($cacheFile, $this->content);
-				} else {
-					$this->content = file_get_contents($cacheFile);
-				}
-			} else {
-				$this->content = \Parsedown::instance()->text($this->content);
-			}
+			$cacheFile = tmp(md5($this->file) . '.html');
+
+			$this->content = cached(
+				$cacheFile, function () use ($cacheFile) {
+					return \Parsedown::instance()->text($this->content);
+				},
+				$this->file->getMTime() > @filemtime($cacheFile)
+			);
 		}
 
-
-
-		$ext = pathinfo($this->file->template, PATHINFO_EXTENSION);
+		$template = pathinfo($this->file->template, PATHINFO_EXTENSION);
 
 		// phtml - for those who have an performance obsession :-)
-		if ($ext === 'phtml' || $ext === 'php') {
+		if ($template === 'phtml' || $template === 'php') {
 			ob_start();
 			extract(get_object_vars($this));
 			require($this->file->template);
@@ -135,19 +128,31 @@ class Vestibulum extends \stdClass {
 		}
 
 		// Latte
-		if ($ext === 'latte') {
-			$latte = new Engine();
-			$latte->setTempDirectory($this->config->cache);
-
-			$set = new MacroSet($latte->getCompiler());
-			$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
-
+		if ($template === 'latte') {
+			$latte = $this->getLatteEngine();
 			if ($this->file->latte || $this->file->getExtension() === 'latte') {
 				$this->content = $latte->renderToString($this->file, get_object_vars($this));
 			}
 
 			return $latte->renderToString($this->file->template, get_object_vars($this));
 		}
+
+		return $this->content;
+	}
+
+	/**
+	 * Return Latte engine
+	 *
+	 * @return Engine
+	 */
+	protected function getLatteEngine() {
+		$latte = new Engine();
+		$latte->setTempDirectory(tmp());
+
+		$set = new MacroSet($latte->getCompiler());
+		$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
+
+		return $latte;
 	}
 
 	/**
@@ -163,4 +168,3 @@ class Vestibulum extends \stdClass {
 		}
 	}
 }
-

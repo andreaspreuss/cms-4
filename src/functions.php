@@ -2,7 +2,7 @@
 namespace vestibulum;
 
 /**
- * Return config data
+ * Return config data.
  *
  * @property string $title
  * @return \stdClass
@@ -24,7 +24,46 @@ function config() {
 }
 
 /**
- * Return current request URL
+ * Return src directory path.
+ *
+ * @param null $path
+ * @return bool
+ */
+function src($path = null) {
+	return realpath(isset(config()->src) ? config()->src : (config()->src = getcwd() . '/src/')) . $path;
+}
+
+/**
+ * Return tmp directory path.
+ *
+ * @param null $path
+ * @return bool|string
+ */
+function tmp($path = null) {
+	return isset(config()->cache) && config()->cache ? realpath(config()->cache) . '/' . $path : false;
+}
+
+
+function cached($file = null, $data = null, $expire = null) {
+	if ($file === false || $expire === null) {
+		return is_callable($data) ? call_user_func($data) : $data; // no cached
+	}
+
+	if (
+		$expire === true ||
+		(is_int($expire) && @filemtime($file) + $expire > time()) ||
+		(is_callable($expire) && call_user_func($expire, $file))
+	) {
+		$data = is_callable($data) ? call_user_func($data, $file) : $data;
+		@file_put_contents($file, $data);
+		return $data;
+	} else {
+		return @file_get_contents($file);
+	}
+}
+
+/**
+ * Return current request URL segment
  *
  * @return mixed
  */
@@ -40,16 +79,6 @@ function request() {
 	$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
 	return $request = preg_replace('@^' . preg_quote($base) . '@', '', $path);
-}
-
-/**
- * Return SRC directory path
- *
- * @param null $path
- * @return bool
- */
-function src($path = null) {
-	return realpath(isset(config()->src) ? config()->src : (config()->src = getcwd() . '/src/')) . $path;
 }
 
 /**
@@ -116,7 +145,7 @@ function nocache() {
 }
 
 /**
- * Send JSON  formated data.
+ * Send JSON data.
  *
  * @param $value
  * @param int $code
@@ -131,7 +160,7 @@ function json($value, $code = 200, $options = 0, $depth = 512) {
 }
 
 /**
- * Download file
+ * Download selected file.
  *
  * @param $file
  * @param null $filename
