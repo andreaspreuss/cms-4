@@ -133,6 +133,15 @@ function add_action($event, callable $listener, $priority = 10) {
  * @param callable $listener
  * @param int $priority
  */
+function add_listener($event, callable $listener, $priority = 10) {
+	on($event, $listener, $priority);
+}
+
+/**
+ * @param $event
+ * @param callable $listener
+ * @param int $priority
+ */
 function add_filter($event, callable $listener, $priority = 10) {
 	on($event, $listener, $priority);
 }
