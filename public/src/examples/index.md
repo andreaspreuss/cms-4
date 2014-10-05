@@ -16,10 +16,10 @@ order: 4
 Open `functions.php` in main folder and add your custom functions:
 
 	namespace {
-		/** @var \vestibulum\Vestibulum $cms */
+		/** @var \vestibulum\Vestibulum $this */
 		function myUrl() {
-	     global $cms; /** @var \vestibulum\Vestibulum $cms */
-	     return $cms->url($_SERVER['REQUEST_URI']);
+	     global $this; /** @var \vestibulum\Vestibulum $this */
+	     return $this->url($_SERVER['REQUEST_URI']);
 	  }
 	}
 
@@ -29,9 +29,9 @@ Your function now will be accesible in Latte template `{myUrl()}`.
 
 You can add more parameters from `function.php
 
-    $cms->get = $_GET;
-    $cms->post = $_POST;
-    $cms->xxx = 'some value';
+    $this->get = $_GET;
+    $this->post = $_POST;
+    $this->xxx = 'some value';
 
 Will be accessible in template like `{$get->something}` or `{$post.something}` or `{$xxx}`.
 
@@ -39,9 +39,9 @@ Will be accessible in template like `{$get->something}` or `{$post.something}` o
 
 You can change your `config.php` or overwrite something directly from `functions.php`
 
-    /** @var \vestibulum\Vestibulum $cms */
-    $cms->config()->title = 'Vestibulum';
-    $cms->config()->example = 'example';
+    /** @var \vestibulum\Vestibulum $this */
+    $this->config()->title = 'Vestibulum';
+    $this->config()->example = 'example';
 
 In Twig template will be accessible `{{config.example}}`
 
@@ -90,13 +90,13 @@ and HTML need contains
 
 Add follow code to your `functions.php` and all markdown images URL will be replaces with absolute URL:
 
-    $cms->file->setContent(
+    $this->file->setContent(
     	preg_replace_callback(
-    		'{(!\[.+\]\s?\()(\S*)([ \n]*(?:[\'"].*?[ \n]*[\'"])?\))}xsU', function ($matches) use ($cms) {
-    			$path = $cms->file->isDir() ? $cms->file->getRealPath() : dirname($cms->file);
-    			$path = str_replace(dirname($cms->src()), '', $path . '/');
-    			return $matches[1] . $cms->url($path . $matches[2]) . $matches[3];
-    		}, $cms->file->getContent()
+    		'{(!\[.+\]\s?\()(\S*)([ \n]*(?:[\'"].*?[ \n]*[\'"])?\))}xsU', function ($matches) use ($this) {
+    			$path = $this->file->isDir() ? $this->file->getRealPath() : dirname($this->file);
+    			$path = str_replace(dirname($this->src()), '', $path . '/');
+    			return $matches[1] . $this->url($path . $matches[2]) . $matches[3];
+    		}, $this->file->getContent()
     	)
     );
 

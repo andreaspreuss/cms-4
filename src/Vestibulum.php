@@ -2,6 +2,7 @@
 namespace vestibulum;
 
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/events.php';
 
 use Latte\Engine;
 use Latte\Macros\MacroSet;
@@ -25,7 +26,8 @@ class Vestibulum extends \stdClass {
 		$this->config = config();
 		$this->requires();
 		$this->file = $this->getFile((array)$this->config->meta);
-		$this->functions();
+
+		@include_once getcwd() . '/functions.php'; // include functions
 	}
 
 	/**
@@ -39,15 +41,6 @@ class Vestibulum extends \stdClass {
 		// cwd index.php of request.php
 		is_file($php = getcwd() . request() . '/index.php') ? include_once $php : null ||
 		is_file($php = getcwd() . request() . '.php') ? include_once $php : null;
-	}
-
-	/**
-	 * Requires functions.php
-	 */
-	public function functions() {
-		global $cms;
-		$cms = $this; // create link to $this
-		@include_once getcwd() . '/functions.php'; //
 	}
 
 	/**
@@ -130,7 +123,7 @@ class Vestibulum extends \stdClass {
 		// Latte
 		if ($template === 'latte') {
 			$latte = $this->getLatteEngine();
-			if ($this->file->latte || $this->file->getExtension() === 'latte') {
+			if (isset($this->file->latte) || $this->file->getExtension() === 'latte') {
 				$this->content = $latte->renderToString($this->file, get_object_vars($this));
 			}
 

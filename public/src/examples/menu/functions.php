@@ -1,5 +1,5 @@
 <?php
 namespace vestibulum {
-	/** @var \vestibulum\Vestibulum $cms */
-	$cms->pages = Pages::from(src('/examples'))->toArraySorted();
+	/** @var \vestibulum\Vestibulum $this */
+	$this->pages = Pages::from(src('/examples'))->toArraySorted();
 }
