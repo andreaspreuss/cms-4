@@ -107,6 +107,24 @@ function filter($event, $value = null) {
 	return $value;
 }
 
+/**
+ * Handle event with latest register listener.
+ *
+ * @param $event
+ * @param callable $listener
+ * @param bool $trigger
+ */
+function handle($event, callable $listener = null, $trigger = false) {
+	global $events;
+
+	if ($trigger) {
+		$listener = isset($events[$event]) ? end($events[$event]) : $listener;
+		return call_user_func_array($listener, array_slice(func_get_args(), 3));
+	} else {
+		$events[$event][] = $listener;
+	}
+}
+
 // ---------------------------------------------------- aliases ---------------------------------------------------- //
 
 /**

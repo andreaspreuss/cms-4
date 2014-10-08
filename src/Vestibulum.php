@@ -23,7 +23,7 @@ class Vestibulum extends \stdClass {
 	public $content;
 
 	public function __construct() {
-		$this->config = config();
+		$this->config = settings();
 		$this->requires();
 		$this->file = $this->getFile((array)$this->config->meta);
 
@@ -69,20 +69,14 @@ class Vestibulum extends \stdClass {
 	 */
 	protected function render() {
 
-		// HTTP response status code
-		if ($code = isset($this->file->status) ? $this->file->status : null) {
-			header(
-				(isset($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.1") . " " . $code, true, $code
-			);
-		}
+		// HTTP sonse status code
+		if ($code = isset($this->file->status) ? $this->file->status : null) status($code);
 
 		if ($this->file->getExtension() === 'phtml') {
+			extract(get_object_vars($this), EXTR_SKIP);
 			ob_start();
-			extract(get_object_vars($this));
-			require($this->file);
-			$output = ob_get_contents();
-			ob_end_clean();
-			return $output;
+			require $this->file;
+			return ob_get_clean();
 		}
 
 
@@ -99,9 +93,8 @@ class Vestibulum extends \stdClass {
 		// Read markdown from cache or recompile
 		if ($this->file->getExtension() === 'md') {
 			$cacheFile = tmp(md5($this->file) . '.html');
-
-			$this->content = cached(
-				$cacheFile, function () use ($cacheFile) {
+			$this->content = cache(
+				$cacheFile, function () {
 					return \Parsedown::instance()->text($this->content);
 				},
 				$this->file->getMTime() > @filemtime($cacheFile)
@@ -112,12 +105,10 @@ class Vestibulum extends \stdClass {
 
 		// phtml - for those who have an performance obsession :-)
 		if ($template === 'phtml' || $template === 'php') {
+			extract(get_object_vars($this), EXTR_SKIP);
 			ob_start();
-			extract(get_object_vars($this));
-			require($this->file->template);
-			$output = ob_get_contents();
-			ob_end_clean();
-			return $output;
+			require $this->file->template;
+			return ob_get_clean();
 		}
 
 		// Latte
@@ -161,3 +152,4 @@ class Vestibulum extends \stdClass {
 		}
 	}
 }
+

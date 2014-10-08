@@ -7,7 +7,7 @@ namespace vestibulum;
  * @property string $title
  * @return \stdClass
  */
-function config() {
+function settings() {
 	static $config;
 
 	return $config ? $config : $config = (object)array_replace_recursive(
@@ -30,7 +30,7 @@ function config() {
  * @return bool
  */
 function src($path = null) {
-	return realpath(isset(config()->src) ? config()->src : (config()->src = getcwd() . '/src/')) . $path;
+	return realpath(isset(settings()->src) ? settings()->src : (settings()->src = getcwd() . '/src/')) . $path;
 }
 
 /**
@@ -40,26 +40,36 @@ function src($path = null) {
  * @return bool|string
  */
 function tmp($path = null) {
-	return isset(config()->cache) && config()->cache ? realpath(config()->cache) . '/' . $path : false;
+	return isset(settings()->cache) && settings()->cache ? realpath(settings()->cache) . '/' . $path : false;
 }
 
+/**
+ * Read content from cached file.
+ *
+ * @param string|callable $file
+ * @param mixed|callable $data
+ * @param null|int|bool|callable $expire
+ * @param null|callable $filter
+ * @return mixed|null|string
+ */
+function cache($file, $data, $expire = null, $filter = null) {
 
-function cached($file = null, $data = null, $expire = null) {
-	if ($file === false || $expire === null) {
-		return is_callable($data) ? call_user_func($data) : $data; // no cached
-	}
+	// Getting cached file name
+	$file = is_callable($file) ? call_user_func($file) : $file;
 
-	if (
-		$expire === true ||
-		(is_int($expire) && @filemtime($file) + $expire > time()) ||
-		(is_callable($expire) && call_user_func($expire, $file))
-	) {
+	// Expire cached file content?
+	$expire = is_bool($expire) ? $expire : is_null($expire) ||
+		(is_int($expire) && @filemtime($file) + $expire < time()) ||
+		(is_callable($expire) && call_user_func($expire, $file));
+
+	if ($expire || !is_file($file)) {
 		$data = is_callable($data) ? call_user_func($data, $file) : $data;
 		@file_put_contents($file, $data);
-		return $data;
 	} else {
-		return @file_get_contents($file);
+		$data = @file_get_contents($file);
 	}
+
+	return is_callable($filter) ? call_user_func($filter, $data) : $data;
 }
 
 /**
@@ -70,13 +80,13 @@ function cached($file = null, $data = null, $expire = null) {
 function request() {
 	static $request;
 
-	if ($request) return $request;
+	if ($request !== null) return $request;
 
 	// base directory detection
 	$base = rtrim(strtr(dirname($_SERVER['SCRIPT_NAME']), '\\', '/'), '/');
 
 	# current requested URI
-	$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+	$path = rtrim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
 
 	return $request = preg_replace('@^' . preg_quote($base) . '@', '', $path);
 }
@@ -96,16 +106,22 @@ function isPost() {
 }
 
 /**
+ * @return bool
+ */
+function isGet() {
+	return $_SERVER['REQUEST_METHOD'] === 'GET';
+}
+
+/**
  * Make HTTP redirect
  *
  * @param string $path
  * @param int $code
- * @param bool $condition
+ * @param bool $halt
  */
-function redirect($path, $code = 302, $condition = true) {
-	if (!$condition) return;
-	@header("Location: {$path}", true, $code);
-	exit;
+function redirect($path, $code = 302, $halt = true) {
+	header("Location: {$path}", true, $code);
+	$halt && exit;
 }
 
 /**
@@ -132,31 +148,50 @@ function url($url = null, $src = null) {
 }
 
 /**
- * Spit headers that force cache volatility.
+ * Prints out no-cache headers
  *
  * @return void
  */
-function nocache() {
+function nocache($content = null) {
 	header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+	header('Last-Modified: ' . gmdate('D, d M Y H:i:s', $_SERVER['REQUEST_TIME']) . ' GMT');
 	header('Cache-Control: no-store, no-cache, must-revalidate');
 	header('Cache-Control: post-check=0, pre-check=0', false);
 	header('Pragma: no-cache');
+	return $content and strlen($content) and (die($content));
 }
 
 /**
  * Send JSON data.
  *
  * @param $value
- * @param int $code
  * @param int $options
  * @param int $depth
+ * @return bool
  */
-function json($value, $code = 200, $options = 0, $depth = 512) {
-	nocache();
+function json($value, $options = 0, $depth = 512) {
+	$json = json_encode($value, $options, $depth);
+	$err = json_last_error();
+
+	if ($err !== JSON_ERROR_NONE) {
+		return trigger_error(
+			__FUNCTION__ . ": JSON encoding failed [{$err}].",
+			E_USER_ERROR
+		);
+	}
+
 	header('Content-Type: application/json');
-	header((isset($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.1") . " " . $code, true, $code);
-	die(json_encode($value, $options, $depth));
+	return print $json;
+}
+
+/**
+ * HTTP response status code.
+ *
+ * @param $code
+ * @return int
+ */
+function status($code) {
+	return http_response_code($code);
 }
 
 /**
@@ -167,8 +202,7 @@ function json($value, $code = 200, $options = 0, $depth = 512) {
  */
 function download($file, $filename = null) {
 	if (!is_file($file)) {
-		header((isset($_SERVER["SERVER_PROTOCOL"]) ? $_SERVER["SERVER_PROTOCOL"] : "HTTP/1.1") . " " . 404, true, 404);
-		die('File not found.');
+		status(404) and die('File not found.');
 	}
 
 	header('Pragma: public');
