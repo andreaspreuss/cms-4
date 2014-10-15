@@ -43,5 +43,8 @@ Assert::same('This will be shorten', $meta->shorten('# This will be shorten'));
 
 // Parse meta
 Assert::null($meta->parseMeta(''));
-Assert::same(['t' => '5'], $meta->parseMeta('<!--' . PHP_EOL . 't: 5' . PHP_EOL . '-->'));
-Assert::same(['t' => 'some string'], $meta->parseMeta('<!--' . PHP_EOL . 't: some string' . PHP_EOL . '-->'));
+Assert::same(['t' => '5'], $meta->parseMeta('<!--' . PHP_EOL . 't: 5' . PHP_EOL . '-->')); // int
+Assert::same(['t' => 'some string'], $meta->parseMeta('<!--' . PHP_EOL . 't: some string' . PHP_EOL . '-->')); // str
+Assert::same(['t' => '12:00:00'], $meta->parseMeta('<!--' . PHP_EOL . 't: 12:00:00' . PHP_EOL . '-->')); // multiple : char
+Assert::same(['what ever have' => 'value'], $meta->parseMeta('<!--' . PHP_EOL . 'what ever have : value' . PHP_EOL . '-->'));
+

@@ -78,7 +78,8 @@ trait Metadata {
 	public static function parseMeta($content) {
 		preg_match('/<!--(.*)-->/sU', $content, $matches);
 		if ($matches && $ini = end($matches)) {
-			return parse_ini_string(str_replace(':', '=', $ini), false, INI_SCANNER_RAW);
+			$ini = preg_replace('#^([^:]+)\s*:\s*(.+)\s*$#mi', '$1=$2', $ini);
+			return parse_ini_string($ini, false, INI_SCANNER_RAW);
 		}
 	}
 }
