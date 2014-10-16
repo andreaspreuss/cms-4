@@ -79,7 +79,7 @@ function off($event, callable $listener = null) {
  *
  * @param $event
  */
-function trigger($event) {
+function fire($event) {
 	$args = func_get_args();
 	$event = array_shift($args);
 
@@ -87,6 +87,22 @@ function trigger($event) {
 		if (call_user_func_array($listener, $args) === false) break; // return false; // will break
 	}
 }
+
+/**
+ * Care about something
+ *
+ * @param string $event
+ * @param callable $listener
+ * @return mixed
+ */
+function handle($event, callable $listener = null) {
+	if ($listener) on($event, $listener, 0); // register default listener
+
+	if ($listeners = listeners($event)) {
+		return call_user_func_array(end($listeners), array_slice(func_get_args(), 2));
+	}
+}
+
 
 /**
  * Pass variable with all filters.
@@ -107,24 +123,6 @@ function filter($event, $value = null) {
 	return $value;
 }
 
-/**
- * Handle event with latest register listener.
- *
- * @param $event
- * @param callable $listener
- * @param bool $trigger
- */
-function handle($event, callable $listener = null, $trigger = false) {
-	global $events;
-
-	if ($trigger) {
-		$listener = isset($events[$event]) ? end($events[$event]) : $listener;
-		return call_user_func_array($listener, array_slice(func_get_args(), 3));
-	} else {
-		$events[$event][] = $listener;
-	}
-}
-
 // ---------------------------------------------------- aliases ---------------------------------------------------- //
 
 /**
@@ -134,7 +132,7 @@ function handle($event, callable $listener = null, $trigger = false) {
  * @return mixed
  */
 function action($event) {
-	return call_user_func_array('\trigger', func_get_args());
+	return call_user_func_array('\fire', func_get_args());
 }
 
 /**

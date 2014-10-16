@@ -15,17 +15,17 @@ use Latte\Runtime\Filters;
  */
 class Vestibulum extends \stdClass {
 
-	/** @var \stdClass */
-	public $config;
 	/** @var File */
 	public $file;
 	/** @var string */
 	public $content;
+	/** @var \stdClass */
+	public $config;
 
 	public function __construct() {
 		$this->config = settings();
 		$this->requires();
-		$this->file = $this->getFile((array)$this->config->meta);
+		$this->file = $this->getFile((array)settings()->meta);
 
 		@include_once getcwd() . '/functions.php'; // include functions
 	}
@@ -67,11 +67,12 @@ class Vestibulum extends \stdClass {
 	/**
 	 * @return string
 	 */
-	protected function render() {
+	public function render() {
 
-		// HTTP sonse status code
+		// HTTP status code
 		if ($code = isset($this->file->status) ? $this->file->status : null) status($code);
 
+		// PHTML file execute
 		if ($this->file->getExtension() === 'phtml') {
 			extract(get_object_vars($this), EXTR_SKIP);
 			ob_start();
@@ -79,8 +80,7 @@ class Vestibulum extends \stdClass {
 			return ob_get_clean();
 		}
 
-
-		// replace {url} with current URL
+		// replace {url} with current server URL
 		if ($this->file->getExtension() === 'md' || $this->file->getExtension() === 'html') {
 			$this->content = preg_replace_callback(
 				"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
@@ -136,7 +136,7 @@ class Vestibulum extends \stdClass {
 		$set = new MacroSet($latte->getCompiler());
 		$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
 
-		return $latte;
+		return filter('latte', $latte);
 	}
 
 	/**
@@ -146,10 +146,9 @@ class Vestibulum extends \stdClass {
 	 */
 	public function __toString() {
 		try {
-			return $this->render();
+			return handle('render', [$this, 'render'], $this);
 		} catch (\Exception $e) {
 			return $e->getMessage();
 		}
 	}
 }
-
