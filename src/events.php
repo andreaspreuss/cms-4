@@ -1,12 +1,20 @@
 <?php
 /**
- * Hardcore simple events for PHP.
+ * Hardcore simple functional oriented events for PHP.
  *
+ * @see https://github.com/OzzyCzech/events
  * @author Roman Ozana <ozana@omdesign.cz>
  */
 
-/** @var array $events */
-$events = [];
+/**
+ * Return events object
+ *
+ * @return stdClass
+ */
+function events() {
+	static $events;
+	return $events ?: $events = new stdClass();
+}
 
 /**
  * Return listeners
@@ -15,10 +23,9 @@ $events = [];
  * @return mixed
  */
 function listeners($event) {
-	global $events;
-	if (isset($events[$event])) {
-		ksort($events[$event]);
-		return call_user_func_array('array_merge', $events[$event]);
+	if (isset(events()->$event)) {
+		ksort(events()->$event);
+		return call_user_func_array('array_merge', events()->$event);
 	}
 }
 
@@ -30,8 +37,7 @@ function listeners($event) {
  * @param int $priority
  */
 function on($event, callable $listener = null, $priority = 10) {
-	global $events;
-	$events[$event][$priority][] = $listener;
+	events()->{$event}[$priority][] = $listener;
 }
 
 /**
@@ -58,15 +64,14 @@ function once($event, callable $listener, $priority = 10) {
  * @return bool
  */
 function off($event, callable $listener = null) {
-	global $events;
-	if (!isset($events[$event])) return;
+	if (!isset(events()->$event)) return;
 
 	if ($listener === null) {
-		unset($events[$event]);
+		unset(events()->$event);
 	} else {
-		foreach ($events[$event] as $priority => $listeners) {
+		foreach (events()->$event as $priority => $listeners) {
 			if (false !== ($index = array_search($listener, $listeners, true))) {
-				unset($events[$event][$priority][$index]);
+				unset(events()->{$event}[$priority][$index]);
 			}
 		}
 	}
@@ -78,14 +83,18 @@ function off($event, callable $listener = null) {
  * Trigger events
  *
  * @param $event
+ * @return array
  */
 function fire($event) {
 	$args = func_get_args();
 	$event = array_shift($args);
 
+	$out = [];
 	foreach ((array)listeners($event) as $listener) {
-		if (call_user_func_array($listener, $args) === false) break; // return false; // will break
+		if (($out[] = call_user_func_array($listener, $args)) === false) break; // return false ==> stop propagation
 	}
+
+	return $out;
 }
 
 /**
@@ -132,6 +141,16 @@ function filter($event, $value = null) {
  * @return mixed
  */
 function action($event) {
+	return call_user_func_array('\fire', func_get_args());
+}
+
+/**
+ * Trigger an action.
+ *
+ * @param $event
+ * @return mixed
+ */
+function trigger($event) {
 	return call_user_func_array('\fire', func_get_args());
 }
 
