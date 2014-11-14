@@ -14,7 +14,7 @@ function settings() {
 		[
 			'title' => 'Vestibulum',
 			'cache' => false,
-			'src' => getcwd() . '/src/',
+			'src' => getcwd() . '/content/',
 			'meta' => [
 				'template' => 'index.latte',
 			]
