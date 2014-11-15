@@ -2,7 +2,7 @@
 id: how-to
 title: Example how to hack/customize Vestibulum CMS
 menu: Examples
-order: 4
+order: 5
 -->
 
 <div class="alert alert-info">
@@ -17,15 +17,15 @@ Open `functions.php` in main folder and add your custom functions:
 
 	namespace {
 		/** @var \vestibulum\Vestibulum $this */
-		function myUrl() {
+		function currentUrl() {
 	     global $this; /** @var \vestibulum\Vestibulum $this */
 	     return $this->url($_SERVER['REQUEST_URI']);
 	  }
 	}
 
-Your function now will be accesible in Latte template `{myUrl()}`.
+Your function now will be accesible in Latte template `{currentUrl()}`.
 
-### Add custom Twig parameters
+### Add custom Latte parameters
 
 You can add more parameters from `function.php
 
@@ -43,7 +43,7 @@ You can change your `config.php` or overwrite something directly from `functions
     $this->config()->title = 'Vestibulum';
     $this->config()->example = 'example';
 
-In Twig template will be accessible `{{config.example}}`
+In template will be accessible `{config()->title}`
 
 ## Hacking response
 

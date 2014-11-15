@@ -3,6 +3,13 @@ namespace vestibulum;
 
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/events.php';
+require_once __DIR__ . '/Metadata.php';
+require_once __DIR__ . '/Pages.php';
+require_once __DIR__ . '/File.php';
+
+// external library
+require_once __DIR__ . '/../vendor/latte/latte/src/latte.php';
+require_once __DIR__ . '/../vendor/erusev/parsedown/Parsedown.php';
 
 use Latte\Engine;
 use Latte\Macros\MacroSet;
@@ -23,9 +30,9 @@ class Vestibulum extends \stdClass {
 	public $config;
 
 	public function __construct() {
-		$this->config = settings();
+		$this->config = config();
 		$this->requires();
-		$this->file = $this->getFile((array)settings()->meta);
+		$this->file = $this->getFile((array)config()->meta);
 
 		@include_once getcwd() . '/functions.php'; // include functions
 	}
@@ -35,8 +42,8 @@ class Vestibulum extends \stdClass {
 	 */
 	public function requires() {
 		// src index.php of request.php
-		is_file($php = src(request() . '/index.php')) ? include_once $php : null ||
-		is_file($php = src(request() . '.php')) ? include_once $php : null;
+		is_file($php = content(request() . '/index.php')) ? include_once $php : null ||
+		is_file($php = content(request() . '.php')) ? include_once $php : null;
 
 		// cwd index.php of request.php
 		is_file($php = getcwd() . request() . '/index.php') ? include_once $php : null ||
@@ -51,16 +58,16 @@ class Vestibulum extends \stdClass {
 	 */
 	public function getFile(array $meta = []) {
 		$files = [
-			src(request()),
-			src(dirname(request()) . '/404'),
-			src('/404')
+			content(request()),
+			content(dirname(request()) . '/404'),
+			content('/404')
 		];
 
 		foreach ($files as $path) {
 			if ($file = File::fromPath($path, $meta)) return $file;
 		}
 
-		return new File(src(), array_merge($meta, ['status' => 404]), '<h1>404 Page not found</h1>'); // last chance
+		return new File(content(), array_merge($meta, ['status' => 404]), '<h1>404 Page not found</h1>'); // last chance
 	}
 
 

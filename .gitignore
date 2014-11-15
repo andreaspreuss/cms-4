@@ -6,14 +6,9 @@
 *.MD5
 *.mwb.bak
 
-### Tests
-tests/output
 
-### Ignore log and tmp/temp
-log/*
+tests/output
 tmp/*
-temp/*
-build
 
 ### Composer
 vendor/*
@@ -22,22 +17,13 @@ vendor/*
 
 ### IDE settings
 /.idea
-/nbproject
-
-### NPM modules
-/node_modules
-/npm-debug.log
-
-### Grunt file
-/.grunt
-/Gruntfile.js
 
 ### not ignore
 !.gitignore
 !.htaccess
 !web.config
 
-
-### Ignore html files
+### Ignore
 public/js/*.js
 public/css/*.css
+public/*.zip

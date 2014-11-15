@@ -7,14 +7,14 @@ namespace vestibulum;
  * @property string $title
  * @return \stdClass
  */
-function settings() {
+function config() {
 	static $config;
 
 	return $config ? $config : $config = (object)array_replace_recursive(
 		[
 			'title' => 'Vestibulum',
 			'cache' => false,
-			'src' => getcwd() . '/content/',
+			'content' => getcwd() . '/content/',
 			'meta' => [
 				'template' => 'index.latte',
 			]
@@ -24,13 +24,13 @@ function settings() {
 }
 
 /**
- * Return src directory path.
+ * Return content directory path.
  *
  * @param null $path
  * @return bool
  */
-function src($path = null) {
-	return realpath(isset(settings()->src) ? settings()->src : (settings()->src = getcwd() . '/src/')) . $path;
+function content($path = null) {
+	return realpath(isset(config()->content) ? config()->content : (config()->content = getcwd() . '/content/')) . $path;
 }
 
 /**
@@ -40,7 +40,7 @@ function src($path = null) {
  * @return bool|string
  */
 function tmp($path = null) {
-	return isset(settings()->cache) && settings()->cache ? realpath(settings()->cache) . '/' . $path : false;
+	return isset(config()->cache) && config()->cache ? realpath(config()->cache) . '/' . $path : false;
 }
 
 /**
@@ -143,7 +143,7 @@ function url($url = null, $src = null) {
 		);
 
 	} elseif ($url instanceof File) {
-		return $url->getSlug($src ? $src : src());
+		return $url->getSlug($src ? $src : content());
 	}
 }
 

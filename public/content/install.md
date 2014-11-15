@@ -5,16 +5,16 @@ menu: Install
 order : 2
 -->
 
-# How to Install Vestibulum CMS
 
-1. [Download Composer](http://getcomposer.org/download) `curl -s http://getcomposer.org/installer | php`
-1. Run `php composer.phar create-project om/vestibulum`
-2. Update content in `public/src` and `public/config.php`
-3. Upload files to your server
+# How to install Vestibulum CMS
+
+1. Download and unzip [latest version](/download) or run `php composer.phar create-project om/vestibulum`.
+2. Change files in `public/content` and `public/config.php`
+3. Upload everything to your server.
 
 ### Requirements
 
-- PHP 5.5 +
+- PHP 5.5+
 - Apache / NGINX
 
 ### Setup NGINX
