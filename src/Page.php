@@ -13,11 +13,10 @@ namespace vestibulum;
  * @property string basename
  * @property string dir
  * @property string file
- * @property bool twig
  *
  * @author Roman Ožana <ozana@omdesign.cz>
  */
-class File extends \SplFileInfo {
+class Page extends \SplFileInfo {
 
 	use Metadata;
 
@@ -58,8 +57,7 @@ class File extends \SplFileInfo {
 			'name' => $this->getName(),
 			'basename' => $this->getFilename(),
 			'dir' => $this->isDir() ? $this->getDir() : null,
-			'file' => $this->isFile() ? $this->getRealPath() : null,
-			'twig' => false, // use Twig syntax
+			'file' => $this->isFile() ? $this->getRealPath() : null
 		];
 
 		return array_merge($default, $meta, (array)$this->parseMeta($this->getContent()));

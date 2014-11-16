@@ -15,7 +15,7 @@ class SiteMap {
 	public function addItem($pages) {
 		$out = '';
 		foreach ($pages as $page) {
-			/** @var \vestibulum\File $page */
+			/** @var \vestibulum\Page $page */
 			$out .= sprintf(
 				'<url><loc>%s</loc><lastmod>%s</lastmod></url>' . PHP_EOL,
 				htmlspecialchars(url($page->getSlug(__DIR__))),

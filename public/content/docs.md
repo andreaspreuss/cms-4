@@ -25,14 +25,16 @@ If any file cannot be found, the file `content/404.md` will be generate or subdi
 | `/content/index.latte`     | `/`
 | `/content/index.phtml`     | `/`
 | `/content/sub.md`          | `/sub`
-| `/content/sub/index.html`  | `/sub` (same as above)
-| `/content/sub/index.md`    | `/sub` (same as above)
-| `/content/sub/index.latte` | `/sub` (same as above)
-| `/content/sub/index.phtml` | `/sub` (same as above)
+| `/content/sub/index.html`  | `/sub`
+| `/content/sub/index.md`    | `/sub`
+| `/content/sub/index.latte` | `/sub`
+| `/content/sub/index.phtml` | `/sub`
 | `/content/som/url/xxx.md`  | `/some/url/xxx`
 
 
-## Metadata
+## File Metadata
+
+Whole metadata are optional. Vestibulum CMS support HTML style block comments for metadata: 
 
     <!--
     title: Welcome
@@ -40,10 +42,20 @@ If any file cannot be found, the file `content/404.md` will be generate or subdi
     author: Roman Ožana
     order: 100
     date: 2013/01/01
+    whatever: some custom content
     status: 404
     -->
 
-## Templates
+All metadata are available `\stdClass $page` variable and can be accesible from template file e.g. as `{$page->title}` or `{$page->whatever}`. The `status` will be used as HTTP status code. If you don't setup title - first H1 content will be used.
+
+## Templating
+| Variable       | Description
+|----------------|-------------
+| `$page`        | Current processed page metadata and file data.
+| `$config`      | Configuration as `\stdClass` variable.
+| `$content`     | HTML content to be generated on current page.
+
+- [Latte Templates](http://latte.nette.org/)
 
 ## Events
 

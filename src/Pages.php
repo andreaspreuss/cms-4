@@ -26,11 +26,11 @@ class Pages {
 	 * @param string $class
 	 * @return \vestibulum\Pages
 	 */
-	public static function from($path, $filter = ['index', '404'], $class = '\\vestibulum\\File') {
+	public static function from($path, $filter = ['index', '404'], $class = '\\vestibulum\\Page') {
 		$iterator = new \RecursiveDirectoryIterator(realpath($path), \RecursiveDirectoryIterator::SKIP_DOTS);
 		if (class_exists($class)) $iterator->setInfoClass($class);
 
-		$filter = is_callable($filter) ? $filter : function (File $item) use ($filter) {
+		$filter = is_callable($filter) ? $filter : function (Page $item) use ($filter) {
 			return $item->isValid((array)$filter);
 		};
 
@@ -71,7 +71,7 @@ class Pages {
 		$toArray = function (\RecursiveIterator $iterator) use (&$toArray) {
 			$array = [];
 			foreach ($iterator as $file) {
-				/** @var File $file */
+				/** @var Page $file */
 				$current = $file;
 				if ($iterator->hasChildren()) {
 					$current->children = $toArray($iterator->getChildren());

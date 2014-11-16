@@ -142,7 +142,7 @@ function url($url = null, $src = null) {
 			parse_url($url, PHP_URL_PATH), '/'
 		);
 
-	} elseif ($url instanceof File) {
+	} elseif ($url instanceof Page) {
 		return $url->getSlug($src ? $src : content());
 	}
 }
