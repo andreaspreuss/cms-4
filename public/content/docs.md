@@ -46,12 +46,14 @@ Whole metadata are optional. Vestibulum CMS support HTML style block comments fo
     status: 404
     -->
 
-All metadata are available `\stdClass $page` variable and can be accesible from template file e.g. as `{$page->title}` or `{$page->whatever}`. The `status` will be used as HTTP status code. If you don't setup title - first H1 content will be used.
+All metadata are available `\stdClass $file` variable and can be accesible from template file e.g. as `{$file->title}` or `{$file->whatever}`. The `status` will be used as HTTP status code.
+
+If you don't setup title - first H1 content will be used. If you don't setup description - shorten text content will be generated automatically.
 
 ## Templating
 | Variable       | Description
 |----------------|-------------
-| `$page`        | Current processed page metadata and file data.
+| `$file`        | Current processed file metadata.
 | `$config`      | Configuration as `\stdClass` variable.
 | `$content`     | HTML content to be generated on current page.
 

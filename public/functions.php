@@ -13,4 +13,8 @@ namespace {
 
 	// add your custom function here
 	function yolo() { \vestibulum\redirect('http://www.omdesign.cz'); }
+
+	// and in template just write
+	// {yolo()}
+	// that's all
 }
