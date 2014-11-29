@@ -34,7 +34,7 @@ class Vestibulum extends \stdClass {
 		$this->requires();
 		$this->page = $this->getPage((array)config()->meta);
 
-		@include_once getcwd() . '/functions.php'; // include functions
+		is_file(getcwd() . '/functions.php') ? include_once getcwd() . '/functions.php' : null;
 	}
 
 	/**
