@@ -1,6 +1,8 @@
 <?php
 namespace vestibulum;
 
+use Latte\Runtime\Filters;
+
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/events.php';
 require_once __DIR__ . '/Metadata.php';
@@ -10,10 +12,6 @@ require_once __DIR__ . '/Page.php';
 // external library
 require_once __DIR__ . '/../vendor/latte/latte/src/latte.php';
 require_once __DIR__ . '/../vendor/erusev/parsedown/Parsedown.php';
-
-use Latte\Engine;
-use Latte\Macros\MacroSet;
-use Latte\Runtime\Filters;
 
 /**
  * Vestibulum: Really deathly simple CMS
@@ -80,7 +78,7 @@ class Vestibulum extends \stdClass {
 		if ($code = isset($this->page->status) ? $this->page->status : null) status($code);
 
 		// PHTML file execute
-		if ($this->page->getExtension() === 'phtml') {
+		if ($this->page->is('phtml')) {
 			extract(get_object_vars($this), EXTR_SKIP);
 			ob_start();
 			require $this->page;
@@ -88,7 +86,7 @@ class Vestibulum extends \stdClass {
 		}
 
 		// replace {url} with current server URL
-		if ($this->page->getExtension() === 'md' || $this->page->getExtension() === 'html') {
+		if ($this->page->is('md') || $this->page->is('html')) {
 			$this->content = preg_replace_callback(
 				"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
 					return Filters::safeUrl(url(end($m)));
@@ -98,13 +96,13 @@ class Vestibulum extends \stdClass {
 		}
 
 		// Read markdown from cache or recompile
-		if ($this->page->getExtension() === 'md') {
-			$cacheFile = tmp(md5($this->page) . '.html');
+		if ($this->page->is('md')) {
 			$this->content = cache(
-				$cacheFile, function () {
+				$file = tmp($this->page->getName() . '-' . md5($this->page) . '.html'),
+				function () {
 					return \Parsedown::instance()->text($this->content);
 				},
-				$this->page->getMTime() > @filemtime($cacheFile)
+				$this->page->getMTime() > @filemtime($file)
 			);
 		}
 
@@ -118,9 +116,9 @@ class Vestibulum extends \stdClass {
 			return ob_get_clean();
 		}
 
-		// Latte
+		// Latte - for lazy people :-)
 		if ($template === 'latte') {
-			$latte = $this->getLatteEngine();
+			$latte = latte();
 			if (isset($this->page->latte) || $this->page->getExtension() === 'latte') {
 				$this->content = $latte->renderToString($this->page, get_object_vars($this));
 			}
@@ -129,21 +127,6 @@ class Vestibulum extends \stdClass {
 		}
 
 		return $this->content;
-	}
-
-	/**
-	 * Return Latte engine
-	 *
-	 * @return Engine
-	 */
-	protected function getLatteEngine() {
-		$latte = new Engine();
-		$latte->setTempDirectory(tmp());
-
-		$set = new MacroSet($latte->getCompiler());
-		$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
-
-		return filter('latte', $latte);
 	}
 
 	/**

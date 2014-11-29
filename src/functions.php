@@ -150,6 +150,7 @@ function url($url = null, $src = null) {
 /**
  * Prints out no-cache headers
  *
+ * @param string|null $content
  * @return void
  */
 function nocache($content = null) {
@@ -201,10 +202,7 @@ function status($code) {
  * @param null $filename
  */
 function download($file, $filename = null) {
-	if (!is_file($file)) {
-		status(404) and die('File not found.');
-	}
-
+	if (!is_file($file)) status(404) and die('File not found.'); // file not found
 	header('Pragma: public');
 	header('Content-Type: application/octet-stream');
 	header('Content-Disposition: attachment; filename=' . urlencode($filename ?: basename($file)));
@@ -213,4 +211,17 @@ function download($file, $filename = null) {
 	header('ContentLength: ' . filesize($file));
 	header('Connection: close');
 	die(readfile($file));
+}
+
+/**
+ * @return mixed|null
+ */
+function latte() {
+	$latte = new \Latte\Engine();
+	$latte->setTempDirectory(tmp());
+
+	$set = new \Latte\Macros\MacroSet($latte->getCompiler());
+	$set->addMacro('url', filter('url', 'echo \vestibulum\url(%node.args);'));
+
+	return filter('latte', $latte);
 }

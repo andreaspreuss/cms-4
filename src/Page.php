@@ -13,6 +13,9 @@ namespace vestibulum;
  * @property string basename
  * @property string dir
  * @property string file
+ * @property string status
+ * @property string template
+ * @property string latte
  *
  * @author Roman Ožana <ozana@omdesign.cz>
  */
@@ -124,6 +127,16 @@ class Page extends \SplFileInfo {
 	 */
 	public function getName() {
 		return $this->getBasename('.' . $this->getExtension());
+	}
+
+	/**
+	 * Check extension.
+	 *
+	 * @param string $ext
+	 * @return bool
+	 */
+	public function is($ext) {
+		return $this->getExtension() === $ext;
 	}
 
 	/**

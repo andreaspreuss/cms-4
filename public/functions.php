@@ -12,9 +12,12 @@ namespace {
 	/** @var \vestibulum\Vestibulum $this */
 
 	// add your custom function here
-	function yolo() { \vestibulum\redirect('http://www.omdesign.cz'); }
+	function yolo() {
+		\vestibulum\redirect('http://www.omdesign.cz');
+	}
 
 	// and in template just write
 	// {yolo()}
 	// that's all
 }
+

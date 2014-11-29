@@ -16,10 +16,8 @@ order: 5
 Open `functions.php` in main folder and add your custom functions:
 
 	namespace {
-		/** @var \vestibulum\Vestibulum $this */
 		function currentUrl() {
-	     global $this; /** @var \vestibulum\Vestibulum $this */
-	     return $this->url($_SERVER['REQUEST_URI']);
+			return \vestibulum\url($_SERVER['REQUEST_URI']); // current URL
 	  }
 	}
 
@@ -39,10 +37,11 @@ Will be accessible in template like `{$get->something}` or `{$post.something}` o
 
 You can change your `config.php` or overwrite something directly from `functions.php`
 
-    /** @var \vestibulum\Vestibulum $this */
-    $this->config()->title = 'Vestibulum';
-    $this->config()->example = 'example';
-
+	namespace vestibulum {
+		config()->title = 'Vestibulum';
+    config()->->example = 'example';
+	}
+	
 In template will be accessible `{config()->title}`
 
 ## Hacking response
