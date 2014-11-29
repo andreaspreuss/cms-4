@@ -150,7 +150,7 @@ function url($url = null, $src = null) {
 /**
  * Prints out no-cache headers
  *
- * @param string|null $content
+ * @param null $content
  * @return void
  */
 function nocache($content = null) {
@@ -221,7 +221,7 @@ function latte() {
 	$latte->setTempDirectory(tmp());
 
 	$set = new \Latte\Macros\MacroSet($latte->getCompiler());
-	$set->addMacro('url', filter('url', 'echo \vestibulum\url(%node.args);'));
+	$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
 
 	return filter('latte', $latte);
 }
