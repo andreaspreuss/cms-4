@@ -212,16 +212,3 @@ function download($file, $filename = null) {
 	header('Connection: close');
 	die(readfile($file));
 }
-
-/**
- * @return mixed|null
- */
-function latte() {
-	$latte = new \Latte\Engine();
-	$latte->setTempDirectory(tmp());
-
-	$set = new \Latte\Macros\MacroSet($latte->getCompiler());
-	$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
-
-	return filter('latte', $latte);
-}

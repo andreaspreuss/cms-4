@@ -7,6 +7,7 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/events.php';
 require_once __DIR__ . '/Metadata.php';
 require_once __DIR__ . '/Pages.php';
+require_once __DIR__ . '/Render.php';
 require_once __DIR__ . '/Page.php';
 
 // external library
@@ -20,6 +21,10 @@ require_once __DIR__ . '/../vendor/erusev/parsedown/Parsedown.php';
  */
 class Vestibulum extends \stdClass {
 
+	use Render;
+
+	/** @var Vestibulum */
+	public $cms;
 	/** @var Page */
 	public $page;
 	/** @var string */
@@ -28,6 +33,7 @@ class Vestibulum extends \stdClass {
 	public $config;
 
 	public function __construct() {
+		$this->cms = $this;
 		$this->config = config();
 		$this->requires();
 		$this->page = $this->getPage((array)config()->meta);
@@ -118,7 +124,7 @@ class Vestibulum extends \stdClass {
 
 		// Latte - for lazy people :-)
 		if ($template === 'latte') {
-			$latte = latte();
+			$latte = $this->getLatte();
 			if (isset($this->page->latte) || $this->page->getExtension() === 'latte') {
 				$this->content = $latte->renderToString($this->page, get_object_vars($this));
 			}
@@ -127,18 +133,5 @@ class Vestibulum extends \stdClass {
 		}
 
 		return $this->content;
-	}
-
-	/**
-	 * Render string content
-	 *
-	 * @return string
-	 */
-	public function __toString() {
-		try {
-			return handle('render', [$this, 'render'], $this);
-		} catch (\Exception $e) {
-			return $e->getMessage();
-		}
 	}
 }
