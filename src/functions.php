@@ -24,6 +24,29 @@ function config() {
 }
 
 /**
+ * Return current URL path.
+ *
+ * @param null $url
+ * @param null $src
+ * @return string
+ */
+function url($url = null, $src = null) {
+	if (is_string($url) || is_null($url)) {
+
+		return (isset($_SERVER['HTTPS']) && strcasecmp(
+			$_SERVER['HTTPS'], 'off'
+		) ? 'https://' : 'http://') . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] :
+			(isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '')) .
+		($_SERVER["SERVER_PORT"] == '80' ? null : ':' . $_SERVER["SERVER_PORT"]) . '/' . ltrim(
+			parse_url($url, PHP_URL_PATH), '/'
+		);
+
+	} elseif ($url instanceof Page) {
+		return $url->getSlug($src ? $src : content());
+	}
+}
+
+/**
  * Return content directory path.
  *
  * @param null $path
@@ -122,29 +145,6 @@ function isGet() {
 function redirect($path, $code = 302, $halt = true) {
 	header("Location: {$path}", true, $code);
 	$halt && exit;
-}
-
-/**
- * Return URL
- *
- * @param null $url
- * @param null $src
- * @return string
- */
-function url($url = null, $src = null) {
-	if (is_string($url) || is_null($url)) {
-
-		return (isset($_SERVER['HTTPS']) && strcasecmp(
-			$_SERVER['HTTPS'], 'off'
-		) ? 'https://' : 'http://') . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] :
-			(isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '')) .
-		($_SERVER["SERVER_PORT"] == '80' ? null : ':' . $_SERVER["SERVER_PORT"]) . '/' . ltrim(
-			parse_url($url, PHP_URL_PATH), '/'
-		);
-
-	} elseif ($url instanceof Page) {
-		return $url->getSlug($src ? $src : content());
-	}
 }
 
 /**

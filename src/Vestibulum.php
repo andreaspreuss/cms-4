@@ -71,67 +71,19 @@ class Vestibulum extends \stdClass {
 			if ($file = Page::fromPath($path, $meta)) return $file;
 		}
 
-		return new Page(content(), array_merge($meta, ['status' => 404]), '<h1>404 Page not found</h1>'); // last chance
+		return new Page(content(), array_merge($meta, ['status' => 404]), '<h1>404 Page not found</h1>');
 	}
 
-
 	/**
+	 * Render string content
+	 *
 	 * @return string
 	 */
-	public function render() {
-
-		// HTTP status code
-		if ($code = isset($this->page->status) ? $this->page->status : null) status($code);
-
-		// PHTML file execute
-		if ($this->page->is('phtml')) {
-			extract(get_object_vars($this), EXTR_SKIP);
-			ob_start();
-			require $this->page;
-			return ob_get_clean();
+	public function __toString() {
+		try {
+			return handle('render', [$this, 'render'], $this);
+		} catch (\Exception $e) {
+			return $e->getMessage();
 		}
-
-		// replace {url} with current server URL
-		if ($this->page->is('md') || $this->page->is('html')) {
-			$this->content = preg_replace_callback(
-				"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
-					return Filters::safeUrl(url(end($m)));
-				},
-				$this->page->getContent()
-			);
-		}
-
-		// Read markdown from cache or recompile
-		if ($this->page->is('md')) {
-			$this->content = cache(
-				$file = tmp($this->page->getName() . '-' . md5($this->page) . '.html'),
-				function () {
-					return \Parsedown::instance()->text($this->content);
-				},
-				$this->page->getMTime() > @filemtime($file)
-			);
-		}
-
-		$template = pathinfo($this->page->template, PATHINFO_EXTENSION);
-
-		// phtml - for those who have an performance obsession :-)
-		if ($template === 'phtml' || $template === 'php') {
-			extract(get_object_vars($this), EXTR_SKIP);
-			ob_start();
-			require $this->page->template;
-			return ob_get_clean();
-		}
-
-		// Latte - for lazy people :-)
-		if ($template === 'latte') {
-			$latte = $this->getLatte();
-			if (isset($this->page->latte) || $this->page->getExtension() === 'latte') {
-				$this->content = $latte->renderToString($this->page, get_object_vars($this));
-			}
-
-			return $latte->renderToString($this->page->template, get_object_vars($this));
-		}
-
-		return $this->content;
 	}
 }
