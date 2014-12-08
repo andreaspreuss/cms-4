@@ -10,7 +10,7 @@ namespace vestibulum {
 }
 
 namespace {
-	/** @var \vestibulum\Vestibulum $this */
+	/** @var \vestibulum\Vestibulum $cms */
 
 	// add your custom function here
 	function yolo() {

@@ -39,7 +39,7 @@ You can change your `config.php` or overwrite something directly from `functions
 
 	namespace vestibulum {
 		config()->title = 'Vestibulum';
-    config()->->example = 'example';
+		config()->->example = 'example';
 	}
 	
 In template will be accessible `{config()->title}`
@@ -89,21 +89,23 @@ and HTML need contains
 
 Add follow code to your `functions.php` and all markdown images URL will be replaces with absolute URL:
 
-    $this->file->setContent(
-    	preg_replace_callback(
-    		'{(!\[.+\]\s?\()(\S*)([ \n]*(?:[\'"].*?[ \n]*[\'"])?\))}xsU', function ($matches) use ($this) {
-    			$path = $this->file->isDir() ? $this->file->getRealPath() : dirname($this->file);
-    			$path = str_replace(dirname($this->src()), '', $path . '/');
-    			return $matches[1] . $this->url($path . $matches[2]) . $matches[3];
-    		}, $this->file->getContent()
-    	)
-    );
-
+	$cms->page->setContent(
+		preg_replace_callback(
+			'{(!\[.+\]\s?\()(\S*)([ \n]*(?:[\'"].*?[ \n]*[\'"])?\))}xsU', function ($matches) use ($cms) {
+				$path = $cms->page->isDir() ? $cms->page->getRealPath() : $cms->page->getDir();
+				$path = str_replace(realpath(content()), '', $path) . '/';
+				return $matches[1] . url($path . $matches[2]) . $matches[3];
+			}, $cms->page->getContent()
+		)
+	);
 
 ## Advanced hacks
 
 - [Multi Language Content](/examples/multi-language)
-- [Replace Composer Autoloader](/examples/replace-composer-autoloader)
+- [Direct Latte input](/examples/latte)
+- [Redirect](/examples/redirect)
+- [Links](/examples/links)
+- [Download file example](/examples/download)
 - [Create sitemap](/examples/sitemap)
 - [Ajax contact form](/examples/email)
 - [Raw PHTML support](/examples/phtml)

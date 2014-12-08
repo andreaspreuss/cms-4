@@ -11,7 +11,7 @@
 <ul n:block="examples">
 	{foreach $pages as $item}
 		<li n:class="$page->id === $item->id ? active" id="{$item->id}">
-			<a href="{url $item}">{$item->menu ? $item->menu : $item->title}</a>
+			<a href="{url $item->getUrl()}">{$item->menu ? $item->menu : $item->title}</a>
 			{if $item->children}{include examples, pages => $item->children}{/if}
 		</li>
 	{/foreach}

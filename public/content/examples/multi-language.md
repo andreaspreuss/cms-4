@@ -29,7 +29,7 @@ Then you can add follow code if you are using Pages class for menu generation:
 
 Add language switch somewhere to your template file:
 
-    <a href="{{ url('en')}}">English</a> | <a href="{{ url('cs')}}">Česky</a>
+    <a href="{url 'en'}">English</a> | <a href="{url 'cs'}">Česky</a>
 
 
 <a href="/examples" class="btn btn-primary">Return to Examples</a>
