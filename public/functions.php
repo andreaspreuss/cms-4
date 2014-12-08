@@ -1,11 +1,12 @@
 <?php
+
 /**
  * @author Roman Ozana <ozana@omdesign.cz>
  */
-namespace vestibulum {
-	/** @var \vestibulum\Vestibulum $this */
 
-	$this->pages = Pages::from(content(), ['404'])->toArraySorted();
+namespace vestibulum {
+	/** @var \vestibulum\Vestibulum $cms */
+	$cms->pages = Pages::from(content(), ['404'])->toArraySorted();
 }
 
 namespace {
@@ -19,5 +20,12 @@ namespace {
 	// and in template just write
 	// {yolo()}
 	// that's all
-}
 
+	// add cutom filters
+	add_filter(
+		'url', function ($url, $slug, $server) {
+			return $url; // do nothing
+		}
+	);
+
+}

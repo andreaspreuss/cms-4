@@ -33,25 +33,23 @@ class Vestibulum extends \stdClass {
 	public $config;
 
 	public function __construct() {
-		$this->cms = $this;
+		$this->cms = $cms = $this;
 		$this->config = config();
-		$this->requires();
-		$this->page = $this->getPage((array)config()->meta);
 
-		is_file(getcwd() . '/functions.php') ? include_once getcwd() . '/functions.php' : null;
-	}
-
-	/**
-	 * Requires PHP
-	 */
-	public function requires() {
-		// src index.php of request.php
+		// content php files
 		is_file($php = content(request() . '/index.php')) ? include_once $php : null ||
 		is_file($php = content(request() . '.php')) ? include_once $php : null;
 
-		// cwd index.php of request.php
+		// getcwd php files
 		is_file($php = getcwd() . request() . '/index.php') ? include_once $php : null ||
 		is_file($php = getcwd() . request() . '.php') ? include_once $php : null;
+
+		// get current page
+		$this->page = $this->getPage((array)config()->meta);
+
+		// function.php
+		is_file($php = content(request() . '/function.php')) ? include_once $php : null;
+		is_file(getcwd() . '/functions.php') ? include_once getcwd() . '/functions.php' : null;
 	}
 
 	/**

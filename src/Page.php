@@ -83,12 +83,16 @@ class Page extends \SplFileInfo {
 	 * @return string
 	 */
 	public function getSlug($src = null) {
-		return str_replace(
-			realpath($src),
-			'',
-			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . ($this->getName() !== 'index' ? $this->getName(
-				) : null)
-		);
+		$name = $this->getName() !== 'index' ? $this->getName() : null;
+		return str_replace(realpath($src), '', $this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . $name);
+	}
+
+	/**
+	 * @param null|string $src
+	 * @return string
+	 */
+	public function getUrl($src = null) {
+		return url($this->getSlug($src ? $src : content()));
 	}
 
 	/**
@@ -165,7 +169,7 @@ class Page extends \SplFileInfo {
 	public function getContent() {
 		if (isset($this->content)) return $this->content;
 
-		// FIXME can be problem if index.php or index.latte ???
+		// FIXME can be problem if index.php or index.latte
 		if ($this->isDir()) {
 			return $this->content =
 				is_file($file = $this . '/index.html') || is_file($file = $this . '/index.md') ? file_get_contents($file) : '';

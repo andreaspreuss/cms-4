@@ -26,24 +26,16 @@ function config() {
 /**
  * Return current URL path.
  *
- * @param null $url
- * @param null $src
+ * @param null|string $slug
  * @return string
  */
-function url($url = null, $src = null) {
-	if (is_string($url) || is_null($url)) {
-
-		return (isset($_SERVER['HTTPS']) && strcasecmp(
+function url($slug = null) {
+	$server = (isset($_SERVER['HTTPS']) && strcasecmp(
 			$_SERVER['HTTPS'], 'off'
 		) ? 'https://' : 'http://') . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] :
 			(isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '')) .
-		($_SERVER["SERVER_PORT"] == '80' ? null : ':' . $_SERVER["SERVER_PORT"]) . '/' . ltrim(
-			parse_url($url, PHP_URL_PATH), '/'
-		);
-
-	} elseif ($url instanceof Page) {
-		return $url->getSlug($src ? $src : content());
-	}
+		($_SERVER['SERVER_PORT'] == '80' ? null : ':' . $_SERVER['SERVER_PORT']);
+	return filter('url', $server . '/' . ltrim(parse_url($slug, PHP_URL_PATH), '/'), $slug, $server);
 }
 
 /**
@@ -53,7 +45,8 @@ function url($url = null, $src = null) {
  * @return bool
  */
 function content($path = null) {
-	return realpath(isset(config()->content) ? config()->content : (config()->content = getcwd() . '/content/')) . $path;
+	$content = isset(config()->content) ? config()->content : (config()->content = getcwd() . '/content/');
+	return realpath($content) . $path;
 }
 
 /**

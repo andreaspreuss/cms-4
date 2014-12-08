@@ -5,7 +5,7 @@ menu: Docs
 order: 4
 -->
 
-# Vestibulum docs
+# Vestibulum Docs
 
 ## Content files
 
@@ -46,19 +46,80 @@ Whole metadata are optional. Vestibulum CMS support HTML style block comments fo
     status: 404
     -->
 
-All metadata are available `\stdClass $file` variable and can be accesible from template file e.g. as `{$file->title}` or `{$file->whatever}`. The `status` will be used as HTTP status code.
+All metadata are available `\stdClass $page` variable and can be accesible from template file e.g. as `{$page->title}` or `{$page->whatever}`. The `status` will be used as HTTP status code.
 
 If you don't setup title - first H1 content will be used. If you don't setup description - shorten text content will be generated automatically.
 
 ## Templating
 | Variable       | Description
 |----------------|-------------
-| `$file`        | Current processed file metadata.
+| `$cms`         | Main Vestibulum cms object
+| `$page`        | Current processed file metadata.
 | `$config`      | Configuration as `\stdClass` variable.
 | `$content`     | HTML content to be generated on current page.
 
 - [Latte Templates](http://latte.nette.org/)
 
-## Events
 
-TODO
+## Filters
+
+Allow modify some key values if necessary. A filter function takes as input the unmodified data,
+and returns modified data. If the data is not modified by your filter, then the original data must be returned.
+
+### Modify generated URLs
+
+Allow change all generated URL.
+
+| Param   | Value
+|---------|-------
+| Keyword | `url`
+| Input   | `string $url`, `string $slug`, `string $server`
+| Output  | `string`
+
+Example:
+
+	add_filter('url', function($url, $slug, $server) {
+		return 'http://customserver.com/' . $slug
+	});
+	
+### Change Latte Engine object
+
+Allow change main [Latte Engine object](https://github.com/nette/latte/blob/master/src/Latte/Engine.php). You can for 
+example add custom [macroset](https://github.com/nette/latte/blob/master/src/Latte/Macros/MacroSet.php) or add Filters
+
+| Param   | Value
+|---------|-------
+| Keyword | `latte`
+| Input   | `\Latte\Engine $latte`
+| Output  | `\Latte\Engine $latte` 
+
+#### Add Curom Macro Example
+
+Follow example show how to add custom Macro to Latte Engine. Copy follow code to `function.php` file:
+
+	function title($title) {return sprintf('<h1>%s</h1>', $title);}
+	
+	add_filter(
+		'latte', function (\Latte\Engine $latte) {
+			$set = new \Latte\Macros\MacroSet($latte->getCompiler());
+			$set->addMacro('title', 'echo \title(%node.args);');
+			return $latte;
+		}
+	);
+
+Macro can be executed with follow code `{title 'something to title'}` and will generate HTML `<h1>something to title</h1>`.
+
+#### Add custom Filter Example
+
+Follow example show how to add custom Filter to Latte Engine. Copy follow code to `function.php` file:
+
+	add_filter('latte', function(\Latte\Engine $latte) {
+		$latte->addFilter('md', function($content) {
+			return \Parsedown::instance()->text($content);
+		});
+		return $latte;
+	});
+
+Filter like `{$var|md|noescape}` will be now accessible everywhere in Latte templates and parse input with markdown parser. 
+
+## Events

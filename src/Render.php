@@ -29,7 +29,16 @@ trait Render {
 			return ob_get_clean();
 		}
 
-		$cms->content = filter('content', $cms->page->getContent(), $cms);
+		// replace {url} with current server URL
+		if ($cms->page->is('md') || $cms->page->is('html')) {
+			$cms->content = preg_replace_callback(
+				"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
+					return Filters::safeUrl(url(end($m)));
+				},
+				$cms->page->getContent()
+			);
+		}
+
 
 		// Read markdown from cache or recompile
 		if ($cms->page->is('md')) {
@@ -54,8 +63,8 @@ trait Render {
 
 		// Latte - for lazy people :-)
 		if ($template === 'latte') {
-			$latte = $cms->getLatte();
-			if (isset($cms->page->latte) || $cms->page->is('latte')) {
+			$latte = latte();
+			if ($cms->page->is('latte')) {
 				$cms->content = $latte->renderToString($cms->page, get_object_vars($cms));
 			}
 			return $latte->renderToString($cms->page->template, get_object_vars($cms));
@@ -63,43 +72,16 @@ trait Render {
 
 		return $cms->content;
 	}
-
-	/**
-	 * @return Engine
-	 */
-	public function getLatte() {
-		$latte = new Engine();
-		$latte->setTempDirectory(tmp());
-
-		$set = new MacroSet($latte->getCompiler());
-		$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
-
-		return filter('latte', $latte);
-	}
 }
 
-/* default filters */
+/**
+ * @return Engine
+ */
+function latte() {
+	$latte = new Engine();
+	$latte->setTempDirectory(tmp());
+	$set = new MacroSet($latte->getCompiler());
+	$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
 
-add_filter(
-	'content', function ($content, Vestibulum $cms) {
-		return 'aaa';
-
-		// replace {url} with current server URL
-		if ($cms->page->is('md') || $cms->page->is('html')) {
-			return preg_replace_callback(
-				"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
-					return Filters::safeUrl(url(end($m)));
-				},
-				$content
-			);
-		}
-
-		return $content;
-	}
-);
-
-add_filter(
-	'content', function ($content, Vestibulum $cms) {
-
-	}
-);
+	return filter('latte', $latte);
+}
