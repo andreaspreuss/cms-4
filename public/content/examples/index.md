@@ -93,7 +93,7 @@ Add follow code to your `functions.php` and all markdown images URL will be repl
 		preg_replace_callback(
 			'{(!\[.+\]\s?\()(\S*)([ \n]*(?:[\'"].*?[ \n]*[\'"])?\))}xsU', function ($matches) use ($cms) {
 				$path = $cms->page->isDir() ? $cms->page->getRealPath() : $cms->page->getDir();
-				$path = str_replace(realpath(content()), '', $path) . '/';
+				$path = str_replace(dirname(\vestibulum\content()), '', $path) . '/';
 				return $matches[1] . url($path . $matches[2]) . $matches[3];
 			}, $cms->page->getContent()
 		)
