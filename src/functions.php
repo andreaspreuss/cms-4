@@ -156,30 +156,29 @@ function nocache($content = null) {
 }
 
 /**
- * Send JSON data.
+ * Maps directly to json_encode, but renders JSON headers as well.
  *
  * @param $value
  * @param int $options
  * @param int $depth
  * @return bool
  */
-function json($value, $options = 0, $depth = 512) {
-	$json = json_encode($value, $options, $depth);
+function json() {
+	$json = call_user_func_array('json_encode', func_get_args());
 	$err = json_last_error();
-
+	// trigger a user error for failed encodings
 	if ($err !== JSON_ERROR_NONE) {
-		return trigger_error(
-			__FUNCTION__ . ": JSON encoding failed [{$err}].",
-			E_USER_ERROR
+		throw new \RuntimeException(
+			"JSON encoding failed [{$err}].",
+			500
 		);
 	}
-
-	header('Content-Type: application/json');
+	header('Content-type: application/json');
 	return print $json;
 }
 
 /**
- * HTTP response status code.
+ * Shortcut for http_response_code().
  *
  * @param $code
  * @return int
@@ -194,14 +193,31 @@ function status($code) {
  * @param $file
  * @param null $filename
  */
-function download($file, $filename = null) {
+function download($file, $filename = null, $expire = null) {
 	if (!is_file($file)) status(404) and die('File not found.'); // file not found
 	header('Pragma: public');
 	header('Content-Type: application/octet-stream');
 	header('Content-Disposition: attachment; filename=' . urlencode($filename ?: basename($file)));
 	header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($file)) . ' GMT');
 	header('ETag: ' . md5(dirname($file)));
+	if ($expire > 0) {
+		header('Cache-Control: maxage=' . $expire);
+		header('Expires: ' . gmdate('D, d M Y H:i:s', time() + $expire) . ' GMT');
+	}
 	header('ContentLength: ' . filesize($file));
 	header('Connection: close');
-	die(readfile($file));
+	readfile($file);
+}
+
+/**
+ * Return file MIME type info
+ *
+ * @param string $file
+ * @return string
+ */
+function mime($file) {
+	if (!$finf = finfo_open(FILEINFO_MIME)) throw new \RuntimeException('');
+	$mime = finfo_file($finf, $file);
+	finfo_close($finf);
+	return $mime;
 }
