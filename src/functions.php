@@ -2,28 +2,6 @@
 namespace vestibulum;
 
 /**
- * Return config data.
- *
- * @property string $title
- * @return \stdClass
- */
-function config() {
-	static $config;
-
-	return $config ? $config : $config = (object)array_replace_recursive(
-		[
-			'title' => 'Vestibulum',
-			'cache' => false,
-			'content' => getcwd() . '/content/',
-			'meta' => [
-				'template' => 'index.latte',
-			]
-		],
-		@include(getcwd() . '/config.php') // intentionally @
-	);
-}
-
-/**
  * Return current URL path.
  *
  * @param null|string $slug
@@ -46,7 +24,7 @@ function url($slug = null) {
  */
 function content($path = null) {
 	$content = isset(config()->content) ? config()->content : (config()->content = getcwd() . '/content/');
-	return realpath($content) . $path;
+	return realpath($content) . '/' . $path;
 }
 
 /**
