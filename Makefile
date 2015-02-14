@@ -7,3 +7,4 @@ update:
 	wget -q https://raw.githubusercontent.com/sphido/events/master/src/events.php -O ./src/events.php
 	wget -q https://raw.githubusercontent.com/sphido/routing/master/src/routing.php -O ./src/routing.php
 	wget -q https://raw.githubusercontent.com/sphido/config/master/src/config.php -O ./src/config.php
+	wget -q https://raw.githubusercontent.com/sphido/functions/master/src/url.php -O ./src/url.php

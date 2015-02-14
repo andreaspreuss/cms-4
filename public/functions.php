@@ -23,9 +23,10 @@ namespace {
 
 	// add cutom filters
 	add_filter(
-		'url', function ($url, $slug, $server) {
-			return $url; // do nothing
-		}
+		'url', function (Url $url) {
+		return $url; // do nothing
+		return $url->host('www.sphido.org'); // change anything
+	}
 	);
 
 }

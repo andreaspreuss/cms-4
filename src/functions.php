@@ -8,12 +8,9 @@ namespace vestibulum;
  * @return string
  */
 function url($slug = null) {
-	$server = (isset($_SERVER['HTTPS']) && strcasecmp(
-			$_SERVER['HTTPS'], 'off'
-		) ? 'https://' : 'http://') . (isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] :
-			(isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '')) .
-		($_SERVER['SERVER_PORT'] == '80' ? null : ':' . $_SERVER['SERVER_PORT']);
-	return filter('url', $server . '/' . ltrim(parse_url($slug, PHP_URL_PATH), '/'), $slug, $server);
+	static $url = null;
+	if ($url === null) $url = filter('url', \Url::current('/'));
+	return strval(filter('url', $url->path($slug)));
 }
 
 /**

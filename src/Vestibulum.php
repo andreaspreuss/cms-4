@@ -5,6 +5,7 @@ require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/events.php';
 require_once __DIR__ . '/routing.php';
+require_once __DIR__ . '/url.php';
 require_once __DIR__ . '/Metadata.php';
 require_once __DIR__ . '/Pages.php';
 require_once __DIR__ . '/Render.php';
