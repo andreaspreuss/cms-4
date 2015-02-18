@@ -2,10 +2,7 @@
 namespace vestibulum;
 
 require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/events.php';
-require_once __DIR__ . '/routing.php';
-require_once __DIR__ . '/url.php';
+require_once __DIR__ . '/sphido.php';
 require_once __DIR__ . '/Metadata.php';
 require_once __DIR__ . '/Pages.php';
 require_once __DIR__ . '/Render.php';
@@ -36,7 +33,7 @@ class Vestibulum extends \stdClass {
 				'cache' => false,
 				'content' => getcwd() . '/content/',
 				'meta' => [
-					'template' => 'index.latte',
+					'template' => getcwd() . '/index.latte',
 				]
 			],
 			is_file(getcwd() . '/config.php') ? include(getcwd() . '/config.php') : []
@@ -75,6 +72,7 @@ class Vestibulum extends \stdClass {
 		// function.php
 		is_file($php = content($path . '/function.php')) ? include_once $php : null;
 		is_file(getcwd() . '/functions.php') ? include_once getcwd() . '/functions.php' : null;
+
 
 		if ($this->page) {
 			echo handle('render', [$this, 'render'], $this);
