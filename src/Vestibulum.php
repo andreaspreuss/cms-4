@@ -36,7 +36,7 @@ class Vestibulum extends \stdClass {
 					'template' => getcwd() . '/index.latte',
 				]
 			],
-			is_file(getcwd() . '/config.php') ? include(getcwd() . '/config.php') : []
+			is_file(getcwd() . '/config.php') ? include_once(getcwd() . '/config.php') : []
 		);
 
 		map([404, 500], [$this, 'pageNotFound']);
@@ -79,12 +79,5 @@ class Vestibulum extends \stdClass {
 		} else {
 			error(404, $method, $path, $cms);
 		}
-	}
-
-	/**
-	 * Dispatch all.
-	 */
-	public function __destruct() {
-		dispatch($this);
 	}
 }

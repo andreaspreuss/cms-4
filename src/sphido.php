@@ -22,7 +22,6 @@ function routes() {
  * Function for mapping actions to routes.
  */
 function map() {
-
 	$argv = func_get_args();
 
 	// try to figure out how we were called
