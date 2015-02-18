@@ -3,7 +3,7 @@
 @unlink(__DIR__ . '/src/sphido.php');
 
 if (!$sphido = fopen(__DIR__ . '/src/sphido.php', 'a')) die('UPS');
-fwrite($sphido, '<?php' . PHP_EOL . '/** @author Roman Ozana <ozana@omdesign.cz> */');
+fwrite($sphido, '<?php' . PHP_EOL . '/** @author Roman Ozana <ozana@omdesign.cz> */' . PHP_EOL);
 
 foreach (
 	[
