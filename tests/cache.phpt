@@ -5,7 +5,7 @@
 use Tester\Assert;
 
 require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../src/events.php';
+require __DIR__ . '/../src/sphido.php';
 require __DIR__ . '/../src/functions.php';
 
 \Tester\Environment::setup();
