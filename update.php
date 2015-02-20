@@ -1,5 +1,6 @@
 <?php
-// TODO read from json
+/** @author Roman Ožana <ozana@omdesign.cz> */
+
 @unlink(__DIR__ . '/src/sphido.php');
 
 if (!$sphido = fopen(__DIR__ . '/src/sphido.php', 'a')) die('UPS');
@@ -10,6 +11,7 @@ foreach (
 		'sphido/config/master/src/config.php',
 		'sphido/routing/master/src/routing.php',
 		'sphido/events/master/src/events.php',
+		'sphido/antispam/master/src/antispam.php',
 		'sphido/url/master/src/url.php',
 	] as $file) {
 	$tokens = token_get_all(file_get_contents('https://raw.githubusercontent.com/' . $file));

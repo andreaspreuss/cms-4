@@ -354,6 +354,32 @@ function add_filter($event, callable $listener, $priority = 10) {
 }
 
 /**
+ * Obfuscate email addresses and protect them against SPAM bots
+ *
+ * @param string $email
+ * @param string $text
+ * @param string $format
+ * @return string
+ */
+function antispam($email, $text = null, $format = '<a href="mailto:%s" rel="nofollow">%s</a>') {
+	return jsProtect(sprintf($format, $email, $text ?: $email)) .
+	'<noscript><span style="unicode-bidi: bidi-override; direction: rtl;">' . strrev($email) . '</span></noscript>';
+}
+
+/**
+ * Perform the rot13 transform on a string and then decode back with Javascript.
+ *
+ * @param string $string
+ * @return string
+ */
+function jsProtect($string) {
+	return '<script type="text/javascript">/* <![CDATA[ */document.write("' .
+	addslashes(
+		str_rot13($string)
+	) . '".replace(/[a-zA-Z]/g,function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);}));/* ]]> */</script>';
+}
+
+/**
  * @method Url scheme(string $scheme)
  * @method Url host(string $host)
  * @method Url port(int $port)
