@@ -1,5 +1,5 @@
 <?php
-namespace vestibulum;
+namespace cms;
 
 use Latte\Engine;
 use Latte\Macros\MacroSet;
@@ -13,64 +13,64 @@ use Latte\Runtime\Filters;
 trait Render {
 
 	/**
-	 * @param Vestibulum $cms
+	 * @param Content $content
 	 * @return mixed|null|string
 	 * @throws \Exception
 	 */
-	public function render(Vestibulum $cms) {
+	public function render(Content $content) {
 		// HTTP status code
-		if ($code = isset($cms->page->status) ? $cms->page->status : null) status($code);
+		if ($code = isset($content->page->status) ? $content->page->status : null) status($code);
 
 		// PHTML file execute
-		if ($cms->page->is('phtml')) {
-			extract(get_object_vars($cms), EXTR_SKIP);
+		if ($content->page->is('phtml')) {
+			extract(get_object_vars($content), EXTR_SKIP);
 			ob_start();
-			require $cms->page;
+			require $content->page;
 			return ob_get_clean();
 		}
 
 		// replace {url} with current server URL
-		if ($cms->page->is('md') || $cms->page->is('html')) {
-			$cms->content = preg_replace_callback(
+		if ($content->page->is('md') || $content->page->is('html')) {
+			$content->content = preg_replace_callback(
 				"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
 					return Filters::safeUrl(url(end($m)));
 				},
-				$cms->page->getContent()
+				$content->page->getContent()
 			);
 		}
 
 
 		// Read markdown from cache or recompile
-		if ($cms->page->is('md')) {
-			$cms->content = cache(
-				$file = tmp($cms->page->getName() . '-' . md5($cms->page) . '.html'),
-				function () use ($cms) {
-					return \Parsedown::instance()->text($cms->content);
+		if ($content->page->is('md')) {
+			$content->content = cache(
+				$file = tmp($content->page->getName() . '-' . md5($content->page) . '.html'),
+				function () use ($content) {
+					return \Parsedown::instance()->text($content->content);
 				},
-				$cms->page->getMTime() > @filemtime($file)
+				$content->page->getMTime() > @filemtime($file)
 			);
 		}
 
-		$template = pathinfo($cms->page->template, PATHINFO_EXTENSION);
+		$template = pathinfo($content->page->template, PATHINFO_EXTENSION);
 
 		// phtml - for those who have an performance obsession :-)
 		if ($template === 'phtml' || $template === 'php') {
-			extract(get_object_vars($cms), EXTR_SKIP);
+			extract(get_object_vars($content), EXTR_SKIP);
 			ob_start();
-			require $cms->page->template;
+			require $content->page->template;
 			return ob_get_clean();
 		}
 
 		// Latte - for lazy people :-)
 		if ($template === 'latte') {
 			$latte = latte();
-			if ($cms->page->is('latte')) {
-				$cms->content = $latte->renderToString($cms->page, get_object_vars($cms));
+			if ($content->page->is('latte')) {
+				$content->content = $latte->renderToString($content->page, get_object_vars($content));
 			}
-			return $latte->renderToString($cms->page->template, get_object_vars($cms));
+			return $latte->renderToString($content->page->template, get_object_vars($content));
 		}
 
-		return $cms->content;
+		return $content->content;
 	}
 }
 
@@ -81,7 +81,7 @@ function latte() {
 	$latte = new Engine();
 	$latte->setTempDirectory(tmp());
 	$set = new MacroSet($latte->getCompiler());
-	$set->addMacro('url', 'echo \vestibulum\url(%node.args);');
+	$set->addMacro('url', 'echo \cms\url(%node.args);');
 
 	return filter('latte', $latte);
 }

@@ -29,8 +29,8 @@ add_filter(
 }
 );
 
-Assert::same('http://test/some/path/index.html', \vestibulum\url('/some/path/index.html')->__toString());
-Assert::same('http://test/a/b?a=b', '' . \vestibulum\url('/a/b')->query(['a' => 'b']));
+Assert::same('http://test/some/path/index.html', \cms\url('/some/path/index.html')->__toString());
+Assert::same('http://test/a/b?a=b', '' . \cms\url('/a/b')->query(['a' => 'b']));
 
 // url filter
 
@@ -40,4 +40,4 @@ add_filter(
 	return $url;
 }
 );
-Assert::same('http://test/prefix/a/b/c/d', '' . \vestibulum\url('/a/b/c/d'));
+Assert::same('http://test/prefix/a/b/c/d', '' . \cms\url('/a/b/c/d'));

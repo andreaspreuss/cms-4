@@ -1,14 +1,14 @@
 <!--
 id: install
-title: How to Install Vestibulum CMS
+title: How to Install Sphido CMS
 menu: Install
 order : 2
 -->
 
 
-# How to install Vestibulum CMS
+# How to install Sphido CMS
 
-1. Download and unzip [latest version](/download) or run `php composer.phar create-project om/vestibulum`.
+1. Download and unzip [latest version](/download) or run `php composer.phar create-project om/sphido`.
 2. Change files in `public/content` and `public/config.php`
 3. Upload everything to your server.
 
@@ -23,9 +23,9 @@ Here is **nginx** configuration example:
 
     server {
 	    listen                *:80;
-	    server_name           vestibulum.dev;
+	    server_name           sphido.dev;
 
-	    root   /Users/roman/Work/vestibulum/public;
+	    root   /Users/roman/Work/sphido/public;
 
 	    location / {
 		    try_files  $uri  $uri/  /index.php?$args;

@@ -1,12 +1,12 @@
 <h1>Generate Menu</h1>
 
-<pre><code>{file_get_contents(\vestibulum\content('/examples/menu/functions.php'))}</code></pre>
-<pre><code>{file_get_contents(\vestibulum\content('/examples/menu/menu.latte'))}</code></pre>
+<pre><code>{file_get_contents(\sphido\content('/examples/menu/functions.php'))}</code></pre>
+<pre><code>{file_get_contents(\sphido\content('/examples/menu/menu.latte'))}</code></pre>
 
 
 <h2>Results</h2>
 
-{? $pages = \vestibulum\Pages::from(\vestibulum\content('/'), ['404'])->toArraySorted()}
+{? $pages = \sphido\Pages::from(\sphido\content('/'), ['404'])->toArraySorted()}
 
 <ul n:block="examples">
 	{foreach $pages as $item}

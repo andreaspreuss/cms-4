@@ -1,9 +1,7 @@
 <?php
-/**
- * @author Roman Ozana <ozana@omdesign.cz>
- */
+/** @author Roman Ozana <ozana@omdesign.cz> */
 return [
-	'title' => 'Vestibulum',
+	'title' => 'Sphido CMS',
 	'cache' => __DIR__ . '/../tmp/',
 	'meta' => [
 		'author' => 'All: Roman Ozana; e-mail: ozana@omdesign.cz'

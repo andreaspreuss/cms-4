@@ -1,5 +1,5 @@
 <?php
-namespace vestibulum;
+namespace cms;
 
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/sphido.php';
@@ -9,15 +9,15 @@ require_once __DIR__ . '/Render.php';
 require_once __DIR__ . '/Page.php';
 
 /**
- * Vestibulum: Really deathly simple CMS
+ * Really deathly simple CMS on Sphido
  *
  * @author Roman Ožana <ozana@omdesign.cz>
  */
-class Vestibulum extends \stdClass {
+class Content extends \stdClass {
 
 	use Render;
 
-	/** @var Vestibulum */
+	/** @var Content */
 	public $cms;
 	/** @var Page */
 	public $page;
@@ -44,6 +44,11 @@ class Vestibulum extends \stdClass {
 
 	/**
 	 * Page not found.
+	 *
+	 * @param $error
+	 * @param callable $method
+	 * @param string $path
+	 * @param Content $cms
 	 */
 	public function pageNotFound($error, $method, $path, $cms) {
 		foreach ([content($path . '/404'), content('/404')] as $path) {

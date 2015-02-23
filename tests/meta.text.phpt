@@ -8,7 +8,7 @@ require __DIR__ . '/../vendor/autoload.php';
 \Tester\Environment::setup();
 
 class Metadata {
-	use \vestibulum\Metadata;
+	use \cms\Metadata;
 }
 
 $meta = new Metadata();

@@ -1,5 +1,5 @@
 <?php
-namespace vestibulum;
+namespace cms;
 /**
  * Vestibulum file with metadata
  *

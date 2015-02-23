@@ -12,7 +12,7 @@ require __DIR__ . '/../src/functions.php';
 
 // Callback data
 {
-	\vestibulum\cache(
+	\cms\cache(
 		__DIR__ . '/.cache', function () {
 			return 'example data callback';
 		}
@@ -25,7 +25,7 @@ require __DIR__ . '/../src/functions.php';
 
 // String data cache test
 {
-	\vestibulum\cache(
+	\cms\cache(
 		__DIR__ . '/.cache', 'example data string'
 	);
 
@@ -35,7 +35,7 @@ require __DIR__ . '/../src/functions.php';
 }
 
 {
-	\vestibulum\cache(
+	\cms\cache(
 		function () {
 			return __DIR__ . '/.cache';
 		}, 'example data'
@@ -48,7 +48,7 @@ require __DIR__ . '/../src/functions.php';
 
 
 {
-	\vestibulum\cache(
+	\cms\cache(
 		__DIR__ . '/.cache', 'example data'
 	);
 

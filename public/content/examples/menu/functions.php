@@ -1,5 +1,5 @@
 <?php
-namespace vestibulum {
-	/** @var \vestibulum\Vestibulum $this */
+namespace cms {
+	/** @var \cms\Sphido $this */
 	$this->pages = Pages::from(content('/examples'))->toArraySorted();
 }

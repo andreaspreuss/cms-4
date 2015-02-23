@@ -1,5 +1,5 @@
 <?php
-namespace vestibulum;
+namespace cms;
 
 /**
  * Return current URL path.
@@ -182,17 +182,4 @@ function download($file, $filename = null, $expire = null) {
 	header('ContentLength: ' . filesize($file));
 	header('Connection: close');
 	readfile($file);
-}
-
-/**
- * Return file MIME type info
- *
- * @param string $file
- * @return string
- */
-function mime($file) {
-	if (!$finf = finfo_open(FILEINFO_MIME)) throw new \RuntimeException('');
-	$mime = finfo_file($finf, $file);
-	finfo_close($finf);
-	return $mime;
 }

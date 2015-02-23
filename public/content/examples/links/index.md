@@ -1,6 +1,6 @@
 # Markdown or HTML URL replacement
 
-Vestibulum replace &#123;url} with real server URL, follow some examples:
+Sphido replace &#123;url} with real server URL, follow some examples:
  
 | Code in HTML or Markdown        | Result
 |---------------------------------|----

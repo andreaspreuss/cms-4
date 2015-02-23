@@ -1,4 +1,4 @@
 <?php
-namespace vestibulum {
+namespace cms {
 	return redirect('http://www.omdesign.cz');
 }

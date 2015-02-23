@@ -1,8 +1,8 @@
 <?php
-namespace vestibulum {
+namespace cms {
 
-	if (file_exists('Vestibulum.zip')) redirect(url('/Vestibulum.zip')); // download latest version
+	if (file_exists('Sphido.zip')) redirect(url('/Sphido.zip')); // download latest version
 
-	redirect('https://github.com/OzzyCzech/vestibulum/releases'); // redirect to releases
+	redirect('https://github.com/sphido/cms/releases'); // redirect to releases
 
 }

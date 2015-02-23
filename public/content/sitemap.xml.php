@@ -1,7 +1,7 @@
 <?php
-namespace vestibulum;
+namespace cms;
 
-isset($this) && $this instanceof Vestibulum or die('Sorry can be executed only from Vestibulum');
+isset($this) && $this instanceof Sphido or die('Sorry can be executed only from Sphido');
 
 /**
  * @author Roman Ožana <ozana@omdesign.cz>
@@ -15,7 +15,7 @@ class SiteMap {
 	public function addItem($pages) {
 		$out = '';
 		foreach ($pages as $page) {
-			/** @var \vestibulum\Page $page */
+			/** @var \cms\Page $page */
 			$out .= sprintf(
 				'<url><loc>%s</loc><lastmod>%s</lastmod></url>' . PHP_EOL,
 				htmlspecialchars(url($page->getSlug(__DIR__))),
@@ -30,7 +30,7 @@ class SiteMap {
 		return
 			'<?xml version = "1.0" encoding = "UTF-8"?>' . PHP_EOL .
 			'<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . PHP_EOL .
-			$this->addItem(\vestibulum\Pages::from(__DIR__, ['404'])->toArraySorted()) . '</urlset>';
+			$this->addItem(\cms\Pages::from(__DIR__, ['404'])->toArraySorted()) . '</urlset>';
 	}
 }
 

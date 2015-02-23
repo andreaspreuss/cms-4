@@ -1,11 +1,11 @@
 <!--
 id: docs
-title: Vestibulum Docs
+title: Sphido CMS Docs
 menu: Docs
 order: 4
 -->
 
-# Vestibulum Docs
+# Sphido CMS Docs
 
 ## Content files
 
@@ -34,7 +34,7 @@ If any file cannot be found, the file `content/404.md` will be generate or subdi
 
 ## File Metadata
 
-Whole metadata are optional. Vestibulum CMS support HTML style block comments for metadata: 
+Whole metadata are optional. Sphido CMS support HTML style block comments for metadata: 
 
     <!--
     title: Welcome
@@ -53,7 +53,7 @@ If you don't setup title - first H1 content will be used. If you don't setup des
 ## Templating
 | Variable       | Description
 |----------------|-------------
-| `$cms`         | Main Vestibulum cms object
+| `$cms`         | Main Sphido cms object
 | `$page`        | Current processed file metadata.
 | `$config`      | Configuration as `\stdClass` variable.
 | `$content`     | HTML content to be generated on current page.
