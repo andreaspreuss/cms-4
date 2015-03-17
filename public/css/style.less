@@ -1,25 +1,35 @@
 header {
+
 	color: #fff;
 	background: #18a4ed;
-	padding: 80px 0;
+	padding: 20px 0;
 
-	@media only screen and (max-device-width: 480px) {
-		padding: 20px 0;
+	@media only screen and (min-device-width: 480px) {
+		padding: 80px 0;
 	}
+
 	div.logo {
-		font-size: 50px;
-		text-align: center;
-		margin: 20px 0;
+		-webkit-font-smoothing: antialiased;
 
 		@media only screen and (max-device-width: 480px) {
 			font-size: 25px;
 		}
 
+		span {
+			display: block;
+			font-size: 16px;
+
+		}
+
+		svg {
+			height: auto;
+			margin: 0;
+			padding: 0;
+		}
 		a {
 			padding: 0 0 0 70px;
 			text-decoration: none;
 			color: inherit;
-			background: transparent url(../img/heart.png) 0 center no-repeat;
 			background: transparent url(../img/heart.svg) 0 center no-repeat;
 			background-size: 50px 50px;
 			font-weight: 100;
