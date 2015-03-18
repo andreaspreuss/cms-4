@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../src/cms.php';
 
 // external library
-require_once __DIR__ . '/../vendor/latte/latte/src/latte.php';
 require_once __DIR__ . '/../vendor/erusev/parsedown/Parsedown.php';
 
 map($content = new \cms\Content()); // deathly simple

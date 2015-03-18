@@ -5,7 +5,6 @@ menu: Install
 order : 2
 -->
 
-
 # How to install Sphido CMS
 
 1. Download and unzip [latest version](/download) or run `php composer.phar create-project om/sphido`.
@@ -53,6 +52,7 @@ Here is **nginx** configuration example:
 ### Setup Apache
 
 Here is **Apache** `.htaccess` configuration example:
+
 
     <IfModule mod_rewrite.c>
     	RewriteEngine On

@@ -5,6 +5,8 @@ use Latte\Engine;
 use Latte\Macros\MacroSet;
 use Latte\Runtime\Filters;
 
+require_once __DIR__ . '/../vendor/latte/latte/src/latte.php';
+
 /**
  * Multiple pages loaders
  *
@@ -18,6 +20,7 @@ trait Render {
 	 * @throws \Exception
 	 */
 	public function render(Content $content) {
+
 		// HTTP status code
 		if ($code = isset($content->page->status) ? $content->page->status : null) status($code);
 
@@ -29,59 +32,51 @@ trait Render {
 			return ob_get_clean();
 		}
 
-		// replace {url} with current server URL
-		if ($content->page->is('md') || $content->page->is('html')) {
-			$content->content = preg_replace_callback(
-				"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
-					return Filters::safeUrl(url(end($m)));
-				},
-				$content->page->getContent()
-			);
-		}
-
-
-		// Read markdown from cache or recompile
-		if ($content->page->is('md')) {
-			$content->content = cache(
-				$file = tmp($content->page->getName() . '-' . md5($content->page) . '.html'),
-				function () use ($content) {
-					return \Parsedown::instance()->text($content->content);
-				},
-				$content->page->getMTime() > @filemtime($file)
-			);
-		}
-
-		$template = pathinfo($content->page->template, PATHINFO_EXTENSION);
-
-		// phtml - for those who have an performance obsession :-)
-		if ($template === 'phtml' || $template === 'php') {
-			extract(get_object_vars($content), EXTR_SKIP);
-			ob_start();
-			require $content->page->template;
-			return ob_get_clean();
-		}
-
-		// Latte - for lazy people :-)
-		if ($template === 'latte') {
-			$latte = latte();
-			if ($content->page->is('latte')) {
-				$content->content = $latte->renderToString($content->page, get_object_vars($content));
-			}
-			return $latte->renderToString($content->page->template, get_object_vars($content));
-		}
-
-		return $content->content;
+		return latte()->renderToString($content->page, get_object_vars($content));
 	}
 }
+
+
 
 /**
  * @return Engine
  */
 function latte() {
 	$latte = new Engine();
+	$latte->setLoader(new FileLoader);
 	$latte->setTempDirectory(tmp());
 	$set = new MacroSet($latte->getCompiler());
 	$set->addMacro('url', 'echo \cms\url(%node.args);');
-
 	return filter('latte', $latte);
+}
+
+
+
+
+class FileLoader extends \Latte\Loaders\FileLoader {
+	public function getContent($file) {
+
+		$content = parent::getContent($file);
+		$ext = pathinfo(strval($file), PATHINFO_EXTENSION);
+
+		// replace {url} with current server URL
+		if ($ext === 'md' || $ext === 'html') {
+			$content = preg_replace_callback(
+				"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
+				return Filters::safeUrl(url(end($m)));
+			},
+				$content
+			);
+		}
+
+		switch ($ext) {
+			case 'html':
+				return "{layout '$file->template'}{block content}{syntax off}" . $content;
+			case 'md':
+				return "{layout '$file->template'}{block content}{syntax off}" . \Parsedown::instance()->text($content);
+				break;
+		}
+
+		return $content;
+	}
 }
