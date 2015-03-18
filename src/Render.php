@@ -37,7 +37,6 @@ trait Render {
 }
 
 
-
 /**
  * @return Engine
  */
@@ -49,9 +48,6 @@ function latte() {
 	$set->addMacro('url', 'echo \cms\url(%node.args);');
 	return filter('latte', $latte);
 }
-
-
-
 
 class FileLoader extends \Latte\Loaders\FileLoader {
 	public function getContent($file) {
@@ -68,15 +64,19 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 				$content
 			);
 		}
-
-		switch ($ext) {
-			case 'html':
-				return "{layout '$file->template'}{block content}{syntax off}" . $content;
-			case 'md':
-				return "{layout '$file->template'}{block content}{syntax off}" . \Parsedown::instance()->text($content);
-				break;
+		if ($file instanceof Page) {
+			switch ($ext) {
+				case 'html':
+					return "{layout '$file->template'}{block content}{syntax off}" . $content;
+				case 'md':
+					return "{layout '$file->template'}{block content}{syntax off}" . \Parsedown::instance()->text($content);
+					break;
+				case 'latte':
+					if (strpos($content, '{layout') === false) $content = "{layout '$file->template'}" . $content;
+					if (strpos($content, '{block') === false) $content = '{block content}' . $content;
+					return $content;
+			}
 		}
-
 		return $content;
 	}
 }
