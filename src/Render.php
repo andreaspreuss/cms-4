@@ -73,7 +73,7 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 					break;
 				case 'latte':
 					if (strpos($content, '{block') === false) $content = '{block content}' . $content;
-					if (strpos($content, '{layout') === false) $content = "{layout '$file->template'}" . PHP_EOL . $content;
+					if (strpos($content, '{layout') === false) $content = "{layout '$file->template'}" . $content;
 					return $content;
 			}
 		}
