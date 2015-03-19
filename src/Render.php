@@ -72,8 +72,8 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 					return "{layout '$file->template'}{block content}{syntax off}" . \Parsedown::instance()->text($content);
 					break;
 				case 'latte':
-					if (strpos($content, '{layout') === false) $content = "{layout '$file->template'}" . $content;
 					if (strpos($content, '{block') === false) $content = '{block content}' . $content;
+					if (strpos($content, '{layout') === false) $content = "{layout '$file->template'}" . PHP_EOL . $content;
 					return $content;
 			}
 		}
