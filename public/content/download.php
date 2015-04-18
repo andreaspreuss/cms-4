@@ -1,30 +1,45 @@
 <?php
+
 namespace cms {
+
+	echo '<pre>';
 
 	class Zipper extends \ZipArchive {
 
 		/**
 		 * @param $path
 		 */
-		public function addDir($path) {
+		public function addDir($path, $parrent = '') {
 			$this->addEmptyDir($path);
-			$nodes = glob($path . '/*');
-			foreach ($nodes as $node) {
-				if (is_dir($node)) {
-					$this->addDir($node);
-				} else if (is_file($node)) {
-					$this->addFile($node);
+			if ($parrent !== '') {
+				$this->addEmptyDir($parrent);
+				$parrent .= '/';
+			}
+
+			$iterator = new \FilesystemIterator($path);
+
+			//$nodes = glob($path . '/*');
+			foreach ($iterator as $node) {
+				/** @var \SplFileInfo $node */
+				if ($node->isDir()) {
+					$this->addDir(strval($node), $parrent . $node->getBasename());
+				} elseif ($node->isFile()) {
+					$this->addFile(strval($node), $parrent . $node->getBasename());
 				}
 			}
 		}
 	}
 
-	if (!file_exists('Sphido.zip')) {
-		$zip = new Zipper();
-		$zip->open('Sphido.zip', \ZipArchive::CREATE);
+	//if (!file_exists('Sphido.zip')) {
+	$zip = new Zipper();
+	$zip->open('Sphido.zip', \ZipArchive::OVERWRITE | \ZipArchive::CREATE);
+	$zip->addDir(realpath(__DIR__ . '/..'), '/public');
+	$zip->close();
 
-		// content
-		$zip->addDir(__DIR__ . '/../public');
+	/*
+	 *
+
+
 		$zip->addDir(__DIR__ . '/../src');
 
 		// dependencies
@@ -41,10 +56,16 @@ namespace cms {
 		$zip->addFile(__DIR__ . '/../readme.md', 'readme.md');
 		$zip->addFile(__DIR__ . '/../LICENSE', 'LICENSE');
 
-		$zip->close();
-	}
 
+	*/
+
+	//}
+
+	/*
 
 	if (file_exists('Sphido.zip')) redirect(url('/Sphido.zip')); // download latest version
 	redirect('https://github.com/sphido/cms/releases'); // redirect to releases
+	*/
+
+	die();
 }
