@@ -69,6 +69,7 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 				case 'html':
 					return "{layout '$file->template'}{block content}{syntax off}" . $content;
 				case 'md':
+					require_once __DIR__ . '/../vendor/erusev/parsedown/Parsedown.php';
 					return "{layout '$file->template'}{block content}{syntax off}" . \Parsedown::instance()->text($content);
 					break;
 				case 'latte':

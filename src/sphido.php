@@ -1,5 +1,5 @@
 <?php
-/** @author Roman Ozana <ozana@omdesign.cz> */
+/** @author Roman Ožana <ozana@omdesign.cz>  * /
 /**
  * Basic config function.
  *

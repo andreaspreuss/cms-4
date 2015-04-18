@@ -35,35 +35,6 @@ function tmp($path = null) {
 }
 
 /**
- * Read content from cached file.
- *
- * @param string|callable $file
- * @param mixed|callable $data
- * @param null|int|bool|callable $expire
- * @param null|callable $filter
- * @return mixed|null|string
- */
-function cache($file, $data, $expire = null, $filter = null) {
-
-	// Getting cached file name
-	$file = is_callable($file) ? call_user_func($file) : $file;
-
-	// Expire cached file content?
-	$expire = is_bool($expire) ? $expire : is_null($expire) ||
-		(is_int($expire) && @filemtime($file) + $expire < time()) ||
-		(is_callable($expire) && call_user_func($expire, $file));
-
-	if ($expire || !is_file($file)) {
-		$data = is_callable($data) ? call_user_func($data, $file) : $data;
-		@file_put_contents($file, $data);
-	} else {
-		$data = @file_get_contents($file);
-	}
-
-	return is_callable($filter) ? call_user_func($filter, $data) : $data;
-}
-
-/**
  * Return current request URL segment
  *
  * @return mixed

@@ -26,16 +26,17 @@ class Content extends \stdClass {
 	/** @var \stdClass */
 	public $config;
 
-	public function __construct() {
+	public function __construct(array $config = []) {
 		$this->config = config(
 			[
-				'title' => 'Vestibulum',
+				'title' => 'Sphido CMS',
 				'cache' => false,
 				'content' => getcwd() . '/content/',
 				'meta' => [
 					'template' => getcwd() . '/index.latte',
 				]
 			],
+			$config,
 			is_file(getcwd() . '/config.php') ? include_once(getcwd() . '/config.php') : []
 		);
 
