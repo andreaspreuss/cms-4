@@ -52,6 +52,7 @@ It's easy to overwrite main response. Just add `ajax.php` to your **src or curre
 
 	<?php
 	namespace sphido {
+		require_once __DIR__ . "/function.json.php"
 		isset($this) && $this instanceof Sphido or die('Sorry can be executed only from Sphido');
 	
 		// check AJAX request

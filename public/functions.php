@@ -6,7 +6,7 @@
 
 namespace cms {
 	/** @var \cms\Content $cms */
-	$cms->pages = Pages::from(content(), ['404'])->toArraySorted();
+	$cms->pages = Pages::from(content(), ['404'])->toArraySorted(); // get pages for menu
 }
 
 namespace {
@@ -23,10 +23,10 @@ namespace {
 
 	// add cutom filters
 	add_filter(
-		'url', function (Url $url) {
-		return $url; // do nothing
-		return $url->host('www.sphido.org'); // change anything
-	}
+		'url',
+		function (Url $url) {
+			return $url; // do nothing
+			return $url->host('www.sphido.org'); // change anything
+		}
 	);
-
 }

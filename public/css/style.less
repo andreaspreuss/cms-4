@@ -1,5 +1,7 @@
 header {
 
+	display: flex;
+
 	color: #1F1F21;
 	background: #F7F7F7;
 	padding: 20px 0;
@@ -32,17 +34,49 @@ header {
 	}
 }
 
+.navbar-brand,
+.navbar-nav li a {
+    line-height: 70px;
+    height: 70px;
+    padding-top: 0;
+}
+
+.navbar-pink {
+	background: #e9194a;
+
+	background: #4a4a4a; /* Old browsers */
+	background: -moz-linear-gradient(top,  #4a4a4a 0%, #2b2b2b 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4a4a4a), color-stop(100%,#2b2b2b)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #4a4a4a 0%,#2b2b2b 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #4a4a4a 0%,#2b2b2b 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #4a4a4a 0%,#2b2b2b 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #4a4a4a 0%,#2b2b2b 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4a4a4a', endColorstr='#2b2b2b',GradientType=0 ); /* IE6-9 */
+
+
+	border: 0;
+}
+
+.navbar .navbar-nav {
+	display: inline-block;
+	float: none;
+	vertical-align: top;
+
+}
+
+.navbar .navbar-collapse {
+	text-align: center;
+}
+
 nav {
 	text-align: center;
 	margin: 0;
 	padding: 0;
-	background: #DBDDDE;
+
 
 	ul {
 		list-style-type: none;
-		font-size: 16px;
 		text-transform: uppercase;
-
 		margin: 0 auto;
 		padding: 0;
 		display: inline-block;
@@ -67,15 +101,12 @@ nav {
 	}
 
 	li.active > a {
-		background: rgba(255, 255, 255, .6);
+		background: rgba(255, 255, 255, .2);
 	}
 
 	a {
-		display: block;
-		padding: 4rem 4rem;
-
 		&, &:hover {
-			color: inherit;
+			color: #fff;
 			font-weight: bold;
 			text-decoration: none;
 		}

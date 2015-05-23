@@ -54,7 +54,7 @@ class Content extends \stdClass {
 	public function pageNotFound($error, $method, $path, $cms) {
 		foreach ([content($path . '/404'), content('/404')] as $path) {
 			if ($this->page = Page::fromPath($path, (array)config()->meta)) {
-				echo handle('render.error', [$this, 'render'], $this);
+				echo care('render.error', [$this, 'render'], $this);
 			}
 		}
 	}
@@ -84,7 +84,7 @@ class Content extends \stdClass {
 		is_file(getcwd() . '/functions.php') ? include_once getcwd() . '/functions.php' : null;
 
 		if ($this->page) {
-			echo handle('render', [$this, 'render'], $this);
+			echo care('render', [$this, 'render'], $this);
 		} else {
 			error(404, $method, $path, $cms);
 		}

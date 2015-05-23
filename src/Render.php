@@ -22,7 +22,7 @@ trait Render {
 	public function render(Content $content) {
 
 		// HTTP status code
-		if ($code = isset($content->page->status) ? $content->page->status : null) status($code);
+		if ($code = isset($content->page->status) ? $content->page->status : null) http_response_code($code);
 
 		// PHTML file execute
 		if ($content->page->is('phtml')) {
