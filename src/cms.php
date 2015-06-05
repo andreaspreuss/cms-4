@@ -31,7 +31,7 @@ class Content extends \stdClass {
 			[
 				'title' => 'Sphido CMS',
 				'cache' => false,
-				'content' => getcwd() . '/content/',
+				'content' => getcwd() . '/pages/',
 				'meta' => [
 					'template' => getcwd() . '/index.latte',
 				]
@@ -40,21 +40,21 @@ class Content extends \stdClass {
 			is_file(getcwd() . '/config.php') ? include_once(getcwd() . '/config.php') : []
 		);
 
-		map([404, 500], [$this, 'pageNotFound']);
+		map([404, 500], [$this, 'error']);
 	}
 
 	/**
-	 * Page not found.
+	 * Page not found error.
 	 *
 	 * @param $error
 	 * @param callable $method
 	 * @param string $path
 	 * @param Content $cms
 	 */
-	public function pageNotFound($error, $method, $path, $cms) {
+	public function error($error, $method, $path, $cms) {
 		foreach ([content($path . '/404'), content('/404')] as $path) {
 			if ($this->page = Page::fromPath($path, (array)config()->meta)) {
-				echo care('render.error', [$this, 'render'], $this);
+				echo ensure('render.error', [$this, 'render'], $this);
 			}
 		}
 	}
@@ -68,23 +68,19 @@ class Content extends \stdClass {
 	function __invoke($method, $path, $cms) {
 		$this->cms = $cms = $this;
 
-		// content php files
+		// inclide prepend PHP file first
 		is_file($php = content($path . '/index.php')) ? include_once $php : null ||
 		is_file($php = content($path . '.php')) ? include_once $php : null;
 
-		// getcwd php files
-		is_file($php = getcwd() . $path . '/index.php') ? include_once $php : null ||
-		is_file($php = getcwd() . $path . '.php') ? include_once $php : null;
-
-		// get page or return error
+		// then get page or return error
 		$this->page = Page::fromPath(content($path), (array)config()->meta);
 
-		// function.php
+		// and functions.php
 		is_file($php = content($path . '/function.php')) ? include_once $php : null;
 		is_file(getcwd() . '/functions.php') ? include_once getcwd() . '/functions.php' : null;
 
 		if ($this->page) {
-			echo care('render', [$this, 'render'], $this);
+			echo ensure('page.render', [$this, 'render'], $this);
 		} else {
 			error(404, $method, $path, $cms);
 		}

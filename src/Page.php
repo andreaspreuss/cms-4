@@ -196,10 +196,12 @@ class Page extends \SplFileInfo {
 	 */
 	public static function fromPath($path, array $meta = []) {
 		if (
+			// try found file
 			is_file($file = $path . '.html') ||
 			is_file($file = $path . '.md') ||
 			is_file($file = $path . '.latte') ||
 			is_file($file = $path . '.phtml') ||
+			// index file from in dir
 			is_dir($path) && is_file($file = $path . '/index.html') ||
 			is_dir($path) && is_file($file = $path . '/index.md') ||
 			is_dir($path) && is_file($file = $path . '/index.latte') ||
