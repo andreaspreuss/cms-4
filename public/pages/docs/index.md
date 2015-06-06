@@ -5,10 +5,13 @@ menu: Docs
 order: 3
 -->
 
+# Sphido CMS Docs
 
+## [Sphido Installation](/docs/install)
 ## [Using PHTM](/docs/phtml)
-## [Configure Sphido CMS](/docs/configure)
-## [Extending Sphido CMS](/docs/extending)
+## [Configure Sphido](/docs/configure)
+## [Extending Sphido](/docs/extending)
+
 Sphido CMS can be easily extends by `functions.php` file, you can add custom functions or parametters.
 
 

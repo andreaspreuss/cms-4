@@ -103,33 +103,24 @@ order: 1
 	Full Version Control
 	Everything, from content to config, can be version controlled.
 	-->
-	<div class="row share hidden-xs">
-		<div class="col-md-12 text-center">
-			<!-- Twitter -->
-			<a href="https://twitter.com/share" class="twitter-share-button"
-			   data-text="Deadly simple CMS with Markdown/HTML support" data-via="OzzyCzech"
-			   data-hashtags="sphido">Tweet</a>
-			<script>!function (d, s, id) {
-					var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
-					if (!d.getElementById(id)) {
-						js = d.createElement(s);
-						js.id = id;
-						js.src = p + '://platform.twitter.com/widgets.js';
-						fjs.parentNode.insertBefore(js, fjs);
-					}
-				}(document, 'script', 'twitter-wjs');</script>
+{/block}
 
-			<a href="https://twitter.com/OzzyCzech" class="twitter-follow-button" data-show-count="false">Follow
-				@OzzyCzech</a>
-			<script>!function (d, s, id) {
-					var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
-					if (!d.getElementById(id)) {
-						js = d.createElement(s);
-						js.id = id;
-						js.src = p + '://platform.twitter.com/widgets.js';
-						fjs.parentNode.insertBefore(js, fjs);
-					}
-				}(document, 'script', 'twitter-wjs');</script>
+{block footer}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<p>
+					Made with
+					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+					     y="0px" width="14px" height="14px" viewBox="0 0 86 70" xml:space="preserve">
+						<g>
+							<path fill="#D2322D"
+							      d="M78.947,5.753c-8.359-7.671-21.91-7.671-30.271,0L43,10.963l-5.678-5.21c-8.357-7.671-21.91-7.671-30.27,0c-9.404,8.631-9.404,22.624,0,31.255L43,70l35.947-32.991C88.352,28.377,88.352,14.385,78.947,5.753z"/>
+						</g>
+					</svg>
+					on Mac by <a href="http://www.omdesign.cz">Roman Ožana</a>
+				</p>
+			</div>
 		</div>
 	</div>
 {/block}
