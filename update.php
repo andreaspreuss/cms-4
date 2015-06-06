@@ -1,7 +1,7 @@
 <?php
 /** @author Roman Ožana <ozana@omdesign.cz> */
 
-namespace sphido {
+namespace ysphido {
 
 	/**
 	 * Simple update function download Github resources
@@ -44,7 +44,7 @@ namespace sphido {
 }
 
 namespace {
-	\sphido\update(
+	\ysphido\update(
 		[
 			__DIR__ . '/src/sphido.php' => ['config', 'routing', 'events', 'url'],
 			__DIR__ . '/src/functions.json.php' => ['json'],

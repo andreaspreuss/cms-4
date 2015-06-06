@@ -33,7 +33,7 @@ class Content extends \stdClass {
 				'cache' => false,
 				'content' => getcwd() . '/pages/',
 				'meta' => [
-					'template' => getcwd() . '/index.latte',
+					'template' => getcwd() . '/layout.latte',
 				]
 			],
 			$config,

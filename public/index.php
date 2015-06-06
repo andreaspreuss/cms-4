@@ -5,4 +5,7 @@ $GLOBALS['sphido_start'] = microtime(true);
 require_once __DIR__ . '/../src/cms.php';
 
 map($content = new \cms\Content());
+
+// custom URL handler goes here....
+
 dispatch($content);

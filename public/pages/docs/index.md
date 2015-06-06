@@ -1,48 +1,16 @@
 <!--
 id: how-to
 title: Example how to hack/customize Sphido CMS
-menu: Examples
-order: 5
+menu: Docs
+order: 3
 -->
 
-<div class="alert alert-info">
-	<a href="{url}">Current site</a> it's an great example
-	how to use <strong>Sphido CMS</strong>! Visit source on
-	<a href="https://github.com/OzzyCzech/sphido/tree/master/public" target="_blank">GitHub</a>.
-</div>
 
-## Add custom function
+## [Using PHTM](/docs/phtml)
+## [Configure Sphido CMS](/docs/configure)
+## [Extending Sphido CMS](/docs/extending)
+Sphido CMS can be easily extends by `functions.php` file, you can add custom functions or parametters.
 
-Open `functions.php` in main folder and add your custom functions:
-
-	namespace {
-		function currentUrl() {
-			return \sphido\url($_SERVER['REQUEST_URI']); // current URL
-	  }
-	}
-
-Your function now will be accesible in Latte template `{currentUrl()}`.
-
-### Add custom Latte parameters
-
-You can add more parameters from `function.php
-
-    $this->get = $_GET;
-    $this->post = $_POST;
-    $this->xxx = 'some value';
-
-Will be accessible in template like `{$get->something}` or `{$post.something}` or `{$xxx}`.
-
-### Change something in config
-
-You can change your `config.php` or overwrite something directly from `functions.php`
-
-	namespace sphido {
-		config()->title = 'Sphido';
-		config()->->example = 'example';
-	}
-	
-In template will be accessible `{config()->title}`
 
 ## Hacking response
 
