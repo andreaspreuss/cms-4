@@ -1,14 +1,14 @@
 {
-  "name": "om/vestibulum",
+  "name": "sphido/cms",
   "type": "library",
-  "description": "Vestibulum is deathly simple, ultra fast, flat file (Markdown, HTML) CMS. Fully customizable with Latte templates",
+  "description": "Sphido is deathly simple, ultra fast, flat file (Markdown, HTML) CMS. Fully customizable with Latte templates",
   "keywords": [
     "cms",
     "markdown",
     "latte",
     "html"
   ],
-  "homepage": "http://vestibulum.omdesign.cz",
+  "homepage": "http://www.sphido.org",
   "license": ["BSD-3-Clause"],
   "authors": [
     {
@@ -18,14 +18,13 @@
     }
   ],
   "support": {
-    "issues": "https://github.com/OzzyCzech/vestibulum/issues"
+    "issues": "https://github.com/sphido/cms/issues"
   },
   "require": {
     "php": ">=5.5.0",
     "latte/latte": "*",
     "erusev/parsedown": "*"
   },
-
   "require-dev": {
     "nette/tester": "*",
     "tracy/tracy": "*"
@@ -35,5 +34,4 @@
       "vestibulum\\": "src/"
     }
   }
-
 }

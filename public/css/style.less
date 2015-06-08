@@ -71,6 +71,11 @@ article {
 	@media only screen and (max-device-width: 480px) {
 		padding: 20px 0;
 	}
+
+	blockquote {
+		font-style: italic;
+		background: #f5f5f5;
+	}
 }
 
 a.btn-download {
@@ -156,6 +161,28 @@ footer {
 
 	a, a:hover {
 		color: #bcbcbc;
+	}
+}
+
+aside {
+	margin: 20px auto;
+
+	.panel {
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		.panel-heading {
+			font-weight: bold;
+			background: none;
+			//font-size: 18px;
+			border: 0;
+			padding-bottom: 0;
+			padding-left: 0;
+		}
+		a.list-group-item {
+			border: 0;
+			padding: 8px 10px;
+		}
 	}
 }
 

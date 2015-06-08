@@ -1,8 +1,7 @@
 <!--
-id: install
+id: installing
 title: How to Install Sphido CMS
-menu: Install
-order : 2
+template: ../../layout.docs.latte
 -->
 
 # How to install Sphido CMS
