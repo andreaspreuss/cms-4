@@ -4,17 +4,17 @@
  * @author Roman Ozana <ozana@omdesign.cz>
  */
 
-namespace vestibulum {
-	/** @var \vestibulum\Vestibulum $cms */
-	$cms->pages = Pages::from(content(), ['404'])->toArraySorted();
+namespace cms {
+	/** @var \cms\Content $cms */
+	$cms->pages = Pages::from(content(), ['404'])->toArraySorted(); // get pages for menu
 }
 
 namespace {
-	/** @var \vestibulum\Vestibulum $cms */
+	/** @var \cms\Content $cms */
 
 	// add your custom function here
 	function yolo() {
-		\vestibulum\redirect('http://www.omdesign.cz');
+		\cms\redirect('http://www.omdesign.cz');
 	}
 
 	// and in template just write
@@ -23,10 +23,10 @@ namespace {
 
 	// add cutom filters
 	add_filter(
-		'url', function (Url $url) {
-		return $url; // do nothing
-		return $url->host('www.sphido.org'); // change anything
-	}
+		'url',
+		function (Url $url) {
+			return $url; // do nothing
+			return $url->host('www.sphido.org'); // change anything
+		}
 	);
-
 }

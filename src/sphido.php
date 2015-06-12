@@ -1,5 +1,4 @@
 <?php
-/** @author Roman Ozana <ozana@omdesign.cz> */
 /**
  * Basic config function.
  *
@@ -10,6 +9,7 @@ function config() {
 	if ($config) return $config;
 	return $config = (object)call_user_func_array('\array_replace_recursive', func_get_args());
 }
+/** @author Roman Ozana <ozana@omdesign.cz> */
 
 /**
  * @return object
@@ -176,7 +176,9 @@ function dispatch() {
 
 	return call_user_func_array($func, $argv);
 }
-
+/**
+ * @author Roman Ozana <ozana@omdesign.cz>
+ */
 
 /**
  * Return events object
@@ -220,12 +222,12 @@ function on($event, callable $listener = null, $priority = 10) {
  * @param int $priority
  */
 function once($event, callable $listener, $priority = 10) {
-	$onceListener = function () use (&$onceListener, $event, $listener) {
-		off($event, $onceListener);
-		call_user_func_array($listener, func_get_args());
+	$once = function () use (&$once, $event, $listener) {
+		off($event, $once);
+		return call_user_func_array($listener, func_get_args());
 	};
 
-	on($event, $onceListener, $priority);
+	on($event, $once, $priority);
 }
 
 /**
@@ -270,20 +272,19 @@ function fire($event) {
 }
 
 /**
- * Care about something
+ * Ensure that something will be handled
  *
  * @param string $event
  * @param callable $listener
  * @return mixed
  */
-function handle($event, callable $listener = null) {
+function ensure($event, callable $listener = null) {
 	if ($listener) on($event, $listener, 0); // register default listener
 
 	if ($listeners = listeners($event)) {
 		return call_user_func_array(end($listeners), array_slice(func_get_args(), 2));
 	}
 }
-
 
 /**
  * Pass variable with all filters.
@@ -352,32 +353,7 @@ function add_listener($event, callable $listener, $priority = 10) {
 function add_filter($event, callable $listener, $priority = 10) {
 	on($event, $listener, $priority);
 }
-
-/**
- * Obfuscate email addresses and protect them against SPAM bots
- *
- * @param string $email
- * @param string $text
- * @param string $format
- * @return string
- */
-function antispam($email, $text = null, $format = '<a href="mailto:%s" rel="nofollow">%s</a>') {
-	return jsProtect(sprintf($format, $email, $text ?: $email)) .
-	'<noscript><span style="unicode-bidi: bidi-override; direction: rtl;">' . strrev($email) . '</span></noscript>';
-}
-
-/**
- * Perform the rot13 transform on a string and then decode back with Javascript.
- *
- * @param string $string
- * @return string
- */
-function jsProtect($string) {
-	return '<script type="text/javascript">/* <![CDATA[ */document.write("' .
-	addslashes(
-		str_rot13($string)
-	) . '".replace(/[a-zA-Z]/g,function(c){return String.fromCharCode((c<="Z"?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26);}));/* ]]> */</script>';
-}
+/** @author Roman Ozana <ozana@omdesign.cz> */
 
 /**
  * @method Url scheme(string $scheme)

@@ -1,28 +1,57 @@
 <?php
 /** @author Roman Ožana <ozana@omdesign.cz> */
 
-@unlink(__DIR__ . '/src/sphido.php');
+namespace ysphido {
 
-if (!$sphido = fopen(__DIR__ . '/src/sphido.php', 'a')) die('UPS');
-fwrite($sphido, '<?php' . PHP_EOL . '/** @author Roman Ozana <ozana@omdesign.cz> */' . PHP_EOL);
+	/**
+	 * Simple update function download Github resources
+	 *
+	 * @param $resources
+	 */
+	function update($resources, callable $success = null) {
+		foreach ($resources as $output => $parts) {
+			@unlink($output); // delete output file
+			if (!$output = fopen($output, 'a')) throw new \RuntimeException('File ' . $output . ' cant\'t be open');
+			fwrite($output, '<?php' . PHP_EOL);
+			foreach ($parts as $part) {
 
-foreach (
-	[
-		'sphido/config/master/src/config.php',
-		'sphido/routing/master/src/routing.php',
-		'sphido/events/master/src/events.php',
-		'sphido/antispam/master/src/antispam.php',
-		'sphido/url/master/src/url.php',
-	] as $file) {
-	$tokens = token_get_all(file_get_contents('https://raw.githubusercontent.com/' . $file));
-	echo $file . PHP_EOL;
-	while (list(, $token) = each($tokens)) {
-		list($name, $token) = is_array($token) ? $token : [null, $token];
-		if ($name === T_OPEN_TAG) continue;
-		if (strpos($token, '@author') !== false) continue;
-		if ($token === '<?php') continue;
-		fwrite($sphido, $token);
+				if (preg_match('/\w+/', $part)) {
+					$file = 'https://raw.githubusercontent.com/sphido/' . $part . '/master/src/' . $part . '.php';
+				} elseif (strpos($part, 'raw.githubusercontent') !== false) {
+					$file = $part;
+				} else {
+					$file = 'https://raw.githubusercontent.com/sphido/' . $part;
+				}
+
+				// combine all files to single one
+				if ($content = file_get_contents($file)) {
+
+					$tokens = token_get_all(trim($content) . PHP_EOL);
+					if (is_callable($success)) $success($file, $content, $tokens);
+
+					// write content to combined file
+					while (list(, $token) = each($tokens)) {
+						list($name, $token) = is_array($token) ? $token : [null, $token];
+						if ($name === T_OPEN_TAG) continue; // skip <?php
+						if ($token === '<?php') continue; // skip <?php
+						fwrite($output, $token);
+					}
+				}
+			}
+			fclose($output);
+		}
 	}
 }
 
-fclose($sphido);
+namespace {
+	\ysphido\update(
+		[
+			__DIR__ . '/src/sphido.php' => ['config', 'routing', 'events', 'url'],
+			__DIR__ . '/src/functions.json.php' => ['json'],
+			__DIR__ . '/src/functions.http.php' => ['http'],
+		],
+		function ($file) {
+			echo $file . PHP_EOL;
+		}
+	);
+}

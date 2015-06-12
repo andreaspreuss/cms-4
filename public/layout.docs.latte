@@ -1,0 +1,60 @@
+{extends layout.latte}
+
+{block page}
+	<div class="container">
+
+		<div class="row">
+			<aside class="col-md-offset-1  col-md-2">
+				<!-- Setup -->
+				<div class="panel panel-default">
+					<div class="panel-heading">Setup</div>
+					<div class="list-group">
+						<a href="/docs/installing" n:class="list-group-item, $page->id === 'installing' ? active">Installing</a>
+						<a href="/docs/configuration"
+						   n:class="list-group-item, $page->id === 'configuration' ? active">Configuration</a>
+						<a href="/docs/updating" n:class="list-group-item, $page->id === 'updating' ? active">Updating</a>
+					</div>
+				</div>
+				<!-- /Setup -->
+
+				<!-- Content -->
+				<div class="panel panel-default">
+					<div class="panel-heading">Content</div>
+					<div class="list-group">
+						<a href="/docs/create-content" n:class="list-group-item, $page->id === 'create-content' ? active">Create
+							content</a>
+						<a href="/docs/blogging" class="list-group-item">Blogging</a>
+					</div>
+				</div>
+				<!-- /Content -->
+
+
+				<!-- Themes -->
+				<div class="panel panel-default">
+					<div class="panel-heading">Themes</div>
+					<div class="list-group">
+						<a href="/docs/template-basics" class="list-group-item">Template Basics</a>
+						<a href="/docs/latte-templates" class="list-group-item">Latte templates</a>
+						<a href="/docs/create-menu" class="list-group-item">Create menu</a>
+					</div>
+				</div>
+				<!-- /Themes -->
+
+
+				<!-- Extending -->
+				<div class="panel panel-default">
+					<div class="panel-heading">Extending</div>
+					<div class="list-group">
+						<a href="/docs/latte-templates" class="list-group-item">Plugins</a>
+						<a href="/docs/menu" class="list-group-item">Menu</a>
+					</div>
+				</div>
+				<!-- /Extending -->
+			</aside>
+
+			<div class="col-md-8">
+				<article n:ifset="#content">{include content}</article>
+			</div>
+		</div>
+	</div>
+{/block}

@@ -1,0 +1,126 @@
+<!--
+id: home
+menu: Home
+title: Simple flat-file PHP CMS with Latte templates and Markdown support
+description: Sphido is deathly simple, ultra fast, flat-file (Markdown, HTML) PHP CMS. Fully customizable with Latte templates.
+class: home
+order: 1
+-->
+
+{block header}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-4 col-md-offset-4 col-lg-6 col-lg-offset-3">
+				<div class="logo">
+					<img src="img/sphido.svg" alt=""/>
+					<span>A rocket fast flat file blog & <strong>CMS</strong></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 text-center">
+			<a class="btn btn-download" href="/download"><img src="{url 'img/download.svg'}" alt="" width="48" height="48"/>
+				Download
+			</a>
+		</div>
+	</div>
+{/block}
+
+{block content}
+	<div class="row">
+		<div class="col-md-4">
+			<div class="box">
+				<img src="img/simple.svg" alt="" width="48" height="48"/>
+
+				<h2>Deathly simple</h2>
+
+				<p>Few lines of PHP code. Only two <abbr title="Latte and Markdown">dependencies</abbr>. Simple configuration.
+				</p>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="box">
+				<img src="img/free.svg" alt="" width="48" height="48"/>
+
+				<h2>Barriers free</h2>
+
+				<p>Use <a href="http://en.wikipedia.org/wiki/Markdown">Markdown</a>, HTML, PHTML, PHP as you need. Customize
+					templates
+					per page.</p>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<div class="box">
+				<img src="img/template.svg" alt="" width="48" height="48"/>
+
+				<h2>Latte templates</h2>
+
+				<p>
+					Free you creativity. Sphido uses the <a href="https://github.com/nette/latte" target="_blank">Latte</a>
+					templating
+					engine.
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-4">
+			<div class="box">
+				<img src="img/extensible.svg" alt="" width="48" height="48"/>
+
+				<h2>Extensible</h2>
+
+				<p>No problem! Add your function to <code>functions.php</code>.</p>
+			</div>
+		</div>
+		<div class="col-md-4">
+
+			<div class="box">
+				<img src="img/fast.svg" alt="" width="48" height="48"/>
+
+				<h2>Blazing fast</h2>
+
+				<p>No database! About ~14 milliseconds per request (with cache).</p>
+			</div>
+
+		</div>
+		<div class="col-md-4">
+			<div class="box">
+				<img src="img/github.svg" alt="" width="48" height="48"/>
+
+				<h2>Free and Open</h2>
+
+
+				<p>
+					Fork Sphido on <a href="https://github.com/sphido/sphido" target="_blank">GitHub</a> under
+					New BSD license.
+				</p>
+			</div>
+		</div>
+	</div>
+	<!--
+	Full Version Control
+	Everything, from content to config, can be version controlled.
+	-->
+{/block}
+
+{block footer}
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<p>
+					Made with
+					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+					     y="0px" width="14px" height="14px" viewBox="0 0 86 70" xml:space="preserve">
+						<g>
+							<path fill="#D2322D"
+							      d="M78.947,5.753c-8.359-7.671-21.91-7.671-30.271,0L43,10.963l-5.678-5.21c-8.357-7.671-21.91-7.671-30.27,0c-9.404,8.631-9.404,22.624,0,31.255L43,70l35.947-32.991C88.352,28.377,88.352,14.385,78.947,5.753z"/>
+						</g>
+					</svg>
+					on Mac by <a href="http://www.omdesign.cz">Roman Ožana</a>
+				</p>
+			</div>
+		</div>
+	</div>
+{/block}

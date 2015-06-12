@@ -1,5 +1,5 @@
 <?php
-namespace vestibulum;
+namespace cms;
 
 /**
  * Multiple pages loaders
@@ -19,14 +19,14 @@ class Pages {
 	}
 
 	/**
-	 * Create Files object instance from path
+	 * Create Pages object instance from path
 	 *
 	 * @param string $path
 	 * @param array|callable $filter
 	 * @param string $class
-	 * @return \vestibulum\Pages
+	 * @return \cms\Pages
 	 */
-	public static function from($path, $filter = ['index', '404'], $class = '\\vestibulum\\Page') {
+	public static function from($path, $filter = ['index', '404'], $class = Page::class) {
 		$iterator = new \RecursiveDirectoryIterator(realpath($path), \RecursiveDirectoryIterator::SKIP_DOTS);
 		if (class_exists($class)) $iterator->setInfoClass($class);
 

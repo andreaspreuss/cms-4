@@ -1,5 +1,5 @@
 <?php
-namespace vestibulum;
+namespace cms;
 
 /**
  * Extract metadata from single file
