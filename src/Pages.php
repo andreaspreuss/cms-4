@@ -19,7 +19,7 @@ class Pages {
 	}
 
 	/**
-	 * Create Files object instance from path
+	 * Create Pages object instance from path
 	 *
 	 * @param string $path
 	 * @param array|callable $filter

@@ -72,7 +72,6 @@ class Content extends \stdClass {
 		is_file($php = content($path . '/index.php')) ? include_once $php : null ||
 		is_file($php = content($path . '.php')) ? include_once $php : null;
 
-		// then get page or return error
 		$this->page = Page::fromPath(content($path), (array)config()->meta);
 
 		// and functions.php

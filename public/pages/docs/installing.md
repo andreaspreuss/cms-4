@@ -6,7 +6,7 @@ template: ../../layout.docs.latte
 
 # How to install Sphido CMS
 
-1. Download and unzip [latest version](/download) or run `php composer.phar create-project om/sphido`.
+1. Download and unzip [latest version](/download) or run `php composer.phar create-project sphido/cms`.
 2. Change files in `public/content` and `public/config.php`
 3. Upload everything to your server.
 
