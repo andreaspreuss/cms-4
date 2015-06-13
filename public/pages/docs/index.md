@@ -11,7 +11,7 @@ order: 2
 Welcome to the Sphido documentation. To get started we recommend you read:
 
 1. [Installing Sphido](/docs/installing)
-2. [Adding Content](/docs/add-content)
+2. [Create Content](/docs/create-content)
 3. [Theme Basics](/docs/theme-basics)
 
 

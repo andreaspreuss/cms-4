@@ -2,6 +2,7 @@
 id: create-content
 title: Create content in Sphido CMS
 template: ../../layout.docs.latte
+syntax: on
 -->
 
 # How to create content?
@@ -36,7 +37,7 @@ For example you can specify the page **title** or a **description** to be used b
 	description: Here can be description..
 	-->
 
-All page metadata are accessible in Template through `$page` variable like: `{$page->title}` or `{$page->id}`. 
+All page metadata are accessible in Template through `$page` variable like: `{l}$page->title}` or `{l}$page->id}`. 
 Read more about [Latte templates syntax](/docs/latte-templates).
 	
 ### Metadata default values
@@ -59,9 +60,9 @@ You can also use <code>&#123;url [slug]}</code> macro in your Markdown or HTML p
 
  Code in HTML or Markdown | Results
 --------------------------|---------
-<code>&#123;url}</code> | `{url}`  
-<code>&#123;url aaa}</code> | `{url aaa}`  
-<code>&#123;url /examples/send}</code> | `{url /examples/send}`  
+<code>{l}url{r}</code> | `{url}`  
+<code>{l}url aaa{r}</code> | `{url aaa}`  
+<code>{l}url /examples/send{r}</code> | `{url '/examples/send'}`  
 
 ## Need more then Markdown?
  

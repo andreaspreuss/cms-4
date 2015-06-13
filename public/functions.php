@@ -10,6 +10,8 @@ namespace cms {
 }
 
 namespace {
+	use Latte\Macros\MacroSet;
+
 	/** @var \cms\Sphido $cms */
 
 	// add your custom function here
@@ -28,5 +30,11 @@ namespace {
 			return $url; // do nothing
 			return $url->host('www.sphido.org'); // change anything
 		}
+	);
+
+	add_filter(
+		'latte.macroset', function (MacroSet $set) {
+		$set->addMacro('custom', 'echo "This is custom macro";');
+	}
 	);
 }

@@ -1,5 +1,5 @@
 <!--
-id: updatin
+id: updating
 title: How to update Sphido CMS
 template: ../../layout.docs.latte
 -->

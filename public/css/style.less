@@ -68,8 +68,9 @@ header {
 }
 
 article {
-	@media only screen and (max-device-width: 480px) {
-		padding: 20px 0;
+	padding: 20px 0;
+	@media only screen and (min-device-width: 970px) {
+		padding: 30px 0 90px 0;
 	}
 
 	blockquote {
@@ -168,23 +169,25 @@ footer {
 }
 
 aside {
-	margin: 20px auto;
+	margin: 40px auto;
 
 	.panel {
 		border: 0;
 		border-radius: 0;
 		box-shadow: none;
+
 		.panel-heading {
 			font-weight: bold;
 			background: none;
-			//font-size: 18px;
+			font-size: 16px;
 			border: 0;
-			padding-bottom: 0;
 			padding-left: 0;
 		}
+
 		a.list-group-item {
+			padding-top: 8px;
+			padding-bottom: 8px;
 			border: 0;
-			padding: 8px 10px;
 		}
 	}
 }

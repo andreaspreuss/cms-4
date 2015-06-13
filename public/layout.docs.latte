@@ -4,6 +4,8 @@
 	<div class="container">
 
 		<div class="row">
+
+			<!-- navigation -->
 			<aside class="col-md-offset-1  col-md-2">
 				<!-- Setup -->
 				<div class="panel panel-default">
@@ -23,7 +25,7 @@
 					<div class="list-group">
 						<a href="/docs/create-content" n:class="list-group-item, $page->id === 'create-content' ? active">Create
 							content</a>
-						<a href="/docs/blogging" class="list-group-item">Blogging</a>
+						<a href="/docs/blogging" n:class="list-group-item, $page->id === 'blogging' ? active">Blogging</a>
 					</div>
 				</div>
 				<!-- /Content -->
@@ -33,9 +35,9 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">Themes</div>
 					<div class="list-group">
-						<a href="/docs/template-basics" class="list-group-item">Template Basics</a>
-						<a href="/docs/latte-templates" class="list-group-item">Latte templates</a>
-						<a href="/docs/create-menu" class="list-group-item">Create menu</a>
+						<a href="/docs/template-basics" n:class="list-group-item, $page->id === 'template-basics' ? active">Template Basics</a>
+						<a href="/docs/latte-templates" n:class="list-group-item, $page->id === 'latte-templates' ? active">Latte templates</a>
+						<a href="/docs/create-menu" n:class="list-group-item, $page->id === 'create-menu' ? active">Create menu</a>
 					</div>
 				</div>
 				<!-- /Themes -->
@@ -51,10 +53,15 @@
 				</div>
 				<!-- /Extending -->
 			</aside>
+			<!-- /navigation -->
 
+
+			<!-- content -->
 			<div class="col-md-8">
 				<article n:ifset="#content">{include content}</article>
 			</div>
+			<!-- /content -->
+
 		</div>
 	</div>
 {/block}

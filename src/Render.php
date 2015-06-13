@@ -12,15 +12,22 @@ require_once __DIR__ . '/../vendor/latte/latte/src/latte.php';
  */
 function latte() {
 	$latte = new Engine();
-	$latte->setLoader(new FileLoader);
+	$latte->setLoader(filter('latte.loader', new FileLoader));
 	$latte->setTempDirectory(tmp());
-	$set = new MacroSet($latte->getCompiler());
-	$set->addMacro('url', 'echo \cms\url(%node.args);');
+	trigger('latte.macroset', new MacroSet($latte->getCompiler()));
 	return filter('latte', $latte);
 }
 
+on(
+	'latte.macroset',
+	function (MacroSet $set) {
+		$set->addMacro('url', 'echo \cms\url(%node.args);');
+	}
+);
+
 /**
  * Solve (html, md, latte) file loading
+ *
  * @package cms
  */
 class FileLoader extends \Latte\Loaders\FileLoader {
@@ -30,18 +37,8 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 	 */
 	public function getContent($file) {
 
-		$content = parent::getContent($file);
 		$ext = pathinfo(strval($file), PATHINFO_EXTENSION);
-
-		// replace {url} with current server URL
-		if ($ext === 'md' || $ext === 'html') {
-			$content = preg_replace_callback(
-				"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
-				return Filters::safeUrl(url(end($m)));
-			},
-				$content
-			);
-		}
+		$content = filter('content', parent::getContent($file), $file, $ext);
 
 		// Try render page
 		if ($file instanceof Page) {
@@ -62,6 +59,23 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 	}
 }
 
+// filter content before
+add_filter(
+	'content', function ($content, $file, $ext) {
+	// replace {url} with current server URL
+	if ($ext === 'md' || $ext === 'html') {
+		$content = preg_replace_callback(
+			"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
+			return Filters::safeUrl(url(end($m)));
+		},
+			$content
+		);
+	}
+
+	return $content;
+}
+);
+
 /**
  * Multiple pages loaders
  *
@@ -70,23 +84,23 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 trait Render {
 
 	/**
-	 * @param Sphido $content
+	 * @param Sphido $cms
 	 * @return mixed|null|string
 	 * @throws \Exception
 	 */
-	public function render(Sphido $content) {
+	public function render(Sphido $cms) {
 
 		// HTTP status code
-		if ($code = isset($content->page->status) ? $content->page->status : null) http_response_code($code);
+		if ($code = isset($cms->page->status) ? $cms->page->status : null) http_response_code($code);
 
 		// PHTML file execute
-		if ($content->page->is('phtml')) {
-			extract(get_object_vars($content), EXTR_SKIP);
+		if ($cms->page->is('phtml')) {
+			extract(get_object_vars($cms), EXTR_SKIP);
 			ob_start();
-			require $content->page;
+			require $cms->page;
 			return ob_get_clean();
 		}
 
-		return latte()->renderToString($content->page, get_object_vars($content));
+		return latte()->renderToString($cms->page, get_object_vars($cms));
 	}
 }
