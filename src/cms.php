@@ -9,15 +9,15 @@ require_once __DIR__ . '/Render.php';
 require_once __DIR__ . '/Page.php';
 
 /**
- * Really deathly simple CMS on Sphido
+ * Sphido:  A rocket fast flat file blog & CMS
  *
  * @author Roman Ožana <ozana@omdesign.cz>
  */
-class Content extends \stdClass {
+class Sphido extends \stdClass {
 
 	use Render;
 
-	/** @var Content */
+	/** @var Sphido */
 	public $cms;
 	/** @var Page */
 	public $page;
@@ -49,7 +49,7 @@ class Content extends \stdClass {
 	 * @param $error
 	 * @param callable $method
 	 * @param string $path
-	 * @param Content $cms
+	 * @param Sphido $cms
 	 */
 	public function error($error, $method, $path, $cms) {
 		foreach ([content($path . '/404'), content('/404')] as $path) {

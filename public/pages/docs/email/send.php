@@ -1,7 +1,7 @@
 <?php
 namespace cms;
 
-isset($this) && $this instanceof Content or die('Sorry can be executed only from Sphido');
+isset($this) && $this instanceof Sphido or die('Sorry can be executed only from Sphido');
 
 // check AJAX request
 isAjax() or json(['message' => 'Not AJAX request, but nice try :-)']);

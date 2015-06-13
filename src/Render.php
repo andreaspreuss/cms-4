@@ -70,11 +70,11 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 trait Render {
 
 	/**
-	 * @param Content $content
+	 * @param Sphido $content
 	 * @return mixed|null|string
 	 * @throws \Exception
 	 */
-	public function render(Content $content) {
+	public function render(Sphido $content) {
 
 		// HTTP status code
 		if ($code = isset($content->page->status) ? $content->page->status : null) http_response_code($code);

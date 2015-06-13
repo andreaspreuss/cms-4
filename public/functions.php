@@ -5,12 +5,12 @@
  */
 
 namespace cms {
-	/** @var \cms\Content $cms */
+	/** @var \cms\Sphido $cms */
 	$cms->pages = Pages::from(content(), ['404'])->toArraySorted(); // get pages for menu
 }
 
 namespace {
-	/** @var \cms\Content $cms */
+	/** @var \cms\Sphido $cms */
 
 	// add your custom function here
 	function yolo() {
