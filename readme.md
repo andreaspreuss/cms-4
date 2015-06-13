@@ -4,9 +4,9 @@
 
 Vestibulum is deathly simple, ultra fast, flat file (Markdown, Latte, HTML, PHTML) CMS. Fully customizable.
 
-See more information: http://cms.sphido.org/
+See more information: http://www.sphido.org/
 
 # How to install
 
-Download latest version from Github and run `composer install`, or just run `composer create-project om/vestibulum`.
+Download latest version from Github and run `composer install`, or just run `composer create-project sphido/cms`.
 
