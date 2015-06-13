@@ -1,3 +1,4 @@
+# rewrite everything to public folder
 <IfModule mod_rewrite.c>
 	RewriteEngine on
         

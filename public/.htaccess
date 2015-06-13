@@ -1,3 +1,8 @@
+# do not allow visit Latte template files
+<FilesMatch "\.(latte|md)$">
+deny from all
+</FilesMatch>
+
 # enable cool URL
 <IfModule mod_rewrite.c>
 	RewriteEngine On

@@ -12,18 +12,22 @@ template: ../../layout.docs.latte
 
 ### Requirements
 
-- PHP 5.5+
-- Apache / NGINX
+- PHP 5.6+
+- NGINX or Apache
 
 ### Setup NGINX
 
-Here is **nginx** configuration example:
+Here is [NGINX](http://nginx.org/) configuration example:
 
     server {
-	    listen                *:80;
-	    server_name           sphido.dev;
+	    listen *:80;
+	    server_name sphido.org;
+	    root   /Users/websites/Work/cms/public;
 
-	    root   /Users/roman/Work/sphido/public;
+        # protect latte and markdown files agains reading 
+        location ~ (\.latte|\.md) {
+            return 403;
+        }
 
 	    location / {
 		    try_files  $uri  $uri/  /index.php?$args;
@@ -31,37 +35,20 @@ Here is **nginx** configuration example:
 	    }
 
         location ~ \.php$ {
-        try_files  $uri  $uri/  /index.php?$args;
-        index  index.html index.htm index.php;
+            try_files  $uri  $uri/  /index.php?$args;
+            index  index.html index.htm index.php;
 
-        fastcgi_param PATH_INFO $fastcgi_path_info;
-        fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+            fastcgi_param PATH_INFO $fastcgi_path_info;
+            fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
+            fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 
 
-        fastcgi_pass 127.0.0.1:9000;
-        fastcgi_index index.php;
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_intercept_errors on;
-        include fastcgi_params;
+            fastcgi_pass 127.0.0.1:9000;
+            fastcgi_index index.php;
+            fastcgi_split_path_info ^(.+\.php)(/.+)$;
+            fastcgi_intercept_errors on;
+            include fastcgi_params;
       }
-    }
+	}
 
-
-### Setup Apache
-
-Here is **Apache** `.htaccess` configuration example:
-
-
-    <IfModule mod_rewrite.c>
-    	RewriteEngine On
-    	# RewriteBase /
-
-    	# prevents files starting with dot to be viewed by browser
-    	RewriteRule /\.|^\. - [F]
-
-    	# front controller
-    	RewriteCond %{REQUEST_FILENAME} !-f
-    	RewriteCond %{REQUEST_FILENAME} !-d
-    	RewriteRule !\.(pdf|js|ico|gif|jpg|png|css|rar|zip|tar\.gz)$ index.php [L]
-    </IfModule>
+- See [NGINX Beginner’s Guide](http://nginx.org/en/docs/beginners_guide.html) for more information.
