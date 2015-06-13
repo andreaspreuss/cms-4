@@ -18,13 +18,6 @@ function latte() {
 	return filter('latte', $latte);
 }
 
-on(
-	'latte.macroset',
-	function (MacroSet $set) {
-		$set->addMacro('url', 'echo \cms\url(%node.args);');
-	}
-);
-
 /**
  * Solve (html, md, latte) file loading
  *
@@ -42,6 +35,7 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 
 		// Try render page
 		if ($file instanceof Page) {
+			/** @var Page $file */
 			switch ($ext) {
 				case 'html':
 					return "{layout '$file->template'}{block content}{syntax off}" . $content;
@@ -59,22 +53,6 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 	}
 }
 
-// filter content before
-add_filter(
-	'content', function ($content, $file, $ext) {
-	// replace {url} with current server URL
-	if ($ext === 'md' || $ext === 'html') {
-		$content = preg_replace_callback(
-			"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
-			return Filters::safeUrl(url(end($m)));
-		},
-			$content
-		);
-	}
-
-	return $content;
-}
-);
 
 /**
  * Multiple pages loaders
@@ -104,3 +82,36 @@ trait Render {
 		return latte()->renderToString($cms->page, get_object_vars($cms));
 	}
 }
+
+// TODO namespaces for functions and filters
+
+/**
+ * @param $content
+ * @param $file
+ * @param $ext
+ * @return mixed
+ */
+function replace_url($content, $file, $ext) {
+// replace {url} with current server URL
+	if ($ext === 'md' || $ext === 'html') {
+		$content = preg_replace_callback(
+			"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
+			return Filters::safeUrl(url(end($m)));
+		},
+			$content
+		);
+	}
+
+	return $content;
+}
+
+add_filter('content', '\cms\replace_url');
+
+/**
+ * @param MacroSet $set
+ */
+function add_default_macros(MacroSet $set) {
+	$set->addMacro('url', 'echo \cms\url(%node.args);');
+}
+
+on('latte.macroset', '\cms\add_default_macros');
