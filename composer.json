@@ -26,8 +26,8 @@
     "erusev/parsedown": "*"
   },
   "require-dev": {
-    "nette/tester": "*",
-    "tracy/tracy": "*"
+    "nette/tester": "v1.4.0",
+    "tracy/tracy": "v2.3.2"
   },
   "autoload": {
     "psr-4": {
