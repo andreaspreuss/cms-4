@@ -5,6 +5,8 @@
 use Tester\Assert;
 
 require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../src/cms.php';
+
 \Tester\Environment::setup();
 
 class Metadata {
