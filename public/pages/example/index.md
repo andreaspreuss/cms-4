@@ -10,8 +10,6 @@ syntax: latte
 
 This is an example page with
 
-```
-<!--
-asdasd
--->
-```
+{var_dump($page)}
+
+{$page->title}

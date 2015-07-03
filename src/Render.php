@@ -48,6 +48,7 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 		// Try render page
 		if ($file instanceof Page) {
 			/** @var Page $file */
+			//if (isset($file->syntax)) $content = '<div n:syntax="' . $file->syntax .'" n:tag-if="false">' .$content . '</div>';
 			if ($ext === 'md') $content = '{block|md}' . $content . '{/block}';
 			if (strpos($content, '{block content') === false) $content = '{block content}' . $content . '{/block}';
 			if (strpos($content, '{layout') === false) $content = "{layout '$file->template'}" . $content;
@@ -108,7 +109,7 @@ function replace_url($content, $file, $ext) {
 	return $content;
 }
 
-add_filter('content', '\cms\replace_url');
+//add_filter('content', '\cms\replace_url');
 
 /**
  * @param MacroSet $set

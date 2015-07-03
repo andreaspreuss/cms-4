@@ -1,6 +1,7 @@
 <!--
 id: configuration
 title: How to Configure Sphido CMS
+syntax:double
 template: ../../layout.docs.latte
 -->
 
@@ -16,10 +17,9 @@ namespace sphido {
 	config()->myvariable = 'Speed is the core';
 	config()->example = 'example';
 }
-```	
+```
 
 If you are editing the template you can add custom variables to config file and they will become availble in the 
-template via the config object (e.g. `{config()->myvariable}`)
-
+template via the config object (e.g. `{l}config()->myvariable{r}`)
 
 - [See config.php file example](https://github.com/sphido/cms/blob/master/public/config.php)
