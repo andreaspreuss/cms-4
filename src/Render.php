@@ -6,7 +6,6 @@ use Latte\Macros\MacroSet;
 use Latte\Runtime\Filters;
 
 require_once __DIR__ . '/../vendor/latte/latte/src/latte.php';
-
 /**
  * @return Engine
  */
@@ -14,8 +13,22 @@ function latte() {
 	$latte = new Engine();
 	$latte->setLoader(filter('latte.loader', new FileLoader));
 	$latte->setTempDirectory(tmp());
+	$latte->addFilter('md', '\cms\md');
 	trigger('latte.macroset', new MacroSet($latte->getCompiler()));
 	return filter('latte', $latte);
+}
+
+
+/*
+ function is_true($val, $return_null = false) {
+	$bool = (is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool)$val);
+	return ($bool === null && !$return_null ? false : $bool);
+}
+ */
+
+function md($content, $cache = '') {
+	require_once __DIR__ . '/../vendor/erusev/parsedown/Parsedown.php';
+	return \Parsedown::instance()->text($content);
 }
 
 /**
@@ -29,26 +42,17 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 	 * @return mixed|string
 	 */
 	public function getContent($file) {
-
 		$ext = pathinfo(strval($file), PATHINFO_EXTENSION);
 		$content = filter('content', parent::getContent($file), $file, $ext);
 
 		// Try render page
 		if ($file instanceof Page) {
 			/** @var Page $file */
-			switch ($ext) {
-				case 'html':
-					return "{layout '$file->template'}{block content}{syntax off}" . $content;
-				case 'md':
-					require_once __DIR__ . '/../vendor/erusev/parsedown/Parsedown.php';
-					return "{layout '$file->template'}{block content}{syntax off}" . \Parsedown::instance()->text($content);
-					break;
-				case 'latte':
-					if (strpos($content, '{block') === false) $content = '{block content}' . $content;
-					if (strpos($content, '{layout') === false) $content = "{layout '$file->template'}" . $content;
-					return $content;
-			}
+			if ($ext === 'md') $content = '{block|md}' . $content . '{/block}';
+			if (strpos($content, '{block content') === false) $content = '{block content}' . $content . '{/block}';
+			if (strpos($content, '{layout') === false) $content = "{layout '$file->template'}" . $content;
 		}
+		//echo '<pre>' . htmlentities($content);die();
 		return $content;
 	}
 }
@@ -67,7 +71,6 @@ trait Render {
 	 * @throws \Exception
 	 */
 	public function render(Sphido $cms) {
-
 		// HTTP status code
 		if ($code = isset($cms->page->status) ? $cms->page->status : null) http_response_code($code);
 

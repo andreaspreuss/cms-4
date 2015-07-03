@@ -22,8 +22,8 @@
   },
   "require": {
     "php": ">=5.5.0",
-    "latte/latte": "*",
-    "erusev/parsedown": "*"
+    "latte/latte": "v2.3.0",
+    "erusev/parsedown": "v1.5.0"
   },
   "require-dev": {
     "nette/tester": "v1.4.0",

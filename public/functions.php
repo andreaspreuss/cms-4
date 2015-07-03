@@ -6,7 +6,7 @@
 
 namespace cms {
 	/** @var \cms\Sphido $cms */
-	$cms->pages = Pages::from(content(), ['404'])->toArraySorted(); // get pages for menu
+	$cms->pages = Pages::from(content(), ['404', content('example')])->toArraySorted(); // get pages for menu
 }
 
 namespace {
