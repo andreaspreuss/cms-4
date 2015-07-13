@@ -12,7 +12,7 @@ require_once __DIR__ . '/../vendor/latte/latte/src/latte.php';
 function latte() {
 	$latte = new Engine();
 	$latte->setLoader(filter('latte.loader', new FileLoader));
-	$latte->setTempDirectory(tmp());
+	$latte->setTempDirectory(\dir\cache());
 	$latte->addFilter('md', '\cms\md');
 	trigger('latte.macroset', new MacroSet($latte->getCompiler()));
 	return filter('latte', $latte);

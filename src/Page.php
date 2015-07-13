@@ -92,7 +92,7 @@ class Page extends \SplFileInfo {
 	 * @return string
 	 */
 	public function getUrl($src = null) {
-		return url($this->getSlug($src ? $src : content()));
+		return url($this->getSlug($src ? $src : \dir\content()));
 	}
 
 	/**

@@ -6,16 +6,18 @@
 
 namespace cms {
 	/** @var \cms\Sphido $cms */
-	$cms->pages = Pages::from(content(), ['404', content('example')])->toArraySorted(); // get pages for menu
+	$cms->pages = Pages::from(\dir\content(), ['404', \dir\content('example')])->toArraySorted(); // get pages for menu
 }
 
 namespace {
+
 	use Latte\Macros\MacroSet;
 
 	/** @var \cms\Sphido $cms */
 
 	// add your custom function here
 	function yolo() {
+		include \dir\src('functions.http.php');
 		\cms\redirect('http://www.omdesign.cz');
 	}
 
