@@ -3,31 +3,31 @@ namespace cms;
 
 use Latte\Engine;
 use Latte\Macros\MacroSet;
-use Latte\Runtime\Filters;
 
-require_once __DIR__ . '/../vendor/latte/latte/src/latte.php';
+require_once \dir\vendor('latte/latte/src/latte.php');
+
 /**
  * @return Engine
  */
 function latte() {
+
 	$latte = new Engine();
-	$latte->setLoader(filter('latte.loader', new FileLoader));
+	$latte->setLoader(filter('latte.loader', new FileLoader()));
 	$latte->setTempDirectory(\dir\cache());
 	$latte->addFilter('md', '\cms\md');
 	trigger('latte.macroset', new MacroSet($latte->getCompiler()));
 	return filter('latte', $latte);
 }
 
-
 /*
  function is_true($val, $return_null = false) {
 	$bool = (is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool)$val);
 	return ($bool === null && !$return_null ? false : $bool);
 }
- */
+*/
 
 function md($content, $cache = '') {
-	require_once __DIR__ . '/../vendor/erusev/parsedown/Parsedown.php';
+	require_once \dir\vendor('erusev/parsedown/Parsedown.php');
 	return \Parsedown::instance()->text($content);
 }
 
@@ -53,7 +53,7 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 			if (strpos($content, '{block content') === false) $content = '{block content}' . $content . '{/block}';
 			if (strpos($content, '{layout') === false) $content = "{layout '$file->template'}" . $content;
 		}
-		//echo '<pre>' . htmlentities($content);die();
+		//echo '<pre>' . htmlentities($content);die(); // debug
 		return $content;
 	}
 }
@@ -86,30 +86,6 @@ trait Render {
 		return latte()->renderToString($cms->page, get_object_vars($cms));
 	}
 }
-
-// TODO namespaces for functions and filters
-
-/**
- * @param $content
- * @param $file
- * @param $ext
- * @return mixed
- */
-function replace_url($content, $file, $ext) {
-// replace {url} with current server URL
-	if ($ext === 'md' || $ext === 'html') {
-		$content = preg_replace_callback(
-			"/{url\s?['\"]?([^\"'}]*)['\"]?}/", function ($m) {
-			return Filters::safeUrl(url(end($m)));
-		},
-			$content
-		);
-	}
-
-	return $content;
-}
-
-//add_filter('content', '\cms\replace_url');
 
 /**
  * @param MacroSet $set

@@ -4,6 +4,7 @@ require_once __DIR__ . '/../src/cms.php';
 
 map($content = new \cms\Sphido());
 
-// custom URL handler goes here....
+// Custom URL handler goes here....
+// map('page', function () {});
 
 dispatch($content);
