@@ -4,13 +4,12 @@ namespace cms;
 use Latte\Engine;
 use Latte\Macros\MacroSet;
 
-require_once \dir\vendor('latte/latte/src/latte.php');
+require_once __DIR__ . '/../vendor/latte/latte/src/latte.php';
 
 /**
  * @return Engine
  */
 function latte() {
-
 	$latte = new Engine();
 	$latte->setLoader(filter('latte.loader', new FileLoader()));
 	$latte->setTempDirectory(\dir\cache());
@@ -27,7 +26,7 @@ function latte() {
 */
 
 function md($content, $cache = '') {
-	require_once \dir\vendor('erusev/parsedown/Parsedown.php');
+	require_once __DIR__ . '/../vendor/erusev/parsedown/Parsedown.php';
 	return \Parsedown::instance()->text($content);
 }
 

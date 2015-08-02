@@ -10,6 +10,4 @@ syntax: latte
 
 This is an example page with
 
-{var_dump($page)}
-
 {$page->title}

@@ -1,9 +1,17 @@
 <?php
 namespace cms;
 
-require_once __DIR__ . '/functions.php';
+// All functions first
 require_once __DIR__ . '/functions.dir.php';
-require_once __DIR__ . '/sphido.php';
+require_once __DIR__ . '/functions.php';
+
+// Sphido Framework core...
+require_once __DIR__ . '/../vendor/sphido/config/src/config.php';
+require_once __DIR__ . '/../vendor/sphido/routing/src/routing.php';
+require_once __DIR__ . '/../vendor/sphido/events/src/events.php';
+require_once __DIR__ . '/../vendor/sphido/url/src/url.php';
+
+// CMS core
 require_once __DIR__ . '/Metadata.php';
 require_once __DIR__ . '/Pages.php';
 require_once __DIR__ . '/Render.php';
@@ -41,7 +49,7 @@ class Sphido extends \stdClass {
 			is_file(getcwd() . '/config.php') ? include_once(getcwd() . '/config.php') : []
 		);
 
-		map([404, 500], [$this, 'error']);
+		map([404, 500], [$this, 'error']); // add error handler
 	}
 
 	/**
@@ -51,13 +59,23 @@ class Sphido extends \stdClass {
 	 * @param callable $method
 	 * @param string $path
 	 * @param Sphido $cms
+	 * @return int|null
 	 */
 	public function error($error, $method, $path, $cms) {
-		foreach ([\dir\content($path . '/404'), \dir\content('/404')] as $path) {
-			if ($this->page = Page::fromPath($path, (array)config()->meta)) {
-				echo ensure('render.error', [$this, 'render'], $this);
-			}
+		trigger('render.error', $error, $method, $path, $cms);
+
+		if ($this->page = Page::fromPath(\dir\content() . '/404', (array)config()->meta)) {
+			return print ensure('render.error', [$this, 'render'], $this);
 		}
+
+		/**
+		 * @param int $error
+		 * @param string $method
+		 * @param string $path
+		 * @param Sphido $cms
+		 * @name render .default.error
+		 */
+		ensure('render.default.error', $error, $method, $path, $cms); // default error is on you
 	}
 
 	/**
@@ -80,9 +98,9 @@ class Sphido extends \stdClass {
 		is_file(getcwd() . '/functions.php') ? include_once getcwd() . '/functions.php' : null;
 
 		if ($this->page) {
-			echo ensure('page.render', [$this, 'render'], $this);
+			echo ensure('render.page', [$this, 'render'], $this);
 		} else {
-			error(404, $method, $path, $cms);
+			error(404, $method, $path, $this); // trigger router error
 		}
 	}
 }
