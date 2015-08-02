@@ -5,7 +5,7 @@
 use Tester\Assert;
 
 require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../src/cms.php';
+require __DIR__ . '/../src/functions.dir.php';
 
 \Tester\Environment::setup();
 
@@ -16,6 +16,8 @@ Assert::same(\dir\cache('////abc'), __DIR__ . '/////abc'); // tmp directory
 
 // content directory
 config(['content' => __DIR__]);
+
+var_dump(config()->content);
 Assert::same(__DIR__, \dir\content());
 
 // src directory

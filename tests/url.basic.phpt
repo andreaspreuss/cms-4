@@ -7,7 +7,6 @@ use Tester\Assert;
 require __DIR__ . '/../vendor/autoload.php';
 \Tester\Environment::setup();
 
-require_once __DIR__ . '/../src/sphido.php';
 require_once __DIR__ . '/../src/functions.php';
 
 $_SERVER['HTTPS'] = 'off';
