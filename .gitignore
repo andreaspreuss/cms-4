@@ -12,6 +12,7 @@ tmp/*
 cache/*
 
 ### Composer
+composer.phar
 vendor/*
 !vendor/others
 /composer.lock
