@@ -3,7 +3,6 @@ namespace cms;
 
 // All functions first
 require_once __DIR__ . '/functions.dir.php';
-require_once __DIR__ . '/functions.php';
 
 // Sphido Framework core...
 require_once __DIR__ . '/../vendor/sphido/config/src/config.php';
@@ -11,7 +10,10 @@ require_once __DIR__ . '/../vendor/sphido/routing/src/routing.php';
 require_once __DIR__ . '/../vendor/sphido/events/src/events.php';
 require_once __DIR__ . '/../vendor/sphido/url/src/url.php';
 
-// CMS core
+// main functions
+require_once __DIR__ . '/functions.php';
+
+// and CMS core
 require_once __DIR__ . '/Metadata.php';
 require_once __DIR__ . '/Pages.php';
 require_once __DIR__ . '/Render.php';
@@ -91,14 +93,15 @@ class Sphido extends \stdClass {
 		is_file($php = \dir\content($path . '/index.php')) ? include_once $php : null ||
 		is_file($php = \dir\content($path . '.php')) ? include_once $php : null;
 
+		// search page (html, md, latte, phtml)
 		$this->page = Page::fromPath(\dir\content() . '/' . $path, (array)config()->meta);
 
-		// and functions.php
+		// include functions.php from $path and working directory
 		is_file($php = \dir\content($path . '/function.php')) ? include_once $php : null;
 		is_file(getcwd() . '/functions.php') ? include_once getcwd() . '/functions.php' : null;
 
 		if ($this->page) {
-			echo ensure('render.page', [$this, 'render'], $this);
+			echo ensure('render.page', [$this, 'render'], $this); // render page
 		} else {
 			error(404, $method, $path, $this); // trigger router error
 		}

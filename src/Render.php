@@ -47,7 +47,7 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 		// Try render page
 		if ($file instanceof Page) {
 			/** @var Page $file */
-			//if (isset($file->syntax)) $content = '<div n:syntax="' . $file->syntax .'" n:tag-if="false">' .$content . '</div>';
+			if ($ext === 'html' && substr($content, 0, 15) === '<!doctype html>') return $content;
 			if ($ext === 'md') $content = '{block|md}' . $content . '{/block}';
 			if (strpos($content, '{block content') === false) $content = '{block content}' . $content . '{/block}';
 			if (strpos($content, '{layout') === false) $content = "{layout '$file->template'}" . $content;
@@ -85,12 +85,3 @@ trait Render {
 		return latte()->renderToString($cms->page, get_object_vars($cms));
 	}
 }
-
-/**
- * @param MacroSet $set
- */
-function add_default_macros(MacroSet $set) {
-	$set->addMacro('url', 'echo \cms\url(%node.args);');
-}
-
-on('latte.macroset', '\cms\add_default_macros');

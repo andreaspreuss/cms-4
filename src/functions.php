@@ -1,14 +1,9 @@
 <?php
 namespace cms {
-	/**
-	 * Return current URL path.
-	 *
-	 * @param null|string $slug
-	 * @return \Url
-	 */
-	function url($slug = null) {
-		static $url = null;
-		if ($url === null) $url = filter('url.base', \Url::current('/'));
-		return filter('url', clone $url->path($slug));
+
+	function add_default_macros(\Latte\Macros\MacroSet $set) {
+		$set->addMacro('url', 'echo \url(%node.args);');
 	}
+
+	\on('latte.macroset', '\cms\add_default_macros');
 }
