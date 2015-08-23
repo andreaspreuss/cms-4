@@ -32,14 +32,4 @@ namespace dir {
 	function src($path = null) {
 		return realpath(__DIR__ . '/' . $path);
 	}
-
-	/**
-	 * Vendor
-	 *
-	 * @param null $path
-	 * @return string
-	 */
-	function vendor($path = null) {
-		return realpath(__DIR__ . '/../vendor/' . $path);
-	}
 }

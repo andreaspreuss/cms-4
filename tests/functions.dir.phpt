@@ -9,18 +9,20 @@ require __DIR__ . '/../src/functions.dir.php';
 
 \Tester\Environment::setup();
 
-// tmp directory from cache
-config(['cache' => __DIR__]);
-Assert::same(\dir\cache('abc'), __DIR__ . '/abc'); // tmp directory
-Assert::same(\dir\cache('////abc'), __DIR__ . '/////abc'); // tmp directory
+{// tmp directory from cache
+	config(['cache' => __DIR__]);
+	Assert::same(\dir\cache('abc'), __DIR__ . '/abc'); // tmp directory
+	Assert::same(\dir\cache('////abc'), __DIR__ . '/////abc'); // tmp directory
+}
 
-// content directory
-config(['content' => __DIR__]);
+{ // content directory
+	config(['content' => __DIR__]);
+	Assert::same(__DIR__, \dir\content());
+}
 
-var_dump(config()->content);
-Assert::same(__DIR__, \dir\content());
+{// src directory
+	Assert::false(\dir\src('not existing directory'));
+	Assert::same(__DIR__, \dir\src('../tests'));
+	Assert::same(__FILE__, \dir\src('../tests/functions.dir.phpt'));
+}
 
-// src directory
-Assert::false(\dir\src('xxxxx'));
-Assert::same(realpath(__DIR__ . '/../src'), \dir\src());
-Assert::same(realpath(__DIR__ . '/../src/sphido.php'), \dir\src('sphido.php'));
