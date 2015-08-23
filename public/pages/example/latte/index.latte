@@ -1,0 +1,27 @@
+<!--
+title: Latte template Example
+tags: latte, template, example
+-->
+
+{var $data = ['This', 'is', 'Latte', 'Example']}
+
+<h1>{implode(' ', $data)}&hellip;</h1>
+<ul>
+	{foreach $data as $text}
+		<li>{$text}</li>
+	{/foreach}
+</ul>
+
+<script>
+	var json = {$data}; // Latte has great context sensitive escaping...
+</script>
+
+<h2>Page metadata</h2>
+{foreach explode(',', $page->tags) as $tag}
+	<a href="#{$tag}">#{$tag|trim}</a>
+{/foreach}
+
+<p style="margin-top: 20px">
+	<a href="https://raw.githubusercontent.com/sphido/cms/master/public/pages/example/latte/index.latte">View source on Github</a> |
+	<a href="/">Return to Sphido Homepage</a>
+</p>
