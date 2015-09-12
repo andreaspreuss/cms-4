@@ -7,19 +7,26 @@ template: ../../layout.docs.latte
 
 # Sphido Configuration
 
-To edit the configuration of [Sphido](/) you need to edit `config.php` in the root directory. It should contain config variables like:
-
-You can change your `config.php` or overwrite something directly from `functions.php`
+[Sphido CMS](/) using [fastest config ever](https://github.com/sphido/config) - pure PHP arrays/objects - see [config.php](https://github.com/sphido/cms/blob/master/public/config.php) in the public directory:
 
 ```php
-namespace sphido {
+{file_get_contents('https://raw.githubusercontent.com/sphido/cms/master/public/config.php')|noescape}
+```
+
+### Accessing config values
+
+All values are accessible via `config()` function e.g. `{l}config()->title{r}` will be replaced by value of title: _{config()->title}_.
+
+### Change config values in runtime
+
+You can overwrite something in config from [functions.php](https://github.com/sphido/cms/blob/master/public/functions.php) like follow:
+
+```php
+namespace {
 	config()->title = 'Sphido';
 	config()->myvariable = 'Speed is the core';
 	config()->example = 'example';
 }
 ```
 
-If you are editing the template you can add custom variables to config file and they will become availble in the 
-template via the config object (e.g. `{l}config()->myvariable{r}`)
-
-- [See config.php file example](https://github.com/sphido/cms/blob/master/public/config.php)
+Values from `config.php` will be replaced with new one in runtime.

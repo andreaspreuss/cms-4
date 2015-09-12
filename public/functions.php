@@ -17,8 +17,6 @@ namespace cms {
 			echo 'Page not found...';
 		}
 	);
-
-
 }
 
 
@@ -58,5 +56,12 @@ namespace {
 		$set->addMacro('myMacro', 'echo "This is my custom macro";');
 	}
 	);
+
+	/**
+	 * Change configuration from this place
+	 */
+	config()->title = 'Sphido';
+	config()->myvariable = 'Speed is the core';
+	config()->example = 'example';
 
 }
