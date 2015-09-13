@@ -5,7 +5,14 @@
  */
 
 namespace cms {
+
 	/** @var \cms\Sphido $cms */
+
+	// Follow files are used in examples
+	require_once __DIR__ . '/../vendor/sphido/json/src/json.php';
+	require_once __DIR__ . '/../vendor/sphido/http/src/http.php';
+	require_once __DIR__ . '/../vendor/sphido/download/src/download.php';
+
 
 	// get pages for menu
 	$cms->pages = Pages::from(\dir\content(), ['404', \dir\content('example')])->toArraySorted();

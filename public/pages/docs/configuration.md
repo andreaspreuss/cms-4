@@ -10,7 +10,7 @@ template: ../../layout.docs.latte
 [Sphido CMS](/) using [fastest config ever](https://github.com/sphido/config) - pure PHP arrays/objects - see [config.php](https://github.com/sphido/cms/blob/master/public/config.php) in the public directory:
 
 ```php
-{file_get_contents('https://raw.githubusercontent.com/sphido/cms/master/public/config.php')|noescape}
+{file_get_contents(dir\root('public/config.php'))|noescape}
 ```
 
 ### Accessing config values
@@ -30,3 +30,7 @@ namespace {
 ```
 
 Values from `config.php` will be replaced with new one in runtime.
+
+# Server configuration
+
+Sphido require Apache/NGINX here, see example configuration:

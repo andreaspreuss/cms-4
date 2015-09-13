@@ -5,7 +5,7 @@
 use Tester\Assert;
 
 require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../src/functions.dir.php';
+require __DIR__ . '/../src/dir.php';
 
 \Tester\Environment::setup();
 
@@ -23,6 +23,6 @@ require __DIR__ . '/../src/functions.dir.php';
 {// src directory
 	Assert::false(\dir\src('not existing directory'));
 	Assert::same(__DIR__, \dir\src('../tests'));
-	Assert::same(__FILE__, \dir\src('../tests/functions.dir.phpt'));
+	Assert::same(__FILE__, \dir\src('../tests/' . basename(__FILE__)));
 }
 

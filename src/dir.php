@@ -32,4 +32,15 @@ namespace dir {
 	function src($path = null) {
 		return realpath(__DIR__ . '/' . $path);
 	}
+
+	/**
+	 * Sphido CMS root directory.
+	 *
+	 * @param null|string $path
+	 * @return string
+	 */
+	function root($path = null) {
+		return realpath(dirname(__DIR__) . '/' . $path);
+	}
+
 }

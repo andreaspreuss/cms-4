@@ -6,56 +6,34 @@ template: ../../layout.docs.latte
 
 # How to install Sphido CMS
 
-1. Download and unzip [latest version](/download) or run `php composer.phar create-project sphido/cms`.
-2. Change files in `public/content` and `public/config.php`
-3. Upload everything to your server.
+## Installing from zip file
 
-### Setup NGINX
+1. Download and unzip [Sphido latest version](/download)
+2. Change files in `public/pages` and `public/config.php`
+3. Upload everything to your Apache or NGINX server.
 
-Here is [NGINX](http://nginx.org/) configuration example:
+See example server configuration for [Apache](https://github.com/sphido/cms/blob/master/.htaccess) or [NGINX](https://github.com/sphido/cms/blob/master/nginx)
 
-	server {
-		listen *:80;
-		server_name sphido.org;
-		root /Users/websites/Work/cms/public;
+## Installing with composer
+ 
+<pre>
+mkdir sphido && cd sphido
+curl -sS https://getcomposer.org/installer | php
+php composer.phar create-project sphido/cms
 
-		# protect latte and markdown files against reading 
-		location ~ (\.latte|\.md) {
-			return 403;
-		}
-      
-		# all other traffic going to index.php file 
-		location / {
-			try_files  $uri  $uri/  /index.php?$args;
-			index index.php;
-		}
+php -S localhost:8000 -t cms/public/
+</pre>
 
-		location ~ \.php$ {
-			try_files  $uri  $uri/  /index.php?$args;
-			index  index.html index.htm index.php;
-			fastcgi_param PATH_INFO $fastcgi_path_info;
-			fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
-			fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+Then open http://localhost:8000/ in your browser. Content files can be found in `public/pages` and configuration is in `public/config.php`.
 
-			fastcgi_pass 127.0.0.1:9000;
-			fastcgi_index index.php;
-			fastcgi_split_path_info ^(.+\.php)(/.+)$;
-			fastcgi_intercept_errors on;
-			include fastcgi_params;
-		}
-	}
+## Installing from source code
 
-- See [NGINX Beginner’s Guide](http://nginx.org/en/docs/beginners_guide.html) for more information.
-
-### Requirements
-
-- PHP 5.6+
-- NGINX or Apache
-
-
-## Installing from source codes
-
-	git clone git@github.com:sphido/cms.git mywebsite
-	cd mywebsite
+<pre>
+git clone git@github.com:sphido/cms.git sphido && cd sphido && mkdir cache
+curl -sS https://getcomposer.org/installer | php
+php composer.phar install
 	
-
+php -S localhost:8000 -t public/
+</pre>
+  
+Then open http://localhost:8000/ in your browser. Content files can be found in `public/pages` and configuration is in `public/config.php`. 

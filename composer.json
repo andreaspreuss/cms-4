@@ -24,22 +24,18 @@
   },
   "require": {
     "php": ">=5.6.0",
-    "latte/latte": "v2.3.0",
-    "erusev/parsedown": "v1.5.0",
+    "latte/latte": "v2.3.4",
+    "erusev/parsedown": "v1.5.4",
     "sphido/config": "*",
     "sphido/routing": "*",
     "sphido/events": "*",
     "sphido/url": "*",
     "sphido/json": "*",
+    "sphido/download": "*",
     "sphido/http": "*"
   },
   "require-dev": {
-    "nette/tester": "v1.4.0",
-    "tracy/tracy": "v2.3.2"
-  },
-  "autoload": {
-    "psr-4": {
-      "vestibulum\\": "src/"
-    }
+    "nette/tester": "v1.5.0",
+    "tracy/tracy": "v2.3.4"
   }
 }

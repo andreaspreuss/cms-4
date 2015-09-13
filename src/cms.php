@@ -1,8 +1,7 @@
 <?php
 namespace cms;
 
-// All functions first
-require_once __DIR__ . '/functions.dir.php';
+require_once __DIR__ . '/dir.php'; // directory first
 
 // Sphido Framework core...
 require_once __DIR__ . '/../vendor/sphido/config/src/config.php';
