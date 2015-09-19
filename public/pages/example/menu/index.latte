@@ -1,0 +1,17 @@
+<h1>Sphido CMS: Generate Nested Menu</h1>
+
+<pre><code>{file_get_contents(\dir\content('/example/menu/functions.php'))}</code></pre>
+<pre><code>{file_get_contents(\dir\content('/example/menu/menu.latte'))}</code></pre>
+
+<h2>Results</h2>
+
+{? $pages = \cms\Pages::from(\dir\content('/'), ['404', 'index'])->toArraySorted()}
+
+<ul n:block="examples">
+	{foreach $pages as $item}
+		<li n:class="$page->id === $item->id ? active" id="{$item->id}">
+			<a href="{$item->getUrl()}">{$item->menu ? $item->menu : $item->title}</a>
+			{if $item->children}{include examples, pages => $item->children}{/if}
+		</li>
+	{/foreach}
+</ul>
