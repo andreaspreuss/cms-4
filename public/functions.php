@@ -13,7 +13,6 @@ namespace cms {
 	require_once __DIR__ . '/../vendor/sphido/http/src/http.php';
 	require_once __DIR__ . '/../vendor/sphido/download/src/download.php';
 
-
 	// get pages for menu
 	$cms->pages = Pages::from(\dir\content(), ['404', \dir\content('example')])->toArraySorted();
 

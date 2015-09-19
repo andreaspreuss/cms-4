@@ -21,7 +21,7 @@ namespace cms;
  */
 class Page extends \SplFileInfo {
 
-	use Metadata;
+	use \Sphido\Metadata;
 
 	/** @var array */
 	protected $meta;

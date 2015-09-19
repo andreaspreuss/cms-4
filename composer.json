@@ -27,6 +27,7 @@
     "latte/latte": "v2.3.4",
     "erusev/parsedown": "v1.5.4",
     "sphido/config": "*",
+    "sphido/metadata": "*",
     "sphido/routing": "*",
     "sphido/events": "*",
     "sphido/url": "*",
