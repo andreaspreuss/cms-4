@@ -26,6 +26,5 @@ vendor/*
 !web.config
 
 ### Ignore
-public/js/*.js
 public/css/*.css
 public/*.zip
