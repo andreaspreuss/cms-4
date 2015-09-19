@@ -4,7 +4,7 @@ title: How to use Latte Templates
 template: ../../layout.docs.latte
 -->
 
-<style>table th:first-child { width: 40%; }</style>
+<style>table th:first-child { width: 50%; }</style>
 
 # Default Latte Macros 
 
