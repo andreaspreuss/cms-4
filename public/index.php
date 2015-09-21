@@ -1,8 +1,7 @@
 <?php
 // Uncomment co enable Tracy
 // @see https://github.com/nette/tracy
-require_once __DIR__ . '/../vendor/tracy/tracy/src/tracy.php';
-\Tracy\Debugger::enable(null, __DIR__ . '/../log');
+//require_once __DIR__ . '/../vendor/tracy/tracy/src/tracy.php';\Tracy\Debugger::enable(null, __DIR__ . '/../log');
 
 require_once __DIR__ . '/../src/cms.php';
 
