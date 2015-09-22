@@ -1,5 +1,7 @@
 <?php
 namespace cms {
 	/** @var \cms\Sphido $this */
-	$this->pages = Pages::from(content('/examples'))->toArraySorted();
+
+	// add Follow line to public/functions.php
+	$this->pages = Pages::from(\dir\content('/example'))->toArraySorted();
 }

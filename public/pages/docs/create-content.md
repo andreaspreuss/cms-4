@@ -2,7 +2,6 @@
 id: create-content
 title: Create content in Sphido CMS
 template: ../../layout.docs.latte
-syntax: on
 -->
 
 # How to create content?
