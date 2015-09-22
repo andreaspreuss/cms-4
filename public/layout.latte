@@ -72,7 +72,7 @@
 </a>
 <!-- Fork me on Github -->
 
-<script>
+<script n:if="strpos(url(), 'sphido.org')" n:syntax="off">
 	(function (i, s, o, g, r, a, m) {
 		i['GoogleAnalyticsObject'] = r;
 		i[r] = i[r] || function () {
@@ -84,11 +84,9 @@
 		a.src = g;
 		m.parentNode.insertBefore(a, m)
 	})(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-
-	ga('create', 'UA-5420131-1', 'omdesign.cz');
+	ga('create', 'UA-59247808-1', 'auto');
 	ga('require', 'displayfeatures');
 	ga('send', 'pageview');
-
 </script>
 
 <!-- last update {$page->date|date:'m/d/Y'} -->
