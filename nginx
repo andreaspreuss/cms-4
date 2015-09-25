@@ -1,10 +1,10 @@
 server {
   listen      *:80;
   server_name sphido.dev;
-  root        /Users/roman/Work/sphido.dev/public;
+  root        /Users/roman/Work/sphido.org/public;
 
-  #access_log /Users/roman/Work/omdesign.cz/log/omdesign.dev.access.log;
-  #error_log  /Users/roman/Work/omdesign.cz/log/omdesign.dev.error.log;
+  #access_log /Users/roman/Work/sphido.org/log/sphido.dev.access.log;
+  #error_log  /Users/roman/Work/sphido.org/log/sphido.dev.error.log;
 
   location = /favicon.ico {
     log_not_found off;
