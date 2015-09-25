@@ -22,5 +22,5 @@ php composer.phar install
 php -S localhost:8000 -t public/
 ```
 
-Then open http://localhost:8000/ in your browser
+Then open [http://localhost:8000/](http://localhost:8000/) in your browser
 
