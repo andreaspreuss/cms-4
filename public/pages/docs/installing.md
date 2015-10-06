@@ -6,13 +6,17 @@ template: ../../layout.docs.latte
 
 # How to install Sphido CMS
 
+You have three options how to install Sphido CMS: 
+
 ## Installing from zip file
 
 1. Download and unzip [Sphido latest version](/download)
-2. Change files in `public/pages` and `public/config.php`
-3. Upload everything to your Apache or NGINX server.
-
-See example server configuration for [Apache](https://github.com/sphido/cms/blob/master/.htaccess) or [NGINX](https://github.com/sphido/cms/blob/master/nginx)
+2. Change website content:
+ - delete or change files in `public/pages`, `public/css`, `public/js` and `public/img`
+ - change layout file `public/layut.latte` and remove `ublic/layout.docs.latte`
+ - modify settings in `pubic/config.php` nd change `public/functions.php` if needed 
+ - change `public/favicon.ico`  
+3. Upload everything to yur Aache or NGINX server. See example server configuration for [Apache](https://github.com/sphido/cms/blob/master/.htaccess) or [NGINX](https://github.com/sphido/cms/blob/master/nginx.conf)
 
 ## Installing with composer
  
@@ -24,7 +28,7 @@ php composer.phar create-project sphido/cms
 php -S localhost:8000 -t cms/public/
 </pre>
 
-Then open http://localhost:8000/ in your browser. Content files can be found in `public/pages` and configuration is in `public/config.php`.
+Then open http://localhost:8000/ in your browser then modify files in `public` folder.
 
 ## Installing from source code
 
@@ -35,5 +39,5 @@ php composer.phar install
 	
 php -S localhost:8000 -t public/
 </pre>
-  
-Then open http://localhost:8000/ in your browser. Content files can be found in `public/pages` and configuration is in `public/config.php`. 
+
+Then open http://localhost:8000/ in your browser then modify files in `public` folder.
