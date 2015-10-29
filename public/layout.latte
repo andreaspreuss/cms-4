@@ -34,7 +34,7 @@
 		</div>
 		<div class="collapse navbar-collapse" id="nav">
 			<ul class="nav navbar-nav">
-				{foreach $pages as $item}
+				{foreach filter('menu') as $item}
 					<li n:class="$page->id === $item->id ? active" id="{$item->id}">
 						<a href="{$item->getUrl()}">{$item->menu ? $item->menu : $item->title}</a>
 					</li>

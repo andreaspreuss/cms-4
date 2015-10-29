@@ -13,8 +13,13 @@ namespace cms {
 	require_once __DIR__ . '/../vendor/sphido/http/src/http.php';
 	require_once __DIR__ . '/../vendor/sphido/download/src/download.php';
 
-	// get pages for menu
-	$cms->pages = Pages::from(\dir\content(), ['404', \dir\content('example')])->toArraySorted();
+	// content
+	add_filter(
+		'menu',
+		function () {
+			return Pages::from(\dir\content(), ['404', \dir\content('example')])->toArraySorted();
+		}
+	);
 
 	// Custom default error handler... if 404.md missing in root
 	on(
@@ -26,13 +31,16 @@ namespace cms {
 }
 
 
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 namespace {
 	/** @var \cms\Sphido $cms */
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	return; // follow examples are disabled by default
+	return; // follow examples are disabled by intention
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+	$cms->speed = 'This is the core'; // will be avaliable in Latte as {$speed} variable
 
 	/**
 	 * Write {yolo()} for calling function from markdown or Latte template
