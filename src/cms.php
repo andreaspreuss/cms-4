@@ -76,7 +76,7 @@ class Sphido extends \stdClass {
 		 * @param Sphido $cms
 		 * @name render .default.error
 		 */
-		ensure('render.default.error', $error, $method, $path, $cms); // default error is on you
+		trigger('render.default.error', $error, $method, $path, $cms); // default error is on you
 	}
 
 	/**
