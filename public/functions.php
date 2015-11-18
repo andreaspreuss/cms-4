@@ -13,13 +13,10 @@ namespace cms {
 	require_once __DIR__ . '/../vendor/sphido/http/src/http.php';
 	require_once __DIR__ . '/../vendor/sphido/download/src/download.php';
 
-	// content
-	add_filter(
-		'menu',
-		function () {
-			return Pages::from(\dir\content(), ['404', \dir\content('example')])->toArraySorted();
-		}
-	);
+	// it's return menu items from all pages in content folder
+	function menu() {
+		return Pages::from(\dir\content(), ['404', \dir\content('example')])->toArraySorted();
+	}
 
 	// Custom default error handler... if 404.md missing in root
 	on(
