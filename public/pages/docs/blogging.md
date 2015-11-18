@@ -6,4 +6,4 @@ template: ../../layout.docs.latte
 
 # Use Sphido CMS for Blogging
 
-... comming soon
+... coming soon

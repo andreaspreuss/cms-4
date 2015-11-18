@@ -6,4 +6,4 @@ template: ../../layout.docs.latte
 
 # Sphido CMS plugins
 
-... comming soon
+... coming soon
