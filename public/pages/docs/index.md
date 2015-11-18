@@ -6,12 +6,20 @@ template: ../../layout.docs.latte
 order: 2
 -->
 
-# Sphido Documentation
+# Documentation
 
-Welcome to the Sphido documentation. To get started we recommend you read:
+Welcome to the Sphido documentation. If you encounter any problems when using Sphido
+raise an [issue on GitHub](https://github.com/sphido/cms/issues).
 
-1. [Installing Sphido](/docs/installing)
+You can starts here:
+
+1. [Setup Sphido](/docs/setup)
 2. [Create Content](/docs/create-content)
 3. [Theme Basics](/docs/theme-basics)
+
+### What is Sphido?
+ 
+Sphido is a fast, simple and powerful cms framework written in PHP.
+
 
 

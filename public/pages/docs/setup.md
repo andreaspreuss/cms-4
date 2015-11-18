@@ -1,14 +1,14 @@
 <!--
-id: installing
+id: setup
 title: How to Install Sphido CMS
 template: ../../layout.docs.latte
 -->
 
-# How to install Sphido CMS
+# How to setup Sphido CMS
 
 You have three options how to install Sphido CMS: 
 
-## Installing from zip file
+## Setup from zip file
 
 1. Download and unzip [Sphido latest version](/download)
 2. Change website content:
@@ -18,7 +18,7 @@ You have three options how to install Sphido CMS:
  - change `public/favicon.ico`  
 3. Upload everything to yur Aache or NGINX server. See example server configuration for [Apache](https://github.com/sphido/cms/blob/master/.htaccess) or [NGINX](https://github.com/sphido/cms/blob/master/nginx.conf)
 
-## Installing with composer
+## Setup with composer
  
 <pre>
 mkdir sphido && cd sphido
