@@ -96,7 +96,7 @@ class Sphido extends \stdClass {
 		$this->page = Page::fromPath(\dir\content() . '/' . $path, (array)config()->meta);
 
 		// include functions.php from $path and working directory
-		is_file($php = \dir\content($path . '/function.php')) ? include_once $php : null;
+		is_file($php = \dir\content($path . '/functions.php')) ? include_once $php : null;
 		is_file(getcwd() . '/functions.php') ? include_once getcwd() . '/functions.php' : null;
 
 		if ($this->page) {
