@@ -46,7 +46,8 @@ Whole metadata are optional. Sphido CMS support HTML style block comments for me
     status: 404
     -->
 
-All metadata are available `\stdClass $page` variable and can be accesible from template file e.g. as `{$page->title}` or `{$page->whatever}`. The `status` will be used as HTTP status code.
+All metadata are available `\stdClass $page` variable and can be accesible from template file e.g. as `{l}$page->title{r}` or `{l}$page->whatever{r}`.
+The `status` will be used as HTTP status code.
 
 If you don't setup title - first H1 content will be used. If you don't setup description - shorten text content will be generated automatically.
 
@@ -97,7 +98,7 @@ example add custom [macroset](https://github.com/nette/latte/blob/master/src/Lat
 
 Follow example show how to add custom Macro to Latte Engine. Copy follow code to `function.php` file:
 
-	function title($title) {return sprintf('<h1>%s</h1>', $title);}
+	function title($title) {l}return sprintf('<h1>%s</h1>', $title);{r}
 	
 	add_filter(
 		'latte', function (\Latte\Engine $latte) {
@@ -107,7 +108,7 @@ Follow example show how to add custom Macro to Latte Engine. Copy follow code to
 		}
 	);
 
-Macro can be executed with follow code `{title 'something to title'}` and will generate HTML `<h1>something to title</h1>`.
+Macro can be executed with follow code `{l}title 'something to title'{r}` and will generate HTML `<h1>something to title</h1>`.
 
 #### Add custom Filter Example
 
@@ -120,6 +121,6 @@ Follow example show how to add custom Filter to Latte Engine. Copy follow code t
 		return $latte;
 	});
 
-Filter like `{$var|md|noescape}` will be now accessible everywhere in Latte templates and parse input with markdown parser. 
+Filter like `{l}$var|md|noescape{r}` will be now accessible everywhere in Latte templates and parse input with markdown parser.
 
 ## Events
