@@ -64,27 +64,12 @@ class Sphido extends \stdClass {
 	 */
 	public function error($error, $method, $path, $cms) {
 		trigger('render.error', $error, $method, $path, $cms);
-
 		if ($this->page = Page::fromPath(\dir\content() . '/404', (array)config()->meta)) {
 			return print ensure('render.error', [$this, 'render'], $this);
 		}
-
-		/**
-		 * @param int $error
-		 * @param string $method
-		 * @param string $path
-		 * @param Sphido $cms
-		 * @name render .default.error
-		 */
 		trigger('render.default.error', $error, $method, $path, $cms); // default error is on you
 	}
 
-	/**
-	 * @param $method
-	 * @param $path
-	 * @param $cms
-	 * @return mixed
-	 */
 	function __invoke($method, $path, $cms) {
 		$this->cms = $cms = $this;
 

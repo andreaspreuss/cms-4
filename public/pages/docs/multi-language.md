@@ -25,7 +25,7 @@ Add follow lines to your `functions.php` file:
 
 Then you can add follow code if you are using Pages class for menu generation:
 
-    $cms->pages = Pages::from(\sphido\content('/' . LANGUAGE))->toArraySorted();
+    $cms->pages = Pages::from(\dir\content('/' . LANGUAGE))->toArraySorted();
 
 Add language switch somewhere to your template file:
 
