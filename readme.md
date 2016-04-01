@@ -4,7 +4,7 @@
 
 Sphido is deathly simple, ultra fast, flat file (Markdown, Latte, HTML, PHTML) CMS. Fully customizable.
 
-See more information: http://www.sphido.org/
+See more information: https://www.sphido.org/
 
 # How to install
 
@@ -18,9 +18,7 @@ Follow instructions [require PHP 5.4+](http://php.net/manual/en/features.command
 git clone git@github.com:sphido/cms.git && cd cms && mkdir cache
 curl -sS https://getcomposer.org/installer | php
 php composer.phar install
-
 php -S localhost:8000 -t public/
 ```
 
 Then open [http://localhost:8000/](http://localhost:8000/) in your browser
-
