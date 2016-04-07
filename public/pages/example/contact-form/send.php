@@ -1,6 +1,8 @@
 <?php
 namespace cms {
 
+	require_once __DIR__ . '/../../../../vendor/sphido/json/src/json.php';
+
 	// is request made by Sphido
 	isset($this) && $this instanceof Sphido or die('Sorry can be executed only from Sphido');
 
