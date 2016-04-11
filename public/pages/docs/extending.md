@@ -17,7 +17,7 @@ Open `functions.php` in main folder and add your custom functions:
 	  }
 	}
 
-Your function now will be accesible in Latte template `{currentUrl()}`.
+Your function now will be accesible in Latte template `{l}currentUrl(){r}`.
 
 ## Add custom Latte parameters
 
@@ -31,7 +31,7 @@ Or you can add whatever you need:
 	$this->xxx = 'some value';
 	
 All parametters will be accessible from [Latte Template](http://latte.nette.org/en/) like this
- `{$get->something}` or `{$post->something}` or `{$xxx}`.
+ `{l}$get->something{r}` or `{l}$post->something{r}` or `{l}$xxx{r}`.
 
 ### Resources
 
