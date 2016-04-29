@@ -3,7 +3,7 @@ namespace cms;
 
 require_once __DIR__ . '/dir.php'; // directory first
 
-// Sphido Framework core...
+// Sphido core...
 require_once __DIR__ . '/../vendor/sphido/config/src/config.php';
 require_once __DIR__ . '/../vendor/sphido/routing/src/routing.php';
 require_once __DIR__ . '/../vendor/sphido/events/src/events.php';
@@ -49,19 +49,11 @@ class Sphido extends \stdClass {
 			$config,
 			is_file(getcwd() . '/config.php') ? include_once(getcwd() . '/config.php') : []
 		);
-
+		
 		map([404, 500], [$this, 'error']); // add error handler
+		map(filter('map.default', $this)); // pages handler
 	}
 
-	/**
-	 * Page not found error.
-	 *
-	 * @param $error
-	 * @param callable $method
-	 * @param string $path
-	 * @param Sphido $cms
-	 * @return int|null
-	 */
 	public function error($error, $method, $path, $cms) {
 		trigger('render.error', $error, $method, $path, $cms);
 		if ($this->page = Page::fromPath(\dir\content() . '/404', (array)config()->meta)) {

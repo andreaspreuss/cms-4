@@ -8,7 +8,7 @@ if (file_exists(__DIR__ . '/../vendor/tracy/tracy/src/tracy.php')) {
 
 require_once __DIR__ . '/../src/cms.php';
 
-map($cms = new \cms\Sphido());
+$cms = new \cms\Sphido();
 
 //
 // Custom URL handler goes here....
