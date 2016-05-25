@@ -26,6 +26,5 @@ vendor/*
 !web.config
 
 ### Ignore
-public/css/*.css
 public/*.zip
 log
