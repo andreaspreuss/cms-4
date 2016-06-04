@@ -13,10 +13,10 @@ $cms = new \cms\Sphido();
 //
 // Custom URL handler goes here....
 //
-// map('page', function () {}); // handle http://www.sphido.org/page
-// map('page2', function () {}); // handle http://www.sphido.org/page2
+// /route/map('page', function () {}); // handle http://www.sphido.org/page
+// /route/map('page2', function () {}); // handle http://www.sphido.org/page2
 //
 // @see https://github.com/sphido/routing for more information
 //
 
-dispatch($cms);
+\app\dispatch($cms);

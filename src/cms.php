@@ -50,8 +50,8 @@ class Sphido extends \stdClass {
 			is_file(getcwd() . '/config.php') ? include_once(getcwd() . '/config.php') : []
 		);
 		
-		map([404, 500], [$this, 'error']); // add error handler
-		map(filter('map.default', $this)); // pages handler
+		\route\map([404, 500], [$this, 'error']); // add error handler
+		\route\map(filter('map.default', $this)); // pages handler
 	}
 
 	public function error($error, $method, $path, $cms) {
@@ -79,7 +79,7 @@ class Sphido extends \stdClass {
 		if ($this->page) {
 			echo ensure('render.page', [$this, 'render'], $this); // render page
 		} else {
-			error(404, $method, $path, $this); // trigger router error
+			\route\error(404, $method, $path, $this); // trigger router error
 		}
 	}
 }
