@@ -15,7 +15,7 @@ template: ../../layout.docs.latte
 
 ### Accessing config values
 
-All values are accessible via `config()` function e.g. `{l}config()->title{r}` will be replaced by value of title: _{config()->title}_.
+All values are accessible via `/app/config()` function e.g. `{l}=/app/config()->title{r}` will be replaced by value of title: _{= \app\config()->title}_
 
 ### Change config values in runtime
 
@@ -23,14 +23,10 @@ You can overwrite something in config from [functions.php](https://github.com/sp
 
 ```php
 namespace {
-	config()->title = 'Sphido';
-	config()->myvariable = 'Speed is the core';
-	config()->example = 'example';
+	/app/config()->title = 'Sphido';
+	/app/config()->myvariable = 'Speed is the core';
+	/app/config()->example = 'example';
 }
 ```
 
 Values from `config.php` will be replaced with new one in runtime.
-
-# Server configuration
-
-Sphido require Apache/NGINX here, see example configuration:

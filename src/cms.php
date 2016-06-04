@@ -1,6 +1,8 @@
 <?php
 namespace cms;
 
+use function app\config as config;
+
 require_once __DIR__ . '/dir.php'; // directory first
 
 // Sphido core...

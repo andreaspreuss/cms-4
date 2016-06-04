@@ -2,6 +2,8 @@
 
 namespace dir {
 
+	use function app\config as config;
+
 	/**
 	 * Return cache directory path.
 	 *
