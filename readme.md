@@ -10,15 +10,22 @@ See more information: https://www.sphido.org/
 
 Download latest version from Github and run `composer install`, or just run `composer create-project sphido/cms`.
 
-## Try Sphido CMS with PHP Built-in web server
+## Try Sphido CMS With Docker
 
-Follow instructions [require PHP 5.4+](http://php.net/manual/en/features.commandline.webserver.php)
-
-```bash
-git clone git@github.com:sphido/cms.git && cd cms && mkdir cache
-curl -sS https://getcomposer.org/installer | php
-php composer.phar install
-php -S localhost:8000 -t public/
+Clone source codes from [GitHub](https://github.com/sphido/cms):
+ 
+```
+git clone git@github.com:sphido/cms.git sphido.dev && cd sphido.dev
 ```
 
-Then open [http://localhost:8000/](http://localhost:8000/) in your browser
+Install dependencies with composer:
+
+```
+composer install
+```
+
+Run Docker and open http://localhost/
+
+```
+docker-compose up
+``` 
