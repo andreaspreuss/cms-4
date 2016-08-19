@@ -24,7 +24,7 @@ Install dependencies with composer:
 composer install
 ```
 
-Run Docker and open http://localhost/
+Run Docker and open [http://localhost/](http://localhost/)
 
 ```
 docker-compose up
