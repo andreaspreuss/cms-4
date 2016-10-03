@@ -23,8 +23,8 @@
     "issues": "https://github.com/sphido/cms/issues"
   },
   "require": {
-    "php": ">=5.6.0",
-    "latte/latte": "v2.3.11",
+    "php": ">=7.0.0",
+    "latte/latte": "v2.4.2",
     "erusev/parsedown": "v1.6.0",
     "sphido/config": "*",
     "sphido/metadata": "*",
@@ -36,7 +36,7 @@
     "sphido/http": "*"
   },
   "require-dev": {
-    "nette/tester": "v1.6.1",
-    "tracy/tracy": "v2.3.6"
+    "nette/tester": "v1.7.1",
+    "tracy/tracy": "v2.4.3"
   }
 }

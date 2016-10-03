@@ -209,7 +209,7 @@ class Page extends \SplFileInfo {
 				is_file($file = $path . '/index.phtml')
 			)
 		) {
-			return new static($file, $meta, null);
+			return new static(realpath($file), $meta, null);
 		}
 	}
 }
