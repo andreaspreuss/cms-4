@@ -1,7 +1,7 @@
 {
   "name": "sphido/cms",
   "type": "library",
-  "description": "Sphido is deathly simple, ultra fast, flat file (Markdown, HTML) CMS. Fully customizable with Latte templates",
+  "description": "Sphido is deathly simple, ultra fast, flat file (Markdown, HTML) CMS. Fully customisable with Latte templates",
   "keywords": [
     "cms",
     "markdown",
