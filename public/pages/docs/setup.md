@@ -20,24 +20,24 @@ You have three options how to install Sphido CMS:
 
 ## Setup with composer
  
-<pre>
+```
 mkdir sphido && cd sphido
 curl -sS https://getcomposer.org/installer | php
 php composer.phar create-project sphido/cms
 
 php -S localhost:8000 -t cms/public/
-</pre>
+```
 
 Then open http://localhost:8000/ in your browser then modify files in `public` folder.
 
 ## Installing from source code
 
-<pre>
+```
 git clone git@github.com:sphido/cms.git sphido && cd sphido && mkdir cache
 curl -sS https://getcomposer.org/installer | php
 php composer.phar install
 	
 php -S localhost:8000 -t public/
-</pre>
+```
 
 Then open http://localhost:8000/ in your browser then modify files in `public` folder.
