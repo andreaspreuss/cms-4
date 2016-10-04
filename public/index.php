@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/../vendor/tracy/tracy/src/tracy.php';
+\Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT, __DIR__ . '/../log/');
+
 require_once __DIR__ . '/../src/cms.php';
 
 $cms = new \cms\Sphido();

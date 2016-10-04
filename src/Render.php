@@ -25,7 +25,7 @@ function latte() {
 }
 */
 
-function md($content, $cache = '') {
+function md(\Latte\Runtime\FilterInfo $info, $content) {
 	require_once __DIR__ . '/../vendor/erusev/parsedown/Parsedown.php';
 	return \Parsedown::instance()->text($content);
 }
