@@ -11,20 +11,18 @@ require_once __DIR__ . '/../vendor/latte/latte/src/latte.php';
  */
 function latte() {
 	$latte = new Engine();
-	$latte->setLoader(filter('latte.loader', new FileLoader()));
+	$latte->setLoader(filter(FileLoader::class, new FileLoader()));
 	$latte->setTempDirectory(\dir\cache());
 	$latte->addFilter('md', '\cms\md');
-	trigger('latte.macroset', new MacroSet($latte->getCompiler()));
-	return filter('latte', $latte);
+	trigger(MacroSet::class, new MacroSet($latte->getCompiler()));
+	return filter(Engine::class, $latte);
 }
 
-/*
- function is_true($val, $return_null = false) {
-	$bool = (is_string($val) ? filter_var($val, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) : (bool)$val);
-	return ($bool === null && !$return_null ? false : $bool);
-}
-*/
-
+/**
+ * @param \Latte\Runtime\FilterInfo $info
+ * @param $content
+ * @return string
+ */
 function md(\Latte\Runtime\FilterInfo $info, $content) {
 	require_once __DIR__ . '/../vendor/erusev/parsedown/Parsedown.php';
 	return \Parsedown::instance()->text($content);
@@ -54,34 +52,5 @@ class FileLoader extends \Latte\Loaders\FileLoader {
 		}
 		//echo '<pre>' . htmlentities($content);die(); // debug
 		return $content;
-	}
-}
-
-
-/**
- * Multiple pages loaders
- *
- * @author Roman Ožana <ozana@omdesign.cz>
- */
-trait Render {
-
-	/**
-	 * @param Sphido $cms
-	 * @return mixed|null|string
-	 * @throws \Exception
-	 */
-	public function render(Sphido $cms) {
-		// HTTP status code
-		if ($code = isset($cms->page->status) ? $cms->page->status : null) http_response_code($code);
-
-		// PHTML file execute
-		if ($cms->page->is('phtml')) {
-			extract(get_object_vars($cms), EXTR_SKIP);
-			ob_start();
-			require $cms->page;
-			return ob_get_clean();
-		}
-
-		return latte()->renderToString($cms->page, get_object_vars($cms));
 	}
 }

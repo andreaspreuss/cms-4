@@ -16,9 +16,11 @@ require_once __DIR__ . '/functions.php';
 
 // and CMS core
 require_once __DIR__ . '/../vendor/sphido/metadata/src/Metadata.php';
+require_once __DIR__ . '/MissingPage.php';
 require_once __DIR__ . '/Pages.php';
 require_once __DIR__ . '/Render.php';
 require_once __DIR__ . '/Page.php';
+
 
 /**
  * Sphido:  A rocket fast flat file blog & CMS
@@ -26,9 +28,6 @@ require_once __DIR__ . '/Page.php';
  * @author Roman Ožana <ozana@omdesign.cz>
  */
 class Sphido extends \stdClass {
-
-	use Render;
-
 	/** @var Sphido */
 	public $cms;
 	/** @var Page */
@@ -51,23 +50,15 @@ class Sphido extends \stdClass {
 			$config,
 			is_file(getcwd() . '/config.php') ? include_once(getcwd() . '/config.php') : []
 		);
-		
-		\route\map([404, 500], [$this, 'error']); // add error handler
-		\route\map(filter('map.default', $this)); // pages handler
-	}
 
-	public function error($error, $method, $path, $cms) {
-		trigger('render.error', $error, $method, $path, $cms);
-		if ($this->page = Page::fromPath(\dir\content() . '/404', (array)config()->meta)) {
-			return print ensure('render.error', [$this, 'render'], $this);
-		}
-		trigger('render.default.error', $error, $method, $path, $cms); // default error is on you
+		\route\map([404, 500], new MissingPage); // add error handler
+		\route\map(filter(Sphido::class, $this)); // pages handler
 	}
 
 	function __invoke($method, $path, $cms) {
 		$this->cms = $cms = $this;
 
-		// inclide prepend PHP file first
+		// include prepend PHP file first
 		is_file($php = \dir\content($path . '/index.php')) ? include_once $php : null ||
 		is_file($php = \dir\content($path . '.php')) ? include_once $php : null;
 
@@ -78,10 +69,29 @@ class Sphido extends \stdClass {
 		is_file($php = \dir\content($path . '/functions.php')) ? include_once $php : null;
 		is_file(getcwd() . '/functions.php') ? include_once getcwd() . '/functions.php' : null;
 
-		if ($this->page) {
-			echo ensure('render.page', [$this, 'render'], $this); // render page
-		} else {
-			\route\error(404, $method, $path, $this); // trigger router error
-		}
+		print $this->page ? $this->render() : \route\error(404, $method, $path, $this);
 	}
+
+	/**
+	 * @return mixed|null|string
+	 * @throws \Exception
+	 */
+	public function render() {
+
+		trigger(Sphido::class . '::' . __FUNCTION__, $this->page, $this);
+
+		// HTTP status code
+		if ($code = isset($this->page->status) ? $this->page->status : null) http_response_code($code);
+
+		// PHTML file execute
+		if ($this->page->is('phtml')) {
+			extract(get_object_vars($this), EXTR_SKIP);
+			ob_start();
+			require $this->page;
+			return ob_get_clean();
+		}
+
+		return latte()->renderToString($this->page, get_object_vars($this));
+	}
+
 }
