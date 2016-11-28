@@ -25,9 +25,9 @@
   "require": {
     "php": ">=7.0.0",
     "latte/latte": "v2.4.2",
-    "erusev/parsedown": "v1.6.0",
+    "erusev/parsedown": "v1.6.1",
     "sphido/config": "*",
-    "sphido/metadata": "*",
+    "sphido/parsers": "*",
     "sphido/routing": "*",
     "sphido/events": "*",
     "sphido/url": "*",
