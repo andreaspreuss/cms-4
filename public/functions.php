@@ -20,7 +20,7 @@ namespace cms {
 
 	// Custom default error handler... if 404.md missing in root
 	on(
-		'render.default.error',
+		MissingPage::class . '_default',
 		function () {
 			echo 'Page not found...';
 		}

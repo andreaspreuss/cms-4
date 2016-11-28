@@ -1,7 +1,11 @@
 <?php
 namespace cms;
+
+use parsers\MetadataParser as Metadata;
+use parsers\TitleParser as Title;
+
 /**
- * Vestibulum file with metadata
+ * Sphido file with metadata
  *
  * @property string id
  * @property string class
@@ -20,8 +24,6 @@ namespace cms;
  * @author Roman Ožana <ozana@omdesign.cz>
  */
 class Page extends \SplFileInfo {
-
-	use \Sphido\Metadata;
 
 	/** @var array */
 	protected $meta;
@@ -47,7 +49,7 @@ class Page extends \SplFileInfo {
 	public function getMeta(array $meta = []) {
 		if ($this->meta) return array_merge($meta, $this->meta);
 
-		$title = $this->parseTitle($this->getContent()) ?: ucfirst($this->getName());
+		$title = Title::parse($this->getContent()) ?: ucfirst($this->getName());
 
 		$default = [
 			'id' => md5($this->getContent() . $this->getRealPath()),
@@ -63,7 +65,13 @@ class Page extends \SplFileInfo {
 			'file' => $this->isFile() ? $this->getRealPath() : null
 		];
 
-		return array_merge($default, $meta, (array)$this->parseMeta($this->getContent()));
+		$parsed = (array)Metadata::parse($this->getContent());
+
+		return filter(
+			self::class . '::' . __FUNCTION__,
+			array_merge($default, $meta, $parsed),
+			$default, $meta, $parsed
+		);
 	}
 
 	/**
@@ -73,7 +81,7 @@ class Page extends \SplFileInfo {
 	 * @return mixed
 	 */
 	public function getDescription() {
-		return isset($this->description) ? $this->description : $this->shorten($this->getContent());
+		return filter('get_description', $this->description);
 	}
 
 	/**
@@ -83,8 +91,12 @@ class Page extends \SplFileInfo {
 	 * @return string
 	 */
 	public function getSlug($src = null) {
-		$name = $this->getName() !== 'index' ? $this->getName() : null;
-		return str_replace(realpath($src), '', $this->isDir() ? $this->getRealPath() : $this->getDir() . '/' . $name);
+		$slug = str_replace(
+			realpath($src), '',
+			$this->isDir() ? $this->getRealPath() : $this->getDir() . '/' .
+			$this->getName() !== 'index' ? $this->getName() : null
+		);
+		return filter(self::class . '::' . __FUNCTION__, $slug, $this);
 	}
 
 	/**
@@ -92,7 +104,7 @@ class Page extends \SplFileInfo {
 	 * @return string
 	 */
 	public function getUrl($src = null) {
-		return url($this->getSlug($src ? $src : \dir\content()));
+		return filter(self::class . '::' . __FUNCTION__, url($this->getSlug($src ? $src : \dir\content())));
 	}
 
 	/**
@@ -102,7 +114,10 @@ class Page extends \SplFileInfo {
 	 * @return null
 	 */
 	public function __get($name) {
-		return array_key_exists($name, $this->meta) ? $this->meta[$name] : null;
+		return filter(
+			[self::class. '::get', self::class . '::' . $name],
+			array_key_exists($name, $this->meta) ? $this->meta[$name] : null
+		);
 	}
 
 	/**
@@ -112,7 +127,7 @@ class Page extends \SplFileInfo {
 	 * @param mixed $value
 	 */
 	public function __set($name, $value) {
-		$this->meta[$name] = $value;
+		$this->meta[$name] = filter([self::class . '::set', self::class . '::' . $name], $value);
 	}
 
 	/**
@@ -130,7 +145,7 @@ class Page extends \SplFileInfo {
 	 * @return string
 	 */
 	public function getName() {
-		return $this->getBasename('.' . $this->getExtension());
+		return filter(self::class . '::' . __FUNCTION__, $this->getBasename('.' . $this->getExtension()));
 	}
 
 	/**

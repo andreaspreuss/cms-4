@@ -1,9 +1,11 @@
 <?php
 namespace cms {
 
-	function add_default_macros(\Latte\Macros\MacroSet $set) {
+	use Latte\Macros\MacroSet;
+
+	function default_macros(MacroSet $set) {
 		$set->addMacro('url', 'echo \url(%node.args);');
 	}
 
-	\on('latte.macroset', '\cms\add_default_macros');
+	on(MacroSet::class, '\cms\default_macros');
 }

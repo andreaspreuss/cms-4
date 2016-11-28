@@ -15,7 +15,8 @@ require_once __DIR__ . '/../vendor/sphido/url/src/url.php';
 require_once __DIR__ . '/functions.php';
 
 // and CMS core
-require_once __DIR__ . '/../vendor/sphido/metadata/src/Metadata.php';
+require_once __DIR__ . '/../vendor/sphido/parsers/src/MetadataParser.php';
+require_once __DIR__ . '/../vendor/sphido/parsers/src/TitleParser.php';
 require_once __DIR__ . '/MissingPage.php';
 require_once __DIR__ . '/Pages.php';
 require_once __DIR__ . '/Render.php';
