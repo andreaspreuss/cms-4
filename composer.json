@@ -24,7 +24,7 @@
   },
   "require": {
     "php": ">=7.0.0",
-    "latte/latte": "v2.4.2",
+    "latte/latte": "v2.4.3",
     "erusev/parsedown": "v1.6.1",
     "sphido/config": "*",
     "sphido/parsers": "*",
@@ -37,6 +37,6 @@
   },
   "require-dev": {
     "nette/tester": "v1.7.1",
-    "tracy/tracy": "v2.4.3"
+    "tracy/tracy": "v2.4.6"
   }
 }
