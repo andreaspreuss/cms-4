@@ -6,26 +6,34 @@ Sphido is deathly simple, ultra fast, flat file (Markdown, Latte, HTML, PHTML) C
 
 See more information: https://www.sphido.org/
 
-# How to install
+## How to install
 
 Download latest version from Github and run `composer install`, or just run `composer create-project sphido/cms`.
 
-## Try Sphido CMS With Docker
+## Try Sphido CMS
 
 Clone source codes from [GitHub](https://github.com/sphido/cms):
- 
+
 ```
 git clone git@github.com:sphido/cms.git sphido.dev && cd sphido.dev
 ```
 
-Install dependencies with composer:
+Install dependencies with [composer](https://getcomposer.org/):
 
 ```
 composer install
 ```
 
+### Running with Docker
+
 Run Docker and open [http://localhost/](http://localhost/)
 
 ```
 docker-compose up
-``` 
+```
+
+## Running with PHP only
+
+```
+php -S localhost:8000 -t public
+``
