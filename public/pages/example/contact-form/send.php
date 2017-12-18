@@ -1,4 +1,5 @@
 <?php
+
 namespace cms {
 
 	require_once __DIR__ . '/../../../../vendor/sphido/json/src/json.php';

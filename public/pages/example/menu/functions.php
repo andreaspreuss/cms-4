@@ -1,4 +1,5 @@
 <?php
+
 namespace cms {
 	/** @var \cms\Sphido $this */
 

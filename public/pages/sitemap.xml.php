@@ -1,4 +1,5 @@
 <?php
+
 namespace cms {
 
 	isset($this) && $this instanceof Sphido or die('Sorry can be executed only from Sphido');
