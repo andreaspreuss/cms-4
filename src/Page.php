@@ -1,4 +1,5 @@
 <?php
+
 namespace cms;
 
 use parsers\MetadataParser as Metadata;
@@ -115,7 +116,7 @@ class Page extends \SplFileInfo {
 	 */
 	public function __get($name) {
 		return filter(
-			[self::class. '::get', self::class . '::' . $name],
+			[self::class . '::get', self::class . '::' . $name],
 			array_key_exists($name, $this->meta) ? $this->meta[$name] : null
 		);
 	}

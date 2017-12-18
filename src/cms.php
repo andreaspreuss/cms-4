@@ -1,4 +1,5 @@
 <?php
+
 namespace cms;
 
 use function app\config as config;
