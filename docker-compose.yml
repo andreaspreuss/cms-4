@@ -10,7 +10,7 @@ web:
     - php
 
 php:
-  image: php:7.0-fpm-alpine
+  image: php:7.2-fpm-alpine
   ports:
     - 9000
   volumes:

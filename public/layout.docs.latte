@@ -2,38 +2,23 @@
 
 {block page}
 	<div class="container">
-
-
 		<div class="row">
-
-			<!-- navigation -->
 			<aside class="col-md-offset-1  col-md-2">
-				<!-- Setup -->
 				<div class="panel panel-default">
 					<div class="panel-heading">Setup</div>
 					<div class="list-group">
 						<a href="/docs" n:class="list-group-item, $page->id === 'docs' ? active">Overview</a>
 						<a href="/docs/setup" n:class="list-group-item, $page->id === 'setup' ? active">Setup</a>
-						<a href="/docs/configuration"
-						   n:class="list-group-item, $page->id === 'configuration' ? active">Configuration</a>
+						<a href="/docs/configuration" n:class="list-group-item, $page->id === 'configuration' ? active">Configuration</a>
 						<a href="/docs/updating" n:class="list-group-item, $page->id === 'updating' ? active">Updating</a>
 					</div>
 				</div>
-				<!-- /Setup -->
-
-				<!-- Content -->
 				<div class="panel panel-default">
 					<div class="panel-heading">Content</div>
 					<div class="list-group">
-						<a href="/docs/create-content" n:class="list-group-item, $page->id === 'create-content' ? active">Create
-							content</a>
-						<a href="/docs/blogging" n:class="list-group-item, $page->id === 'blogging' ? active">Blogging</a>
+						<a href="/docs/create-content" n:class="list-group-item, $page->id === 'create-content' ? active">Create content</a>
 					</div>
 				</div>
-				<!-- /Content -->
-
-
-				<!-- Themes -->
 				<div class="panel panel-default">
 					<div class="panel-heading">Themes</div>
 					<div class="list-group">
@@ -42,27 +27,10 @@
 						<a href="/docs/create-menu" n:class="list-group-item, $page->id === 'create-menu' ? active">Create menu</a>
 					</div>
 				</div>
-				<!-- /Themes -->
-
-
-				<!-- Extending -->
-				<div class="panel panel-default">
-					<div class="panel-heading">Extending</div>
-					<div class="list-group">
-						<a href="/docs/plugins" n:class="list-group-item, $page->id === 'plugins' ? active">Plugins</a>
-					</div>
-				</div>
-				<!-- /Extending -->
 			</aside>
-			<!-- /navigation -->
-
-
-			<!-- content -->
 			<div class="col-md-8">
 				<article n:ifset="#content">{include content}</article>
 			</div>
-			<!-- /content -->
-
 		</div>
 	</div>
 {/block}

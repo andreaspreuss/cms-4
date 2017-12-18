@@ -15,7 +15,7 @@ Download latest version from Github and run `composer install`, or just run `com
 Clone source codes from [GitHub](https://github.com/sphido/cms):
 
 ```
-git clone git@github.com:sphido/cms.git sphido.dev && cd sphido.dev
+git clone git@github.com:sphido/cms.git sphido.local && cd sphido.local
 ```
 
 Install dependencies with [composer](https://getcomposer.org/):
